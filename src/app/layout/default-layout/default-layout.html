@@ -1,5 +1,7 @@
 <mat-drawer-container>
-    <mat-drawer #drawer [mode]="isMobile() ? 'over' : 'side'" [opened]="!isMobile()"></mat-drawer>
+    <mat-drawer #drawer [mode]="isMobile() ? 'over' : 'side'" [opened]="!isMobile()">
+        <app-logo />
+    </mat-drawer>
     <mat-drawer-content>
         <mat-toolbar>
             @if(isMobile()){

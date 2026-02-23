@@ -5,10 +5,11 @@ import { MatIcon } from '@angular/material/icon';
 import { MatDrawerContainer, MatDrawer, MatDrawerContent } from '@angular/material/sidenav';
 import { MatToolbar } from '@angular/material/toolbar';
 import { RouterOutlet } from "@angular/router";
+import { Logo } from "../../components/logo/logo";
 
 @Component({
   selector: 'app-default-layout',
-  imports: [MatDrawerContainer, MatDrawer, MatDrawerContent, MatToolbar, MatButtonModule, MatIcon, RouterOutlet],
+  imports: [MatDrawerContainer, MatDrawer, MatDrawerContent, MatToolbar, MatButtonModule, MatIcon, RouterOutlet, Logo],
   templateUrl: './default-layout.html',
   styleUrl: './default-layout.scss',
 })
