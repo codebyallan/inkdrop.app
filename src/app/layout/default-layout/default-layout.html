@@ -1,5 +1,6 @@
 <mat-drawer-container>
-    <mat-drawer #drawer [mode]="isMobile() ? 'over' : 'side'" [opened]="!isMobile()">
+    <mat-drawer #drawer [mode]="isMobile() ? 'over' : 'side'" [opened]="!isMobile()" autoFocus="false"
+        (mousedown)="$event.preventDefault()">
         <app-logo />
         <mat-divider />
         <app-navbar [items]="NavItems" (itemClicked)="isMobile() && drawer.close()" />

@@ -1,8 +1,8 @@
 <mat-nav-list>
     <div class="flex flex-col gap-2 px-2">
         @for(item of items(); track item.route){
-        <a mat-list-item [routerLink]="item.route" routerLinkActive="active" (click)="onItemClick()"> <mat-icon
-                matListItemIcon>{{item.icon}}</mat-icon>
+        <a mat-list-item (mousedown)="$event.preventDefault()" [routerLink]="item.route" routerLinkActive="active"
+            (click)="onItemClick()"> <mat-icon matListItemIcon>{{item.icon}}</mat-icon>
             <span matListItemTitle>{{item.name}}</span>
         </a>
         }
