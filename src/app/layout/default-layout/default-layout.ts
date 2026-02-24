@@ -8,10 +8,11 @@ import { RouterOutlet } from "@angular/router";
 import { Logo } from "../../components/logo/logo";
 import { Navbar } from "../../components/navbar/navbar";
 import { NavItem } from '../../components/navbar/types';
+import { MatDividerModule } from '@angular/material/divider';
 
 @Component({
   selector: 'app-default-layout',
-  imports: [MatDrawerContainer, MatDrawer, MatDrawerContent, MatToolbar, MatButtonModule, MatIcon, RouterOutlet, Logo, Navbar],
+  imports: [MatDrawerContainer, MatDrawer, MatDrawerContent, MatToolbar, MatButtonModule, MatIcon, RouterOutlet, Logo, Navbar, MatDividerModule],
   templateUrl: './default-layout.html',
   styleUrl: './default-layout.scss',
 })

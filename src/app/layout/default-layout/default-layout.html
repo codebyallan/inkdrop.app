@@ -1,6 +1,7 @@
 <mat-drawer-container>
     <mat-drawer #drawer [mode]="isMobile() ? 'over' : 'side'" [opened]="!isMobile()">
         <app-logo />
+        <mat-divider />
         <app-navbar [items]="NavItems" (itemClicked)="isMobile() && drawer.close()" />
     </mat-drawer>
     <mat-drawer-content>
