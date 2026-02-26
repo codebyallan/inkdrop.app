@@ -11,3 +11,4 @@ import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 export class ConfirmDialog {
   dialogRef = inject(MatDialogRef<ConfirmDialog>);
 }
+

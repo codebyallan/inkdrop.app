@@ -7,7 +7,7 @@ import { UiTableComponent } from '../../shared/components/ui-table/ui-table';
 import { TonersService } from './services/toner-service';
 import { IToner } from './types';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { ConfirmDialog } from '../location/components/confirm-dialog/confirm-dialog';
+import { ConfirmDialog } from '../../shared/components/confirm-dialog/confirm-dialog';
 import { TonerForm } from './components/toner-form/toner-form';
 
 @Component({

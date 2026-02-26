@@ -11,7 +11,7 @@ import { LocationsService } from '../location/services/location-service';
 import { ILocation } from '../location/types';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { PrinterForm } from './components/printer-form/printer-form';
-import { ConfirmDialog } from '../location/components/confirm-dialog/confirm-dialog';
+import { ConfirmDialog } from '../../shared/components/confirm-dialog/confirm-dialog';
 
 @Component({
   selector: 'app-printer',
