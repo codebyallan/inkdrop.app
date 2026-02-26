@@ -1,0 +1,8 @@
+<app-page-layout [title]="'Movements'">
+  <button page-actions mat-flat-button (click)="openDialog()">
+    <mat-icon>add</mat-icon>
+    New
+  </button>
+  <app-ui-table [data]="movements()" [columns]="columnsConfig"></app-ui-table>
+</app-page-layout>
+
