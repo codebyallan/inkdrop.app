@@ -1,5 +1,7 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Component, inject, OnInit, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { map } from 'rxjs';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatDrawerContainer, MatDrawer, MatDrawerContent } from '@angular/material/sidenav';
@@ -18,12 +20,11 @@ import { MatDividerModule } from '@angular/material/divider';
 })
 export class DefaultLayout implements OnInit {
   private breakpointObserver = inject(BreakpointObserver);
-  protected isMobile = signal<boolean>(false);
-  ngOnInit() {
-    this.breakpointObserver.observe(Breakpoints.Handset).subscribe(result => {
-      this.isMobile.set(result.matches);
-    });
-  }
+  protected isMobile = toSignal(
+    this.breakpointObserver.observe(Breakpoints.Handset).pipe(map(r => r.matches)),
+    { initialValue: false }
+  );
+  ngOnInit() {}
   protected readonly NavItems: Array<NavItem> = [
     { route: '/dashboard', icon: 'dashboard', name: 'Dashboard' },
     { route: '/toners', icon: 'inventory_2', name: 'Toners' },

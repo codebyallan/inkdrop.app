@@ -9,7 +9,7 @@ import { environment } from '../../../../environments/environment';
 })
 export class LocationsService {
   private http = inject(HttpClient);
-  private API_URL = `${environment.BASE_URL}/location`;;
+  private API_URL = `${environment.BASE_URL}/location`;
   getLocations(): Observable<ILocation[]> {
     return this.http.get<ILocation[]>(this.API_URL);
   }

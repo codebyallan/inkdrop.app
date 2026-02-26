@@ -4,10 +4,11 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatDialogRef, MatDialogModule } from '@angular/material/dialog';
+import { ValidationMessageComponent } from '../../../../shared/components/validation-message/validation-message';
 
 @Component({
   selector: 'app-location-form',
-  imports: [ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatDialogModule],
+  imports: [ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatDialogModule, ValidationMessageComponent],
   templateUrl: './location-form.html',
   styleUrl: './location-form.scss',
 })

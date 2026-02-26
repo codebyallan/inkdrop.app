@@ -1,37 +1,8 @@
-<div class="h-full flex flex-col p-4 gap-4">
-    <div class="flex items-center justify-between">
-        <h1 class="text-2xl font-bold">Locations</h1>
-        <button mat-flat-button (click)="openDialog()">
-            <mat-icon>add</mat-icon>
-            New
-        </button>
-    </div>
-    <div class="overflow-x-auto">
-        <mat-table class="min-w-125!" [dataSource]="locations()">
-            <ng-container matColumnDef="name">
-                <mat-header-cell *matHeaderCellDef>Name</mat-header-cell>
-                <mat-cell *matCellDef="let row">{{ row.name }}</mat-cell>
-            </ng-container>
-            <ng-container matColumnDef="description">
-                <mat-header-cell *matHeaderCellDef>Description</mat-header-cell>
-                <mat-cell *matCellDef="let row">{{ row.description || '—' }}</mat-cell>
-            </ng-container>
-            <ng-container matColumnDef="createdAt">
-                <mat-header-cell *matHeaderCellDef class="whitespace-nowrap">Created At</mat-header-cell>
-                <mat-cell *matCellDef="let row" class="whitespace-nowrap">{{ row.createdAt | date:'dd/MM/yyyy'
-                    }}</mat-cell>
-            </ng-container>
-            <ng-container matColumnDef="actions">
-                <mat-header-cell *matHeaderCellDef></mat-header-cell>
-                <mat-cell *matCellDef="let row">
-                    <button mat-icon-button class="delete-btn" (click)="deleteLocation(row.id)" autoFocus="false"
-                        (mousedown)="$event.preventDefault()">
-                        <mat-icon>delete</mat-icon>
-                    </button>
-                </mat-cell>
-            </ng-container>
-            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-            <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
-        </mat-table>
-    </div>
-</div>
+<app-page-layout [title]="'Locations'">
+  <button page-actions mat-flat-button (click)="openDialog()">
+    <mat-icon>add</mat-icon>
+    New
+  </button>
+
+  <app-ui-table [data]="locations()" [columns]="columnsConfig" (action)="onTableAction($event)"></app-ui-table>
+</app-page-layout>

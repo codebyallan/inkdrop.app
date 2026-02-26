@@ -9,10 +9,12 @@ import { MatDialog } from '@angular/material/dialog';
 import { LocationForm } from './components/location-form/location-form';
 import { ConfirmDialog } from './components/confirm-dialog/confirm-dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { PageLayoutComponent } from '../../shared/components/page-layout/page-layout';
+import { UiTableComponent } from '../../shared/components/ui-table/ui-table';
 
 @Component({
   selector: 'app-location',
-  imports: [MatTableModule, DatePipe, MatButtonModule, MatIconModule, MatSnackBarModule],
+  imports: [MatTableModule, MatButtonModule, MatIconModule, MatSnackBarModule, PageLayoutComponent, UiTableComponent],
   templateUrl: './location.html',
   styleUrl: './location.scss',
 })
@@ -22,7 +24,12 @@ export class Location implements OnInit {
   private _snackBar = inject(MatSnackBar);
 
   locations = signal<ILocation[]>([]);
-  displayedColumns = ['name', 'description', 'createdAt', 'actions'];
+  columnsConfig = [
+    { id: 'name', header: 'Name', field: 'name', type: 'text' as const },
+    { id: 'description', header: 'Description', field: 'description', type: 'text' as const },
+    { id: 'createdAt', header: 'Created At', field: 'createdAt', type: 'date' as const, dateFormat: 'dd/MM/yyyy' },
+    { id: 'actions', header: '', type: 'actions' as const }
+  ];
 
   ngOnInit() {
     this.locationsService.getLocations().subscribe({
@@ -56,6 +63,12 @@ export class Location implements OnInit {
         });
       }
     });
+  }
+
+  onTableAction(evt: { type: string; row: ILocation }) {
+    if (evt.type === 'delete') {
+      this.deleteLocation(evt.row.id);
+    }
   }
 
   deleteLocation(id: string) {
