@@ -1,0 +1,44 @@
+<h2 mat-dialog-title>New Printer</h2>
+<mat-dialog-content>
+  <form [formGroup]="form" class="flex flex-col gap-4 pt-2">
+    <mat-form-field>
+      <mat-label>Name</mat-label>
+      <input matInput formControlName="name" />
+      <app-validation-message [control]="form.controls.name" [label]="'Name'"></app-validation-message>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Model</mat-label>
+      <input matInput formControlName="model" />
+      <app-validation-message [control]="form.controls.model" [label]="'Model'"></app-validation-message>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Manufacturer</mat-label>
+      <input matInput formControlName="manufacturer" />
+      <app-validation-message [control]="form.controls.manufacturer" [label]="'Manufacturer'"></app-validation-message>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>IP Address</mat-label>
+      <input matInput formControlName="ipAddress" />
+      <app-validation-message [control]="form.controls.ipAddress" [label]="'IP Address'"></app-validation-message>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Location</mat-label>
+      <mat-select formControlName="locationId">
+        @for (loc of data.locations; track loc.id) {
+          <mat-option [value]="loc.id">
+            {{ loc.name }}
+          </mat-option>
+        }
+      </mat-select>
+      <app-validation-message [control]="form.controls.locationId" [label]="'Location'"></app-validation-message>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-stroked-button (click)="cancel()">Cancel</button>
+  <button mat-flat-button (click)="save()" [disabled]="form.invalid">Save</button>
+</mat-dialog-actions>
