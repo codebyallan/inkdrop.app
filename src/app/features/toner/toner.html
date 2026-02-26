@@ -1,0 +1,8 @@
+<app-page-layout [title]="'Toners'">
+  <button page-actions mat-flat-button (click)="openDialog()">
+    <mat-icon>add</mat-icon>
+    New
+  </button>
+  <app-ui-table [data]="toners()" [columns]="columnsConfig" (action)="onTableAction($event)"></app-ui-table>
+</app-page-layout>
+
