@@ -21,7 +21,7 @@
   min-height: 140px;
   padding: 1.5rem 1.75rem;
   border-radius: 12px;
-  border: none;
+  border: 1px solid var(--mat-sys-outline-variant, #e0e0e0);
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
   background-color: var(--mat-sys-surface, #fff);
 
@@ -69,8 +69,12 @@
 }
 
 .recent-movements {
+  padding: 1.25rem 1.5rem;
+  border-radius: 12px;
+  background-color: var(--mat-sys-surface, #fff);
+  border: 1px solid var(--mat-sys-outline-variant, #e0e0e0);
   &__title {
-    margin: 0 0 1rem 0;
+    margin: 0 0 1.25rem 0;
     font-size: 1.25rem;
     font-weight: 600;
     color: var(--mat-sys-on-surface, #1c1b1f);
