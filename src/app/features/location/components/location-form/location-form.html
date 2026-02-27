@@ -1,4 +1,4 @@
-<h2 mat-dialog-title>New Location</h2>
+<h2 mat-dialog-title>{{ (data.mode === 'edit') ? 'Edit Location' : 'New Location' }}</h2>
 <mat-dialog-content>
     <form [formGroup]="form" class="flex flex-col gap-4 pt-2">
         <mat-form-field>

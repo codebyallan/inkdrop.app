@@ -24,6 +24,9 @@ export class TonersService {
   createToner(payload: Partial<IToner>): Observable<IToner> {
     return this.http.post<IToner>(this.API_URL, payload);
   }
+  updateToner(id: string, payload: Partial<IToner>): Observable<IToner> {
+    return this.http.put<IToner>(`${this.API_URL}/${id}`, payload);
+  }
   deleteToner(id: string): Observable<void> {
     return this.http.delete<void>(`${this.API_URL}/${id}`);
   }

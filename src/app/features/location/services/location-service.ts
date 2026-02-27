@@ -16,6 +16,9 @@ export class LocationsService {
   createLocation(payload: Partial<ILocation>): Observable<ILocation> {
     return this.http.post<ILocation>(this.API_URL, payload);
   }
+  updateLocation(id: string, payload: Partial<ILocation>): Observable<ILocation> {
+    return this.http.put<ILocation>(`${this.API_URL}/${id}`, payload);
+  }
   deleteLocation(id: string): Observable<void> {
     return this.http.delete<void>(`${this.API_URL}/${id}`);
   }

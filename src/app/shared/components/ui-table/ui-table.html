@@ -6,6 +6,9 @@
         <ng-container [ngSwitch]="col.type || 'text'">
           <ng-container *ngSwitchCase="'date'">{{ row[col.field || col.id] | date:(col.dateFormat || 'dd/MM/yyyy') }}</ng-container>
           <ng-container *ngSwitchCase="'actions'">
+            <button mat-icon-button (click)="emitAction('edit', row)" autoFocus="false" (mousedown)="$event.preventDefault()">
+              <mat-icon>edit</mat-icon>
+            </button>
             <button mat-icon-button class="delete-btn" (click)="emitAction('delete', row)" autoFocus="false" (mousedown)="$event.preventDefault()">
               <mat-icon>delete</mat-icon>
             </button>

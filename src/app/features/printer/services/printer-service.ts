@@ -17,6 +17,9 @@ export class PrintersService {
   createPrinter(payload: Partial<IPrinter>): Observable<IPrinter> {
     return this.http.post<IPrinter>(this.API_URL, payload);
   }
+  updatePrinter(id: string, payload: Partial<IPrinter>): Observable<IPrinter> {
+    return this.http.put<IPrinter>(`${this.API_URL}/${id}`, payload);
+  }
   deletePrinter(id: string): Observable<void> {
     return this.http.delete<void>(`${this.API_URL}/${id}`);
   }

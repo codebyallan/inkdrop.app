@@ -57,9 +57,44 @@ export class Printer implements OnInit {
   onTableAction(evt: { type: string; row: IPrinter }) {
     if (evt.type === 'delete') {
       this.deletePrinter(evt.row.id);
+    } else if (evt.type === 'edit') {
+      this.editPrinter(evt.row);
     }
   }
 
+  editPrinter(row: IPrinter) {
+    const locations = Array.from(this.locationsMap.entries()).map(([id, name]) => ({ id, name }));
+    const ref = this.dialog.open(PrinterForm, {
+      width: '500px',
+      data: {
+        locations,
+        mode: 'edit',
+        initial: { name: row.name, model: row.model, manufacturer: row.manufacturer, ipAddress: row.ipAddress, locationId: row.locationId }
+      }
+    });
+    ref.afterClosed().subscribe(values => {
+      if (values) {
+        const confirmRef = this.dialog.open(ConfirmDialog, { width: '300px', data: { title: 'Confirm', message: 'Save changes?', confirmLabel: 'Save', cancelLabel: 'Cancel' } });
+        confirmRef.afterClosed().subscribe(confirmed => {
+          if (confirmed) {
+            this.printersService.updatePrinter(row.id, values).subscribe({
+              next: () => {
+                this.printersService.getPrinters().subscribe({
+                  next: (data) => {
+                    this.printers.set(data);
+                    this.applyLocationNames();
+                    this.showAlert('Printer updated successfully', 'Close');
+                  },
+                  error: () => this.showAlert('Error refreshing printers list', 'Close')
+                });
+              },
+              error: () => this.showAlert('Error updating printer', 'Close')
+            });
+          }
+        });
+      }
+    });
+  }
   deletePrinter(id: string) {
     const ref = this.dialog.open(ConfirmDialog, { width: '300px' });
     ref.afterClosed().subscribe(confirmed => {

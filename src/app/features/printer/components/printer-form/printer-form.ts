@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, inject } from '@angular/core';
+import { Component, Inject, OnInit, Optional, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -9,7 +9,7 @@ import { ValidationMessageComponent } from '../../../../shared/components/valida
 import { LocationsService } from '../../../location/services/location-service';
 import { ILocation } from '../../../location/types';
 
-type DialogData = { locations: Array<{ id: string; name: string }> };
+type DialogData = { locations: Array<{ id: string; name: string }>, mode?: 'create' | 'edit', initial?: any };
 
 @Component({
   selector: 'app-printer-form',
@@ -20,7 +20,10 @@ type DialogData = { locations: Array<{ id: string; name: string }> };
 export class PrinterForm implements OnInit {
   private dialogRef = inject(MatDialogRef<PrinterForm>);
   private locationsService = inject(LocationsService);
-  constructor(@Inject(MAT_DIALOG_DATA) public data: DialogData) {}
+  public data: DialogData = { locations: [] };
+  constructor(@Optional() @Inject(MAT_DIALOG_DATA) data: DialogData | null) {
+    if (data) this.data = data;
+  }
 
   form = new FormGroup({
     name: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
@@ -31,6 +34,9 @@ export class PrinterForm implements OnInit {
   });
 
   ngOnInit() {
+    if (this.data?.initial) {
+      this.form.patchValue(this.data.initial);
+    }
     if (!this.data?.locations || this.data.locations.length === 0) {
       this.locationsService.getLocations().subscribe({
         next: (locs: ILocation[]) => {

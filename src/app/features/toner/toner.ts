@@ -41,7 +41,34 @@ export class Toner implements OnInit {
   onTableAction(evt: { type: string; row: IToner }) {
     if (evt.type === 'delete') {
       this.deleteToner(evt.row.id);
+    } else if (evt.type === 'edit') {
+      this.editToner(evt.row);
     }
+  }
+
+  editToner(row: IToner) {
+    const ref = this.dialog.open(TonerForm, { width: '500px', data: { mode: 'edit', initial: { model: row.model, manufacturer: row.manufacturer, color: row.color } } });
+    ref.afterClosed().subscribe(values => {
+      if (values) {
+        const confirmRef = this.dialog.open(ConfirmDialog, { width: '300px', data: { title: 'Confirm', message: 'Save changes?', confirmLabel: 'Save', cancelLabel: 'Cancel' } });
+        confirmRef.afterClosed().subscribe(confirmed => {
+          if (confirmed) {
+            this.tonersService.updateToner(row.id, values).subscribe({
+              next: () => {
+                this.tonersService.getToners().subscribe({
+                  next: (data) => {
+                    this.toners.set(data);
+                    this.showAlert('Toner updated successfully', 'Close');
+                  },
+                  error: () => this.showAlert('Error refreshing toners list', 'Close')
+                });
+              },
+              error: () => this.showAlert('Error updating toner', 'Close')
+            });
+          }
+        });
+      }
+    });
   }
 
   deleteToner(id: string) {

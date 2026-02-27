@@ -1,9 +1,9 @@
-import { Component, inject } from '@angular/core';
+import { Component, Inject, OnInit, Optional, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatDialogRef, MatDialogModule } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
 import { ValidationMessageComponent } from '../../../../shared/components/validation-message/validation-message';
 
 @Component({
@@ -12,14 +12,24 @@ import { ValidationMessageComponent } from '../../../../shared/components/valida
   templateUrl: './toner-form.html',
   styleUrl: './toner-form.scss',
 })
-export class TonerForm {
+export class TonerForm implements OnInit {
   private dialogRef = inject(MatDialogRef<TonerForm>);
+  public data: { mode?: 'create' | 'edit'; initial?: any } = {};
+  constructor(@Optional() @Inject(MAT_DIALOG_DATA) data: { mode?: 'create' | 'edit'; initial?: any } | null) {
+    if (data) this.data = data;
+  }
 
   form = new FormGroup({
     model: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
     manufacturer: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
     color: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
   });
+
+  ngOnInit() {
+    if (this.data?.initial) {
+      this.form.patchValue(this.data.initial);
+    }
+  }
 
   save() {
     if (this.form.invalid) return;

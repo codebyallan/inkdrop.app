@@ -1,4 +1,4 @@
-<h2 mat-dialog-title>New Toner</h2>
+<h2 mat-dialog-title>{{ (data.mode === 'edit') ? 'Edit Toner' : 'New Toner' }}</h2>
 <mat-dialog-content>
   <form [formGroup]="form" class="flex flex-col gap-4 pt-2">
     <mat-form-field>
@@ -15,7 +15,7 @@
 
     <mat-form-field>
       <mat-label>Color</mat-label>
-      <input matInput formControlName="color" />
+      <input matInput formControlName="color" [readonly]="data.mode === 'edit'" />
       <app-validation-message [control]="form.controls.color" [label]="'Color'"></app-validation-message>
     </mat-form-field>
   </form>

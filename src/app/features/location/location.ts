@@ -68,9 +68,33 @@ export class Location implements OnInit {
   onTableAction(evt: { type: string; row: ILocation }) {
     if (evt.type === 'delete') {
       this.deleteLocation(evt.row.id);
+    } else if (evt.type === 'edit') {
+      this.editLocation(evt.row);
     }
   }
 
+  editLocation(row: ILocation) {
+    const ref = this.dialog.open(LocationForm, { width: '400px', data: { mode: 'edit', initial: { name: row.name, description: row.description } } });
+    ref.afterClosed().subscribe(values => {
+      if (values) {
+        const confirmRef = this.dialog.open(ConfirmDialog, { width: '300px', data: { title: 'Confirm', message: 'Save changes?', confirmLabel: 'Save', cancelLabel: 'Cancel' } });
+        confirmRef.afterClosed().subscribe(confirmed => {
+          if (confirmed) {
+            this.locationsService.updateLocation(row.id, values).subscribe({
+              next: () => {
+                this.locationsService.getLocations().subscribe({
+                  next: (data) => {
+                    this.locations.set(data);
+                    this.showAlert('Location updated successfully', 'Close');
+                  }
+                });
+              }
+            });
+          }
+        });
+      }
+    });
+  }
   deleteLocation(id: string) {
     const ref = this.dialog.open(ConfirmDialog, { width: '300px' });
     ref.afterClosed().subscribe(confirmed => {
