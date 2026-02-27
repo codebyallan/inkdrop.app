@@ -14,6 +14,13 @@ export class TonersService {
   getToners(): Observable<IToner[]> {
     return this.http.get<IToner[]>(this.API_URL);
   }
+
+  getLowStock(threshold = 3): Observable<IToner[]> {
+    return this.http.get<IToner[]>(`${this.API_URL}/low`, {
+      params: { threshold: threshold.toString() },
+    });
+  }
+
   createToner(payload: Partial<IToner>): Observable<IToner> {
     return this.http.post<IToner>(this.API_URL, payload);
   }

@@ -1,0 +1,45 @@
+<div class="h-full flex flex-col p-4 gap-4">
+  <section class="kpi-grid">
+    <mat-card class="kpi-card kpi-card--toners">
+      <mat-card-content>
+        <p class="kpi-label">Toners in Stock</p>
+        <p class="kpi-value">{{ tonersInStock() }}</p>
+      </mat-card-content>
+    </mat-card>
+    <mat-card class="kpi-card kpi-card--low-toners">
+      <mat-card-content>
+        <p class="kpi-label">Low Toners</p>
+        <p class="kpi-value">{{ lowTonersCount() }}</p>
+      </mat-card-content>
+    </mat-card>
+    <mat-card class="kpi-card kpi-card--printers">
+      <mat-card-content>
+        <p class="kpi-label">Active Printers</p>
+        <p class="kpi-value">{{ activePrintersCount() }}</p>
+      </mat-card-content>
+    </mat-card>
+    <mat-card class="kpi-card kpi-card--movements">
+      <mat-card-content>
+        <p class="kpi-label">Movements Today</p>
+        <p class="kpi-value">{{ movementsToday() }}</p>
+      </mat-card-content>
+    </mat-card>
+  </section>
+
+  <section class="recent-movements">
+    <h2 class="recent-movements__title">Recent Movements</h2>
+    <app-ui-table
+      [data]="recentMovements()"
+      [columns]="recentMovementsColumns"
+    />
+  </section>
+
+  <div class="flex flex-wrap gap-2 mt-auto pt-4">
+    <button mat-flat-button color="primary" (click)="openNewMovement()">
+      New Movement
+    </button>
+    <button mat-stroked-button (click)="goToHistory()">
+      View Complete History
+    </button>
+  </div>
+</div>
