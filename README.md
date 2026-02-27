@@ -1,59 +1,101 @@
-# InkdropApp
+# 🖨️ Inkdrop App
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.1.4.
+**Frontend** for a Toner Control system — manage toners, printers, locations, and movements from a single dashboard. The backend is a separate repository and must be running for the app to work.
 
-## Development server
+---
 
-To start a local development server, run:
+## 📖 About the project
+
+This repository contains only the **frontend** (Angular SPA). It talks to a REST API for data; the **backend is in another repo** and must be deployed or run locally for full functionality.
+
+### ✨ Features
+
+- **Dashboard** — KPIs (toners in stock, low toners, active printers, movements today), recent movements list, and quick actions
+- **Toners** — Manage toners (list, create, edit, delete)
+- **Printers** — Manage printers (list, create, edit, delete)
+- **Locations** — Manage locations (list, create, edit, delete)
+- **Movements** — Record in/out movements and view history (list, create)
+
+---
+
+## 🛠 Stack
+
+| Area        | Technology |
+|------------|------------|
+| Framework  | Angular 21 |
+| UI         | Angular Material (Material 3) |
+| Layout / CDK | Angular CDK |
+| Styling    | Tailwind CSS 4, SCSS |
+| Language   | TypeScript 5.9 |
+| State / Data | RxJS, Angular signals |
+| Package manager | npm |
+
+---
+
+## 🚀 Clone and run locally
+
+### 📋 Prerequisites
+
+- **Node.js** (v18 or v20 recommended)
+- **npm** (v9+)
+
+### 1️⃣ Clone the repository
+
+```bash
+git clone https://github.com/codebyallan/inkdrop.app.git
+cd inkdrop.app
+```
+
+### 2️⃣ Install dependencies
+
+```bash
+npm install
+```
+
+### 3️⃣ Configure the API base URL
+
+Set the backend URL for your environment:
+
+- **Development:** edit `src/environments/environment.development.ts` and set `BASE_URL` to your API base (e.g. `http://localhost:5109/api`).
+- **Production:** set `BASE_URL` in `src/environments/environment.ts` for production builds.
+
+Example:
+
+```ts
+// src/environments/environment.development.ts
+export const environment = { BASE_URL: 'http://localhost:5109/api' };
+```
+
+### 4️⃣ Start the development server
+
+```bash
+npm start
+```
+
+Or:
 
 ```bash
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Open **http://localhost:4200/** in your browser. The app will hot-reload when you change the code.
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+### 📦 Build for production
 
 ```bash
-ng generate component component-name
+npm run build
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Output is generated under `dist/`.
 
-```bash
-ng generate --help
-```
+---
 
-## Building
+## 📄 License
 
-To build the project run:
+This project is licensed under the **GNU General Public License v3.0 (GPL-3.0)**.
 
-```bash
-ng build
-```
+- ✅ You may **use** and **modify** the software.
+- ✅ You may distribute original or modified versions.
+- ❌ You **may not** make the project or derivatives **proprietary/closed source** — derivative works must be released under the same GPL-3.0 and remain open source.
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+See the [LICENSE](LICENSE) file for the full text.
