@@ -24,6 +24,7 @@ export class Location implements OnInit {
   private _snackBar = inject(MatSnackBar);
 
   locations = signal<ILocation[]>([]);
+  loading = signal<boolean>(true);
   columnsConfig = [
     { id: 'name', header: 'Name', field: 'name', type: 'text' as const },
     { id: 'description', header: 'Description', field: 'description', type: 'text' as const },
@@ -32,10 +33,15 @@ export class Location implements OnInit {
   ];
 
   ngOnInit() {
+    this.loading.set(true);
     this.locationsService.getLocations().subscribe({
-      next: (data) => this.locations.set(data),
+      next: (data) => {
+        this.locations.set(data);
+        this.loading.set(false);
+      },
       error: (err) => {
         console.error(err);
+        this.loading.set(false);
         this.showAlert('Error fetching locations', 'Close');
       }
     });

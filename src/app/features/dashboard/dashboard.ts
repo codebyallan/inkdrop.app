@@ -31,6 +31,8 @@ export class Dashboard implements OnInit {
   lowToners = signal<IToner[]>([]);
   printers = signal<IPrinter[]>([]);
   movements = signal<IMovement[]>([]);
+  private pending = signal<number>(0);
+  loading = computed(() => this.pending() > 0);
 
   tonersInStock = computed(() =>
     this.toners().reduce((sum, t) => sum + (t.quantity ?? 0), 0)
@@ -73,21 +75,55 @@ export class Dashboard implements OnInit {
   private readonly lowStockThreshold = 3;
 
   ngOnInit() {
+    const start = () => this.pending.update(n => n + 1);
+    const done = () => this.pending.update(n => Math.max(0, n - 1));
+
+    start();
     this.tonersService.getToners().subscribe({
-      next: (data) => this.toners.set(data),
-      error: () => this.showAlert('Error fetching toners', 'Close'),
+      next: (data) => {
+        this.toners.set(data);
+        done();
+      },
+      error: () => {
+        done();
+        this.showAlert('Error fetching toners', 'Close');
+      },
     });
+
+    start();
     this.tonersService.getLowStock(this.lowStockThreshold).subscribe({
-      next: (data) => this.lowToners.set(data),
-      error: () => this.showAlert('Error fetching low stock toners', 'Close'),
+      next: (data) => {
+        this.lowToners.set(data);
+        done();
+      },
+      error: () => {
+        done();
+        this.showAlert('Error fetching low stock toners', 'Close');
+      },
     });
+
+    start();
     this.printersService.getPrinters().subscribe({
-      next: (data) => this.printers.set(data),
-      error: () => this.showAlert('Error fetching printers', 'Close'),
+      next: (data) => {
+        this.printers.set(data);
+        done();
+      },
+      error: () => {
+        done();
+        this.showAlert('Error fetching printers', 'Close');
+      },
     });
+
+    start();
     this.movementsService.getMovements().subscribe({
-      next: (data) => this.movements.set(data),
-      error: () => this.showAlert('Error fetching movements', 'Close'),
+      next: (data) => {
+        this.movements.set(data);
+        done();
+      },
+      error: () => {
+        done();
+        this.showAlert('Error fetching movements', 'Close');
+      },
     });
   }
 

@@ -22,6 +22,7 @@ export class Toner implements OnInit {
   private dialog = inject(MatDialog);
 
   toners = signal<IToner[]>([]);
+  loading = signal<boolean>(true);
   columnsConfig = [
     { id: 'model', header: 'Model', field: 'model', type: 'text' as const },
     { id: 'manufacturer', header: 'Manufacturer', field: 'manufacturer', type: 'text' as const },
@@ -32,9 +33,16 @@ export class Toner implements OnInit {
   ];
 
   ngOnInit() {
+    this.loading.set(true);
     this.tonersService.getToners().subscribe({
-      next: (data) => this.toners.set(data),
-      error: () => this.showAlert('Error fetching toners', 'Close'),
+      next: (data) => {
+        this.toners.set(data);
+        this.loading.set(false);
+      },
+      error: () => {
+        this.loading.set(false);
+        this.showAlert('Error fetching toners', 'Close');
+      },
     });
   }
 

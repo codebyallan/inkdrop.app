@@ -4,5 +4,5 @@
     New
   </button>
 
-  <app-ui-table [data]="locations()" [columns]="columnsConfig" (action)="onTableAction($event)"></app-ui-table>
+  <app-ui-table [data]="locations()" [columns]="columnsConfig" [loading]="loading()" (action)="onTableAction($event)"></app-ui-table>
 </app-page-layout>

@@ -29,6 +29,7 @@ export class Movement implements OnInit {
   movements = signal<IMovement[]>([]);
   private tonersMap = new Map<string, string>();
   private printersMap = new Map<string, string>();
+  loading = signal<boolean>(true);
 
   columnsConfig = [
     { id: 'tonerModel', header: 'Toner', field: 'tonerModel', type: 'text' as const },
@@ -40,6 +41,7 @@ export class Movement implements OnInit {
   ];
 
   ngOnInit() {
+    this.loading.set(true);
     this.tonersService.getToners().subscribe({
       next: (toners: IToner[]) => {
         this.tonersMap = new Map(toners.map(t => [t.id, `${t.model} - ${t.color}`]));
@@ -58,8 +60,12 @@ export class Movement implements OnInit {
       next: (data) => {
         this.movements.set(data);
         this.applyNames();
+        this.loading.set(false);
       },
-      error: () => this.showAlert('Error fetching movements', 'Close')
+      error: () => {
+        this.loading.set(false);
+        this.showAlert('Error fetching movements', 'Close');
+      }
     });
   }
 

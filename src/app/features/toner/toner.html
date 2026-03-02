@@ -3,6 +3,6 @@
     <mat-icon>add</mat-icon>
     New
   </button>
-  <app-ui-table [data]="toners()" [columns]="columnsConfig" (action)="onTableAction($event)"></app-ui-table>
+  <app-ui-table [data]="toners()" [columns]="columnsConfig" [loading]="loading()" (action)="onTableAction($event)"></app-ui-table>
 </app-page-layout>
 

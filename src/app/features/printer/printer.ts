@@ -27,6 +27,7 @@ export class Printer implements OnInit {
 
   printers = signal<IPrinter[]>([]);
   private locationsMap = new Map<string, string>();
+  loading = signal<boolean>(true);
   columnsConfig = [
     { id: 'name', header: 'Name', field: 'name', type: 'text' as const },
     { id: 'model', header: 'Model', field: 'model', type: 'text' as const },
@@ -38,6 +39,7 @@ export class Printer implements OnInit {
   ];
 
   ngOnInit() {
+    this.loading.set(true);
     this.locationsService.getLocations().subscribe({
       next: (locs: ILocation[]) => {
         this.locationsMap = new Map(locs.map(l => [l.id, l.name]));
@@ -49,8 +51,12 @@ export class Printer implements OnInit {
       next: (data) => {
         this.printers.set(data);
         this.applyLocationNames();
+        this.loading.set(false);
       },
-      error: () => this.showAlert('Error fetching printers', 'Close'),
+      error: () => {
+        this.loading.set(false);
+        this.showAlert('Error fetching printers', 'Close');
+      },
     });
   }
 

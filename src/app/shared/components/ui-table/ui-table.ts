@@ -15,6 +15,20 @@ export class UiTableComponent {
   data = input<any[]>([]);
   columns = input<Array<{ id: string; header?: string; field?: string; type?: 'text' | 'date' | 'actions'; dateFormat?: string }>>([]);
   columnIds = computed(() => this.columns().map(c => c.id));
+  loading = input<boolean>(false);
+  skeletonRows = input<number>(5);
+  skeletonRowsArray = computed(() => Array.from({ length: Math.max(1, this.skeletonRows() || 0) }, (_, i) => i));
+  colCount = computed(() => this.columns().length || 1);
+  gridTemplate = computed(() => {
+    const cols = this.columns();
+    if (!cols?.length) return '';
+    const mapWidth = (c: { id: string; type?: 'text' | 'date' | 'actions' }) => {
+      if (c.type === 'actions') return '96px';
+      if (c.type === 'date' || /date|createdat/i.test(c.id)) return '128px';
+      return 'minmax(160px, 1fr)';
+    };
+    return cols.map(mapWidth).join(' ');
+  });
 
   action = output<{ type: string; row: any }>();
 

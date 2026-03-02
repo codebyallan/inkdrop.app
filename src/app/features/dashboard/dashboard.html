@@ -1,36 +1,67 @@
 <div class="h-full flex flex-col p-4 gap-4">
-  <section class="kpi-grid">
-    <mat-card class="kpi-card kpi-card--toners">
-      <mat-card-content>
-        <p class="kpi-label">Toners in Stock</p>
-        <p class="kpi-value">{{ tonersInStock() }}</p>
-      </mat-card-content>
-    </mat-card>
-    <mat-card class="kpi-card kpi-card--low-toners">
-      <mat-card-content>
-        <p class="kpi-label">Low Toners</p>
-        <p class="kpi-value">{{ lowTonersCount() }}</p>
-      </mat-card-content>
-    </mat-card>
-    <mat-card class="kpi-card kpi-card--printers">
-      <mat-card-content>
-        <p class="kpi-label">Active Printers</p>
-        <p class="kpi-value">{{ activePrintersCount() }}</p>
-      </mat-card-content>
-    </mat-card>
-    <mat-card class="kpi-card kpi-card--movements">
-      <mat-card-content>
-        <p class="kpi-label">Movements Today</p>
-        <p class="kpi-value">{{ movementsToday() }}</p>
-      </mat-card-content>
-    </mat-card>
-  </section>
+  @if (loading()) {
+    <section class="kpi-grid">
+      <mat-card class="kpi-card kpi-card--toners">
+        <mat-card-content>
+          <div class="h-4 w-[12ch] rounded bg-[var(--mat-sys-surface-variant)] opacity-60 animate-pulse mb-3"></div>
+          <div class="h-9 w-[8ch] rounded-md bg-[var(--mat-sys-surface-variant)] opacity-60 animate-pulse"></div>
+        </mat-card-content>
+      </mat-card>
+      <mat-card class="kpi-card kpi-card--low-toners">
+        <mat-card-content>
+          <div class="h-4 w-[10ch] rounded bg-[var(--mat-sys-surface-variant)] opacity-60 animate-pulse mb-3"></div>
+          <div class="h-9 w-[6ch] rounded-md bg-[var(--mat-sys-surface-variant)] opacity-60 animate-pulse"></div>
+        </mat-card-content>
+      </mat-card>
+      <mat-card class="kpi-card kpi-card--printers">
+        <mat-card-content>
+          <div class="h-4 w-[12ch] rounded bg-[var(--mat-sys-surface-variant)] opacity-60 animate-pulse mb-3"></div>
+          <div class="h-9 w-[6ch] rounded-md bg-[var(--mat-sys-surface-variant)] opacity-60 animate-pulse"></div>
+        </mat-card-content>
+      </mat-card>
+      <mat-card class="kpi-card kpi-card--movements">
+        <mat-card-content>
+          <div class="h-4 w-[12ch] rounded bg-[var(--mat-sys-surface-variant)] opacity-60 animate-pulse mb-3"></div>
+          <div class="h-9 w-[6ch] rounded-md bg-[var(--mat-sys-surface-variant)] opacity-60 animate-pulse"></div>
+        </mat-card-content>
+      </mat-card>
+    </section>
+  } @else {
+    <section class="kpi-grid">
+      <mat-card class="kpi-card kpi-card--toners">
+        <mat-card-content>
+          <p class="kpi-label">Toners in Stock</p>
+          <p class="kpi-value">{{ tonersInStock() }}</p>
+        </mat-card-content>
+      </mat-card>
+      <mat-card class="kpi-card kpi-card--low-toners">
+        <mat-card-content>
+          <p class="kpi-label">Low Toners</p>
+          <p class="kpi-value">{{ lowTonersCount() }}</p>
+        </mat-card-content>
+      </mat-card>
+      <mat-card class="kpi-card kpi-card--printers">
+        <mat-card-content>
+          <p class="kpi-label">Active Printers</p>
+          <p class="kpi-value">{{ activePrintersCount() }}</p>
+        </mat-card-content>
+      </mat-card>
+      <mat-card class="kpi-card kpi-card--movements">
+        <mat-card-content>
+          <p class="kpi-label">Movements Today</p>
+          <p class="kpi-value">{{ movementsToday() }}</p>
+        </mat-card-content>
+      </mat-card>
+    </section>
+  }
 
   <section class="recent-movements">
     <h2 class="recent-movements__title">Recent Movements</h2>
     <app-ui-table
       [data]="recentMovements()"
       [columns]="recentMovementsColumns"
+      [loading]="loading()"
+      [skeletonRows]="3"
     />
   </section>
 
