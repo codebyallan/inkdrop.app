@@ -1,5 +1,5 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { map, lastValueFrom } from 'rxjs';
 import { MatButtonModule } from '@angular/material/button';
@@ -50,6 +50,7 @@ export class DefaultLayout implements OnInit {
 
   /** Current authenticated user derived from AuthService */
   protected user = this.authService.currentUser;
+  protected isAdmin = this.authService.isAdmin;
   
   /** Loading state for the logout process */
   protected isLoggingOut = signal(false);
@@ -74,11 +75,19 @@ export class DefaultLayout implements OnInit {
     }
   }
 
-  protected readonly NavItems: Array<NavItem> = [
-    { route: '/dashboard', icon: 'dashboard', name: 'Dashboard' },
-    { route: '/toners', icon: 'inventory_2', name: 'Toners' },
-    { route: '/printers', icon: 'print', name: 'Printers' },
-    { route: '/locations', icon: 'location_on', name: 'Locations' },
-    { route: '/movements', icon: 'swap_horiz', name: 'Movements' }
-  ];
+  protected readonly NavItems = computed(() => {
+    const items: Array<NavItem> = [
+      { route: '/dashboard', icon: 'dashboard', name: 'Dashboard' },
+      { route: '/toners', icon: 'inventory_2', name: 'Toners' },
+      { route: '/printers', icon: 'print', name: 'Printers' },
+      { route: '/locations', icon: 'location_on', name: 'Locations' },
+      { route: '/movements', icon: 'swap_horiz', name: 'Movements' }
+    ];
+
+    if (this.isAdmin()) {
+      items.push({ route: '/users', icon: 'manage_accounts', name: 'Users' });
+    }
+
+    return items;
+  });
 }

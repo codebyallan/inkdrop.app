@@ -1,0 +1,15 @@
+<app-page-layout [title]="'Users'">
+  @if (authService.isAdmin()) {
+    <button page-actions mat-flat-button (click)="openDialog()">
+      <mat-icon>add</mat-icon>
+      New User
+    </button>
+  }
+  <app-ui-table 
+    [data]="users()" 
+    [columns]="columnsConfig" 
+    [loading]="loading()" 
+    [showToggle]="true"
+    (action)="onTableAction($event)">
+  </app-ui-table>
+</app-page-layout>

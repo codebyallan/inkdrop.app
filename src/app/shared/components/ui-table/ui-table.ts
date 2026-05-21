@@ -16,7 +16,8 @@ export class UiTableComponent {
   private authService = inject(AuthService);
 
   data = input<any[]>([]);
-  columns = input<Array<{ id: string; header?: string; field?: string; type?: 'text' | 'date' | 'actions'; dateFormat?: string }>>([]);
+  columns = input<Array<{ id: string; header?: string; field?: string; type?: 'text' | 'date' | 'actions' | 'badge'; dateFormat?: string; transform?: (value: any, row: any) => string | number }>>([]);
+  showToggle = input<boolean>(false);
   columnIds = computed(() => this.columns().map(c => c.id));
   loading = input<boolean>(false);
   skeletonRows = input<number>(5);
@@ -25,9 +26,9 @@ export class UiTableComponent {
   gridTemplate = computed(() => {
     const cols = this.columns();
     if (!cols?.length) return '';
-    const mapWidth = (c: { id: string; type?: 'text' | 'date' | 'actions' }) => {
+    const mapWidth = (c: { id: string; type?: 'text' | 'date' | 'actions' | 'badge' }) => {
       if (c.type === 'actions') return '96px';
-      if (c.type === 'date' || /date|createdat/i.test(c.id)) return '128px';
+      if (c.type === 'date' || c.type === 'badge' || /date|createdat/i.test(c.id)) return '128px';
       return 'minmax(160px, 1fr)';
     };
     return cols.map(mapWidth).join(' ');

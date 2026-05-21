@@ -10,7 +10,7 @@
             }
         </div>
         <mat-divider />
-        <app-navbar [items]="NavItems" (itemClicked)="isMobile() && drawer.close()" />
+        <app-navbar [items]="NavItems()" (itemClicked)="isMobile() && drawer.close()" />
     </mat-drawer>
     <mat-drawer-content>
         <mat-toolbar class="flex items-center justify-between w-full">

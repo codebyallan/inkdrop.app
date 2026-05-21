@@ -6,6 +6,7 @@ import { Printer } from './features/printer/printer';
 import { Toner } from './features/toner/toner';
 import { Movement } from './features/movement/movement';
 import { authGuard, guestGuard } from './core/guards/auth.guard';
+import { adminGuard } from './core/guards/admin.guard';
 
 export const routes: Routes = [
     {
@@ -23,7 +24,12 @@ export const routes: Routes = [
             { path: 'locations', component: Location },
             { path: 'printers', component: Printer },
             { path: 'toners', component: Toner },
-            { path: 'movements', component: Movement }
+            { path: 'movements', component: Movement },
+            { 
+              path: 'users', 
+              loadComponent: () => import('./features/user/user').then(m => m.User), 
+              canActivate: [adminGuard] 
+            }
         ]
     },
     { path: '**', redirectTo: '' }
