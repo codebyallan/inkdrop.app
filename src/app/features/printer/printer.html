@@ -1,7 +1,9 @@
 <app-page-layout [title]="'Printers'">
-  <button page-actions mat-flat-button (click)="openDialog()">
-    <mat-icon>add</mat-icon>
-    New
-  </button>
+  @if (authService.isAdmin()) {
+    <button page-actions mat-flat-button (click)="openDialog()">
+      <mat-icon>add</mat-icon>
+      New
+    </button>
+  }
   <app-ui-table [data]="printers()" [columns]="columnsConfig" [loading]="loading()" (action)="onTableAction($event)"></app-ui-table>
 </app-page-layout>

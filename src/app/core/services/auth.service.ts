@@ -30,6 +30,11 @@ export class AuthService {
    */
   public readonly isAuthenticated = computed(() => !!this.currentUserSignal());
 
+  /**
+   * Derived signal to check if the current user has Admin privileges.
+   */
+  public readonly isAdmin = computed(() => this.currentUserSignal()?.role === 'Admin');
+
   constructor(private http: HttpClient) {}
 
   /**

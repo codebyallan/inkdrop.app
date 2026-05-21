@@ -9,6 +9,7 @@ import { IToner } from './types';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ConfirmDialog } from '../../shared/components/confirm-dialog/confirm-dialog';
 import { TonerForm } from './components/toner-form/toner-form';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-toner',
@@ -20,6 +21,7 @@ export class Toner implements OnInit {
   private tonersService = inject(TonersService);
   private _snackBar = inject(MatSnackBar);
   private dialog = inject(MatDialog);
+  public authService = inject(AuthService);
 
   toners = signal<IToner[]>([]);
   loading = signal<boolean>(true);

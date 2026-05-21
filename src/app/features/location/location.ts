@@ -11,6 +11,7 @@ import { ConfirmDialog } from '../../shared/components/confirm-dialog/confirm-di
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { PageLayoutComponent } from '../../shared/components/page-layout/page-layout';
 import { UiTableComponent } from '../../shared/components/ui-table/ui-table';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-location',
@@ -22,6 +23,7 @@ export class Location implements OnInit {
   private locationsService = inject(LocationsService);
   private dialog = inject(MatDialog);
   private _snackBar = inject(MatSnackBar);
+  public authService = inject(AuthService);
 
   locations = signal<ILocation[]>([]);
   loading = signal<boolean>(true);

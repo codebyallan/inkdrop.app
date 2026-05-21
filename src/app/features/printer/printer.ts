@@ -12,6 +12,7 @@ import { ILocation } from '../location/types';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { PrinterForm } from './components/printer-form/printer-form';
 import { ConfirmDialog } from '../../shared/components/confirm-dialog/confirm-dialog';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-printer',
@@ -24,6 +25,7 @@ export class Printer implements OnInit {
   private _snackBar = inject(MatSnackBar);
   private locationsService = inject(LocationsService);
   private dialog = inject(MatDialog);
+  public authService = inject(AuthService);
 
   printers = signal<IPrinter[]>([]);
   private locationsMap = new Map<string, string>();
