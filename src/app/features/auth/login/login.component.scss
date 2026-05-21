@@ -1,0 +1,12 @@
+:host {
+  display: block;
+}
+
+.login-spinner {
+  --mdc-circular-progress-active-indicator-color: white !important;
+  color: white !important;
+}
+
+::ng-deep .login-spinner circle {
+  stroke: white !important;
+}
