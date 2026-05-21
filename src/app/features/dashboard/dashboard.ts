@@ -7,11 +7,13 @@ import { Router } from '@angular/router';
 import { TonersService } from '../toner/services/toner-service';
 import { PrintersService } from '../printer/services/printer-service';
 import { MovementsService } from '../movement/services/movement-service';
+import { LocationsService } from '../location/services/location-service';
 import { MovementForm } from '../movement/components/movement-form/movement-form';
 import { UiTableComponent } from '../../shared/components/ui-table/ui-table';
 import { IToner } from '../toner/types';
 import { IPrinter } from '../printer/types';
 import { IMovement } from '../movement/types';
+import { ILocation } from '../location/types';
 
 @Component({
   selector: 'app-dashboard',
@@ -23,6 +25,7 @@ export class Dashboard implements OnInit {
   private tonersService = inject(TonersService);
   private printersService = inject(PrintersService);
   private movementsService = inject(MovementsService);
+  private locationsService = inject(LocationsService);
   private _snackBar = inject(MatSnackBar);
   private dialog = inject(MatDialog);
   private router = inject(Router);
@@ -30,6 +33,7 @@ export class Dashboard implements OnInit {
   toners = signal<IToner[]>([]);
   lowToners = signal<IToner[]>([]);
   printers = signal<IPrinter[]>([]);
+  locations = signal<ILocation[]>([]);
   movements = signal<IMovement[]>([]);
   private pending = signal<number>(0);
   loading = computed(() => this.pending() > 0);
@@ -49,12 +53,22 @@ export class Dashboard implements OnInit {
   movementsWithNames = computed(() => {
     const list = this.movements();
     const tonersMap = new Map(this.toners().map((t) => [t.id, `${t.model} - ${t.color}`]));
-    const printersMap = new Map(this.printers().map((p) => [p.id, p.name]));
-    return list.map((m) => ({
-      ...m,
-      tonerModel: tonersMap.get(m.tonerId) ?? m.tonerModel ?? '',
-      printerName: m.printerId ? (printersMap.get(m.printerId) ?? m.printerName ?? '') : '',
-    }));
+    const printersMap = new Map(this.printers().map((p) => [p.id, { name: p.name, locationId: p.locationId }]));
+    const locationsMap = new Map(this.locations().map((l) => [l.id, l.name]));
+
+    return list.map((m) => {
+      const printer = m.printerId ? printersMap.get(m.printerId) : null;
+      const locationName = printer ? locationsMap.get(printer.locationId) : '';
+      const printerDisplay = printer 
+        ? `${printer.name} - ${locationName || 'No Location'}` 
+        : (m.printerName ?? '');
+
+      return {
+        ...m,
+        tonerModel: m.tonerId ? (tonersMap.get(m.tonerId) ?? m.tonerModel ?? '') : (m.tonerModel ?? ''),
+        printerName: printerDisplay,
+      };
+    });
   });
 
   recentMovements = computed(() => {
@@ -111,6 +125,18 @@ export class Dashboard implements OnInit {
       error: () => {
         done();
         this.showAlert('Error fetching printers', 'Close');
+      },
+    });
+
+    start();
+    this.locationsService.getLocations().subscribe({
+      next: (data) => {
+        this.locations.set(data);
+        done();
+      },
+      error: () => {
+        done();
+        this.showAlert('Error fetching locations', 'Close');
       },
     });
 
