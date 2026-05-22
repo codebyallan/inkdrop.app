@@ -23,7 +23,7 @@ export class Toner implements OnInit {
   private dialog = inject(MatDialog);
   public authService = inject(AuthService);
 
-  toners = signal<IToner[]>([]);
+  toners = this.tonersService.toners;
   loading = signal<boolean>(true);
   columnsConfig = [
     { id: 'model', header: 'Model', field: 'model', type: 'text' as const },
@@ -37,8 +37,7 @@ export class Toner implements OnInit {
   ngOnInit() {
     this.loading.set(true);
     this.tonersService.getToners().subscribe({
-      next: (data) => {
-        this.toners.set(data);
+      next: () => {
         this.loading.set(false);
       },
       error: () => {
@@ -64,10 +63,7 @@ export class Toner implements OnInit {
         confirmRef.afterClosed().subscribe(confirmed => {
           if (confirmed) {
             this.tonersService.updateToner(row.id, values).subscribe({
-              next: (updated) => {
-                this.toners.update(prev => 
-                  prev.map(t => t.id === updated.id ? updated : t)
-                );
+              next: () => {
                 this.showAlert('Toner updated successfully', 'Close');
               },
               error: () => this.showAlert('Error updating toner', 'Close')
@@ -84,7 +80,6 @@ export class Toner implements OnInit {
       if (confirmed) {
         this.tonersService.deleteToner(id).subscribe({
           next: () => {
-            this.toners.update(prev => prev.filter(t => t.id !== id));
             this.showAlert('Toner deleted successfully', 'Close');
           },
           error: () => this.showAlert('Error deleting toner', 'Close')
@@ -98,8 +93,7 @@ export class Toner implements OnInit {
     ref.afterClosed().subscribe(result => {
       if (result) {
         this.tonersService.createToner(result).subscribe({
-          next: (created) => {
-            this.toners.update(prev => [...prev, created]);
+          next: () => {
             this.showAlert('Toner created successfully', 'Close');
           },
           error: (err) => {

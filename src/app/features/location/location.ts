@@ -25,7 +25,7 @@ export class Location implements OnInit {
   private _snackBar = inject(MatSnackBar);
   public authService = inject(AuthService);
 
-  locations = signal<ILocation[]>([]);
+  locations = this.locationsService.locations;
   loading = signal<boolean>(true);
   columnsConfig = [
     { id: 'name', header: 'Name', field: 'name', type: 'text' as const },
@@ -37,8 +37,7 @@ export class Location implements OnInit {
   ngOnInit() {
     this.loading.set(true);
     this.locationsService.getLocations().subscribe({
-      next: (data) => {
-        this.locations.set(data);
+      next: () => {
         this.loading.set(false);
       },
       error: (err) => {
@@ -53,8 +52,7 @@ export class Location implements OnInit {
     ref.afterClosed().subscribe(result => {
       if (result) {
         this.locationsService.createLocation(result).subscribe({
-          next: (created) => {
-            this.locations.update(prev => [...prev, created]);
+          next: () => {
             this.showAlert('Location created successfully', 'Close');
           },
           error: (err) => {
@@ -85,10 +83,7 @@ export class Location implements OnInit {
         confirmRef.afterClosed().subscribe(confirmed => {
           if (confirmed) {
             this.locationsService.updateLocation(row.id, values).subscribe({
-              next: (updated) => {
-                this.locations.update(prev => 
-                  prev.map(l => l.id === updated.id ? updated : l)
-                );
+              next: () => {
                 this.showAlert('Location updated successfully', 'Close');
               }
             });
@@ -103,7 +98,6 @@ export class Location implements OnInit {
       if (confirmed) {
         this.locationsService.deleteLocation(id).subscribe({
           next: () => {
-            this.locations.update(prev => prev.filter(l => l.id !== id));
             this.showAlert('Location deleted successfully', 'Close');
           }
         });

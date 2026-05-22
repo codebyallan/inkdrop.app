@@ -30,8 +30,8 @@ export class Movement implements OnInit {
   private _snackBar = inject(MatSnackBar);
   private dialog = inject(MatDialog);
 
-  movements = signal<IMovement[]>([]);
-  locations = signal<ILocation[]>([]);
+  movements = this.movementsService.movements;
+  locations = this.locationsService.locations;
   private tonersMap = new Map<string, string>();
   private printersMap = new Map<string, { name: string, locationId: string }>();
   loading = signal<boolean>(true);
@@ -76,11 +76,9 @@ export class Movement implements OnInit {
       locations: this.locationsService.getLocations(),
       movements: this.movementsService.getMovements()
     }).subscribe({
-      next: ({ toners, printers, locations, movements }) => {
+      next: ({ toners, printers }) => {
         this.tonersMap = new Map(toners.map(t => [t.id, `${t.model} - ${t.color}`]));
         this.printersMap = new Map(printers.map(p => [p.id, { name: p.name, locationId: p.locationId }]));
-        this.locations.set(locations);
-        this.movements.set(movements);
         this.loading.set(false);
       },
       error: (err) => {
@@ -98,8 +96,7 @@ export class Movement implements OnInit {
     ref.afterClosed().subscribe(result => {
       if (result) {
         this.movementsService.createMovement(result).subscribe({
-          next: (created) => {
-            this.movements.update(prev => [...prev, created]);
+          next: () => {
             this.showAlert('Movement created successfully', 'Close');
           },
           error: (err) => {

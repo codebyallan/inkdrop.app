@@ -28,7 +28,7 @@ export class Printer implements OnInit {
   private dialog = inject(MatDialog);
   public authService = inject(AuthService);
 
-  printers = signal<IPrinter[]>([]);
+  printers = this.printersService.printers;
   private locationsMap = new Map<string, string>();
   loading = signal<boolean>(true);
   columnsConfig = [
@@ -48,9 +48,8 @@ export class Printer implements OnInit {
       locations: this.locationsService.getLocations(),
       printers: this.printersService.getPrinters()
     }).subscribe({
-      next: ({ locations, printers }) => {
+      next: ({ locations }) => {
         this.locationsMap = new Map(locations.map(l => [l.id, l.name]));
-        this.printers.set(printers);
         this.applyLocationNames();
         this.loading.set(false);
       },
@@ -86,11 +85,8 @@ export class Printer implements OnInit {
         confirmRef.afterClosed().subscribe(confirmed => {
           if (confirmed) {
             this.printersService.updatePrinter(row.id, values).subscribe({
-              next: (updated) => {
-                this.printers.update(prev => 
-                  prev.map(p => p.id === updated.id ? updated : p)
-                );
-                this.applyLocationNames();
+              next: () => {
+                this.printersService.applyLocationNames(this.locationsMap);
                 this.showAlert('Printer updated successfully', 'Close');
               },
               error: () => this.showAlert('Error updating printer', 'Close')
@@ -106,7 +102,6 @@ export class Printer implements OnInit {
       if (confirmed) {
         this.printersService.deletePrinter(id).subscribe({
           next: () => {
-            this.printers.update(prev => prev.filter(p => p.id !== id));
             this.showAlert('Printer deleted successfully', 'Close');
           },
           error: () => this.showAlert('Error deleting printer', 'Close')
@@ -120,9 +115,8 @@ export class Printer implements OnInit {
     ref.afterClosed().subscribe(result => {
       if (result) {
         this.printersService.createPrinter(result).subscribe({
-          next: (created) => {
-            this.printers.update(prev => [...prev, created]);
-            this.applyLocationNames();
+          next: () => {
+            this.printersService.applyLocationNames(this.locationsMap);
             this.showAlert('Printer created successfully', 'Close');
           },
           error: (err) => {
@@ -138,8 +132,9 @@ export class Printer implements OnInit {
   }
 
   private applyLocationNames() {
-    const map = this.locationsMap;
-    this.printers.update(list => list.map(p => ({ ...p, locationName: map.get(p.locationId) || p.locationName || '' })));
+    // This method is now deprecated and handled by the service.
+    // Kept only for compatibility if called elsewhere, but should call service.
+    this.printersService.applyLocationNames(this.locationsMap);
   }
 
   showAlert(msg: string, action: string) {

@@ -24,7 +24,7 @@ export class User implements OnInit {
   private dialog = inject(MatDialog);
   public authService = inject(AuthService);
 
-  users = signal<IUser[]>([]);
+  users = this.userService.users;
   loading = signal<boolean>(true);
 
   columnsConfig = [
@@ -55,14 +55,9 @@ export class User implements OnInit {
   ];
 
   ngOnInit() {
-    this.loadUsers();
-  }
-
-  loadUsers() {
     this.loading.set(true);
     this.userService.getUsers().subscribe({
-      next: (data) => {
-        this.users.set(data);
+      next: () => {
         this.loading.set(false);
       },
       error: () => {
@@ -106,10 +101,7 @@ export class User implements OnInit {
         confirmRef.afterClosed().subscribe(confirmed => {
           if (confirmed) {
             this.userService.updateUser(row.id, values).subscribe({
-              next: (updated) => {
-                this.users.update(prev =>
-                  prev.map(u => u.id === updated.id ? updated : u)
-                );
+              next: () => {
                 this.showAlert('User updated successfully', 'Close');
               },
               error: () => this.showAlert('Error updating user', 'Close')
@@ -135,7 +127,6 @@ export class User implements OnInit {
       if (confirmed) {
         this.userService.deleteUser(id).subscribe({
           next: () => {
-            this.users.update(prev => prev.filter(u => u.id !== id));
             this.showAlert('User deleted successfully', 'Close');
           },
           error: () => this.showAlert('Error deleting user', 'Close')
@@ -163,9 +154,6 @@ export class User implements OnInit {
         const serviceCall = row.isActive ? this.userService.deactivateUser(row.id) : this.userService.activateUser(row.id);
         serviceCall.subscribe({
           next: () => {
-            this.users.update(prev =>
-              prev.map(u => u.id === row.id ? { ...u, isActive: !row.isActive } : u)
-            );
             this.showAlert(`User ${action === 'activate' ? 'activated' : 'deactivated'} successfully`, 'Close');
           },
           error: () => this.showAlert(`Error ${action}ing user`, 'Close')
@@ -179,8 +167,7 @@ export class User implements OnInit {
     ref.afterClosed().subscribe(result => {
       if (result) {
         this.userService.createUser(result).subscribe({
-          next: (created) => {
-            this.users.update(prev => [...prev, created]);
+          next: () => {
             this.showAlert('User created successfully', 'Close');
           },
           error: (err) => {
