@@ -93,6 +93,10 @@ export class AuthService {
     localStorage.removeItem(this.USER_CACHE_KEY);
   }
 
+  public clearUserPublic(): void {
+    this.clearUser();
+  }
+
   private loadUserFromCache(): User | null {
     const cached = localStorage.getItem(this.USER_CACHE_KEY);
     if (!cached) return null;
