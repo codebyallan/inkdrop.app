@@ -87,12 +87,17 @@ export class User implements OnInit {
       width: '500px', 
       data: { 
         mode: 'edit', 
-        initial: { username: row.username, email: row.email, role: row.role } 
+        initial: { id: row.id, username: row.username, email: row.email, role: row.role } 
       } 
     });
     
     ref.afterClosed().subscribe(values => {
       if (values) {
+        if (row.id === this.authService.currentUser()?.id && values.role !== row.role) {
+          this.showAlert('You cannot change your own role', 'Close');
+          return;
+        }
+
         const confirmRef = this.dialog.open(ConfirmDialog, { 
           width: '300px', 
           data: { title: 'Confirm', message: 'Save changes?', confirmLabel: 'Save', cancelLabel: 'Cancel' } 
@@ -114,6 +119,11 @@ export class User implements OnInit {
   }
 
   deleteUser(id: string) {
+    if (id === this.authService.currentUser()?.id) {
+      this.showAlert('You cannot delete your own account', 'Close');
+      return;
+    }
+
     const ref = this.dialog.open(ConfirmDialog, { 
       width: '300px', 
       data: { title: 'Confirm Delete', message: 'Are you sure you want to delete this user?', confirmLabel: 'Delete', cancelLabel: 'Cancel' } 
@@ -133,6 +143,11 @@ export class User implements OnInit {
   }
 
   toggleUserStatus(row: IUser) {
+    if (row.id === this.authService.currentUser()?.id && row.isActive) {
+      this.showAlert('You cannot deactivate your own account', 'Close');
+      return;
+    }
+
     const action = row.isActive ? 'deactivate' : 'activate';
     const message = row.isActive ? 'Deactivate user?' : 'Activate user?';
     

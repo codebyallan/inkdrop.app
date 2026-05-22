@@ -14,6 +14,7 @@ import { AuthService } from '../../../core/services/auth.service';
 })
 export class UiTableComponent {
   private authService = inject(AuthService);
+  protected currentUserId = computed(() => this.authService.currentUser()?.id);
 
   data = input<any[]>([]);
   columns = input<Array<{ id: string; header?: string; field?: string; type?: 'text' | 'date' | 'actions' | 'badge'; dateFormat?: string; transform?: (value: any, row: any) => string | number }>>([]);

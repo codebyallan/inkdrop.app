@@ -40,14 +40,16 @@
                 <button mat-icon-button (click)="emitAction('edit', row)" autoFocus="false" (mousedown)="$event.preventDefault()">
                   <mat-icon>edit</mat-icon>
                 </button>
-                @if (showToggle()) {
+                @if (showToggle() && !(row.id === currentUserId() && row.isActive)) {
                   <button mat-icon-button (click)="emitAction('toggle', row)" autoFocus="false" (mousedown)="$event.preventDefault()">
                     <mat-icon>{{ row.isActive ? 'block' : 'check_circle' }}</mat-icon>
                   </button>
                 }
-                <button mat-icon-button class="delete-btn" (click)="emitAction('delete', row)" autoFocus="false" (mousedown)="$event.preventDefault()">
-                  <mat-icon>delete</mat-icon>
-                </button>
+                @if (row.id !== currentUserId()) {
+                  <button mat-icon-button class="delete-btn" (click)="emitAction('delete', row)" autoFocus="false" (mousedown)="$event.preventDefault()">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                }
               }
             </ng-container>
             <ng-container *ngSwitchDefault>

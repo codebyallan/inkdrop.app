@@ -7,6 +7,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
 import { ValidationMessageComponent } from '../../../../shared/components/validation-message/validation-message';
 import { INVERSE_ROLE_MAP } from '../../types';
+import { AuthService } from '../../../../core/services/auth.service';
 
 @Component({
   selector: 'app-user-form',
@@ -25,12 +26,18 @@ import { INVERSE_ROLE_MAP } from '../../types';
 })
 export class UserForm implements OnInit {
   private dialogRef = inject(MatDialogRef<UserForm>);
+  private authService = inject(AuthService);
   public data: { mode?: 'create' | 'edit'; initial?: any } = {};
   
   protected readonly ROLES = Object.entries(INVERSE_ROLE_MAP).map(([label, value]) => ({ label, value }));
 
   constructor(@Optional() @Inject(MAT_DIALOG_DATA) data: { mode?: 'create' | 'edit'; initial?: any } | null) {
     if (data) this.data = data;
+  }
+
+  get isEditingSelf() {
+    const initial = this.data.initial as any;
+    return this.data.mode === 'edit' && initial?.id === this.authService.currentUser()?.id;
   }
 
   form = new FormGroup({

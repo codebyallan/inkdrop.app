@@ -21,15 +21,17 @@
       </mat-form-field>
     }
 
-    <mat-form-field>
-      <mat-label>Role</mat-label>
-      <mat-select formControlName="role">
-        @for (role of ROLES; track role.value) {
-          <mat-option [value]="role.value">{{ role.label }}</mat-option>
-        }
-      </mat-select>
-      <app-validation-message [control]="form.controls.role" [label]="'Role'"></app-validation-message>
-    </mat-form-field>
+    @if (!isEditingSelf) {
+      <mat-form-field>
+        <mat-label>Role</mat-label>
+        <mat-select formControlName="role">
+          @for (role of ROLES; track role.value) {
+            <mat-option [value]="role.value">{{ role.label }}</mat-option>
+          }
+        </mat-select>
+        <app-validation-message [control]="form.controls.role" [label]="'Role'"></app-validation-message>
+      </mat-form-field>
+    }
   </form>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
