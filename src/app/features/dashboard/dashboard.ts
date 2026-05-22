@@ -1,4 +1,5 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
+import { forkJoin } from 'rxjs';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
@@ -30,13 +31,12 @@ export class Dashboard implements OnInit {
   private dialog = inject(MatDialog);
   private router = inject(Router);
 
-  toners = signal<IToner[]>([]);
-  lowToners = signal<IToner[]>([]);
-  printers = signal<IPrinter[]>([]);
-  locations = signal<ILocation[]>([]);
-  movements = signal<IMovement[]>([]);
-  private pending = signal<number>(0);
-  loading = computed(() => this.pending() > 0);
+  toners = this.tonersService.toners;
+  lowToners = this.tonersService.lowToners;
+  printers = this.printersService.printers;
+  locations = this.locationsService.locations;
+  movements = this.movementsService.movements;
+  loading = signal<boolean>(false);
 
   tonersInStock = computed(() =>
     this.toners().reduce((sum, t) => sum + (t.quantity ?? 0), 0)
@@ -89,66 +89,21 @@ export class Dashboard implements OnInit {
   private readonly lowStockThreshold = 3;
 
   ngOnInit() {
-    const start = () => this.pending.update(n => n + 1);
-    const done = () => this.pending.update(n => Math.max(0, n - 1));
+    this.loading.set(true);
 
-    start();
-    this.tonersService.getToners().subscribe({
-      next: (data) => {
-        this.toners.set(data);
-        done();
+    forkJoin({
+      toners: this.tonersService.getToners(),
+      lowToners: this.tonersService.getLowStock(this.lowStockThreshold),
+      printers: this.printersService.getPrinters(),
+      locations: this.locationsService.getLocations(),
+      movements: this.movementsService.getMovements(),
+    }).subscribe({
+      next: () => {
+        this.loading.set(false);
       },
       error: () => {
-        done();
-        this.showAlert('Error fetching toners', 'Close');
-      },
-    });
-
-    start();
-    this.tonersService.getLowStock(this.lowStockThreshold).subscribe({
-      next: (data) => {
-        this.lowToners.set(data);
-        done();
-      },
-      error: () => {
-        done();
-        this.showAlert('Error fetching low stock toners', 'Close');
-      },
-    });
-
-    start();
-    this.printersService.getPrinters().subscribe({
-      next: (data) => {
-        this.printers.set(data);
-        done();
-      },
-      error: () => {
-        done();
-        this.showAlert('Error fetching printers', 'Close');
-      },
-    });
-
-    start();
-    this.locationsService.getLocations().subscribe({
-      next: (data) => {
-        this.locations.set(data);
-        done();
-      },
-      error: () => {
-        done();
-        this.showAlert('Error fetching locations', 'Close');
-      },
-    });
-
-    start();
-    this.movementsService.getMovements().subscribe({
-      next: (data) => {
-        this.movements.set(data);
-        done();
-      },
-      error: () => {
-        done();
-        this.showAlert('Error fetching movements', 'Close');
+        this.loading.set(false);
+        this.showAlert('Error loading dashboard data', 'Close');
       },
     });
   }
@@ -167,14 +122,7 @@ export class Dashboard implements OnInit {
       if (result) {
         this.movementsService.createMovement(result).subscribe({
           next: () => {
-            this.movementsService.getMovements().subscribe({
-              next: (data) => {
-                this.movements.set(data);
-                this.showAlert('Movement created successfully', 'Close');
-              },
-              error: () =>
-                this.showAlert('Error refreshing movements list', 'Close'),
-            });
+            this.showAlert('Movement created successfully', 'Close');
           },
           error: (err) => {
             const errorMessage =
