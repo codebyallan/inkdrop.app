@@ -1,0 +1,219 @@
+{
+  "nav": {
+    "dashboard": "Dashboard",
+    "toners": "Toners",
+    "printers": "Impressoras",
+    "locations": "Locais",
+    "movements": "Movimentações",
+    "users": "Usuários"
+  },
+  "login": {
+    "title": "Bem-vindo de volta!",
+    "subtitle": "Gerencie sua infraestrutura de impressão com facilidade",
+    "username_label": "Usuário",
+    "username_placeholder": "Digite seu usuário",
+    "password_label": "Senha",
+    "password_placeholder": "Digite sua senha",
+    "submit": "Entrar",
+    "alerts": {
+      "failed": "Falha no login. Verifique suas credenciais."
+    }
+  },
+  "layout": {
+    "greeting": "Olá, {{ name }}"
+  },
+  "dashboard": {
+    "kpi": {
+      "toners_in_stock": "Toners em Estoque",
+      "low_toners": "Toners Baixos",
+      "active_printers": "Impressoras Ativas",
+      "movements_today": "Movimentações Hoje"
+    },
+    "recent_movements": "Movimentações Recentes",
+    "btn_new_movement": "Nova Movimentação",
+    "btn_view_history": "Ver Histórico Completo",
+    "alerts": {
+      "fetch_error": "Erro ao carregar dados do dashboard"
+    }
+  },
+  "toners": {
+    "page_title": "Toners",
+    "form_title_new": "Novo Toner",
+    "form_title_edit": "Editar Toner",
+    "columns": {
+      "model": "Modelo",
+      "manufacturer": "Fabricante",
+      "color": "Cor",
+      "quantity": "Quantidade",
+      "created_at": "Criado em"
+    },
+    "fields": {
+      "model": "Modelo",
+      "manufacturer": "Fabricante",
+      "color": "Cor"
+    },
+    "alerts": {
+      "fetch_error": "Erro ao buscar toners",
+      "created": "Toner criado com sucesso",
+      "create_error": "Erro ao criar toner",
+      "updated": "Toner atualizado com sucesso",
+      "update_error": "Erro ao atualizar toner",
+      "deleted": "Toner excluído com sucesso",
+      "delete_error": "Erro ao excluir toner"
+    }
+  },
+  "printers": {
+    "page_title": "Impressoras",
+    "form_title_new": "Nova Impressora",
+    "form_title_edit": "Editar Impressora",
+    "columns": {
+      "name": "Nome",
+      "model": "Modelo",
+      "manufacturer": "Fabricante",
+      "ip_address": "Endereço IP",
+      "location": "Local",
+      "created_at": "Criado em"
+    },
+    "fields": {
+      "name": "Nome",
+      "model": "Modelo",
+      "manufacturer": "Fabricante",
+      "ip_address": "Endereço IP",
+      "location": "Local"
+    },
+    "alerts": {
+      "fetch_error": "Erro ao carregar dados das impressoras",
+      "created": "Impressora criada com sucesso",
+      "create_error": "Erro ao criar impressora",
+      "updated": "Impressora atualizada com sucesso",
+      "update_error": "Erro ao atualizar impressora",
+      "deleted": "Impressora excluída com sucesso",
+      "delete_error": "Erro ao excluir impressora"
+    }
+  },
+  "locations": {
+    "page_title": "Locais",
+    "form_title_new": "Novo Local",
+    "form_title_edit": "Editar Local",
+    "columns": {
+      "name": "Nome",
+      "description": "Descrição",
+      "created_at": "Criado em"
+    },
+    "fields": {
+      "name": "Nome",
+      "description": "Descrição"
+    },
+    "alerts": {
+      "fetch_error": "Erro ao buscar locais",
+      "created": "Local criado com sucesso",
+      "create_error": "Erro ao criar local",
+      "updated": "Local atualizado com sucesso",
+      "update_error": "Erro ao atualizar local",
+      "deleted": "Local excluído com sucesso",
+      "delete_error": "Erro ao excluir local"
+    }
+  },
+  "movements": {
+    "page_title": "Movimentações",
+    "form_title": "Nova Movimentação",
+    "type_in": "Entrada",
+    "type_out": "Saída",
+    "columns": {
+      "toner": "Toner",
+      "printer": "Impressora",
+      "quantity": "Quantidade",
+      "type": "Tipo",
+      "description": "Descrição",
+      "created_at": "Criado em"
+    },
+    "fields": {
+      "toner": "Toner",
+      "printer": "Impressora",
+      "quantity": "Quantidade",
+      "type": "Tipo",
+      "description": "Descrição",
+      "description_optional": "Descrição (Opcional)"
+    },
+    "alerts": {
+      "fetch_error": "Erro ao carregar dados das movimentações",
+      "created": "Movimentação criada com sucesso",
+      "create_error": "Erro ao criar movimentação"
+    }
+  },
+  "users": {
+    "page_title": "Usuários",
+    "btn_new": "Novo Usuário",
+    "form_title_new": "Novo Usuário",
+    "form_title_edit": "Editar Usuário",
+    "role_admin": "Administrador",
+    "role_technician": "Técnico",
+    "role_unknown": "Desconhecido",
+    "status_active": "Ativo",
+    "status_inactive": "Inativo",
+    "columns": {
+      "username": "Usuário",
+      "email": "E-mail",
+      "role": "Perfil",
+      "status": "Status",
+      "created_at": "Criado em"
+    },
+    "fields": {
+      "username": "Usuário",
+      "email": "E-mail",
+      "password": "Senha",
+      "role": "Perfil"
+    },
+    "alerts": {
+      "fetch_error": "Erro ao buscar usuários",
+      "cannot_change_own_role": "Você não pode alterar seu próprio perfil",
+      "updated": "Usuário atualizado com sucesso",
+      "update_error": "Erro ao atualizar usuário",
+      "cannot_delete_self": "Você não pode excluir sua própria conta",
+      "deleted": "Usuário excluído com sucesso",
+      "delete_error": "Erro ao excluir usuário",
+      "cannot_deactivate_self": "Você não pode desativar sua própria conta",
+      "activated": "Usuário ativado com sucesso",
+      "deactivated": "Usuário desativado com sucesso",
+      "activate_error": "Erro ao ativar usuário",
+      "deactivate_error": "Erro ao desativar usuário",
+      "created": "Usuário criado com sucesso",
+      "create_error": "Erro ao criar usuário"
+    }
+  },
+  "shared": {
+    "no_location": "Sem Local",
+    "alerts": {
+      "logged_in": "Login realizado com sucesso!"
+    },
+    "columns": {
+      "date": "Data"
+    },
+    "actions": {
+      "new": "Novo",
+      "save": "Salvar",
+      "cancel": "Cancelar",
+      "close": "Fechar",
+      "delete": "Excluir",
+      "confirm": "Confirmar"
+    },
+    "confirm_dialog": {
+      "default_title": "Confirmar",
+      "default_message": "Tem certeza que deseja excluir este item?",
+      "save_changes_title": "Confirmar",
+      "save_changes_message": "Salvar alterações?",
+      "delete_user_title": "Confirmar Exclusão",
+      "delete_user_message": "Tem certeza que deseja excluir este usuário?",
+      "status_change_title": "Confirmar Alteração de Status",
+      "deactivate_message": "Desativar usuário?",
+      "activate_message": "Ativar usuário?"
+    },
+    "validation": {
+      "required": "{{ label }} é obrigatório",
+      "min_length": "{{ label }} deve ter no mínimo {{ min }} caracteres",
+      "max_length": "{{ label }} deve ter no máximo {{ max }} caracteres",
+      "email": "{{ label }} inválido",
+      "invalid": "{{ label }} é inválido"
+    }
+  }
+}

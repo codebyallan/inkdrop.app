@@ -10,12 +10,13 @@ import { TonersService } from '../../../toner/services/toner-service';
 import { PrintersService } from '../../../printer/services/printer-service';
 import { IToner } from '../../../toner/types';
 import { IPrinter } from '../../../printer/types';
+import { TranslateModule } from '@ngx-translate/core';
 
 type DialogData = { toners: Array<{ id: string; label: string }>, printers: Array<{ id: string; name: string }> };
 
 @Component({
   selector: 'app-movement-form',
-  imports: [ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatDialogModule, MatSelectModule, ValidationMessageComponent],
+  imports: [ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatDialogModule, MatSelectModule, ValidationMessageComponent, TranslateModule],
   templateUrl: './movement-form.html',
   styleUrl: './movement-form.scss',
 })
@@ -35,14 +36,25 @@ export class MovementForm implements OnInit {
 
   ngOnInit() {
     this.form.controls.type.valueChanges.subscribe(t => {
-      const ctrl = this.form.controls.printerId;
+      // Printer logic
+      const printerCtrl = this.form.controls.printerId;
       if (t === 'out') {
-        ctrl.addValidators([Validators.required]);
+        printerCtrl.addValidators([Validators.required]);
       } else {
-        ctrl.clearValidators();
-        ctrl.setValue(null);
+        printerCtrl.clearValidators();
+        printerCtrl.setValue(null);
       }
-      ctrl.updateValueAndValidity({ emitEvent: false });
+      printerCtrl.updateValueAndValidity({ emitEvent: false });
+
+      // Description logic
+      const descCtrl = this.form.controls.description;
+      if (t === 'out') {
+        descCtrl.addValidators([Validators.required]);
+      } else {
+        descCtrl.clearValidators();
+        descCtrl.setValue(null);
+      }
+      descCtrl.updateValueAndValidity({ emitEvent: false });
     });
 
     if (!this.data?.toners || this.data.toners.length === 0) {

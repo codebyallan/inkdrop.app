@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
 import { LocationsService } from './services/location-service';
 import { ILocation } from './types';
@@ -12,27 +12,33 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { PageLayoutComponent } from '../../shared/components/page-layout/page-layout';
 import { UiTableComponent } from '../../shared/components/ui-table/ui-table';
 import { AuthService } from '../../core/services/auth.service';
+import { TranslationService } from '../../core/services/translation.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-location',
-  imports: [MatTableModule, MatButtonModule, MatIconModule, MatSnackBarModule, PageLayoutComponent, UiTableComponent],
+  imports: [MatTableModule, MatButtonModule, MatIconModule, MatSnackBarModule, PageLayoutComponent, UiTableComponent, TranslateModule],
   templateUrl: './location.html',
   styleUrl: './location.scss',
 })
 export class Location implements OnInit {
   private locationsService = inject(LocationsService);
+  private translationService = inject(TranslationService);
   private dialog = inject(MatDialog);
   private _snackBar = inject(MatSnackBar);
   public authService = inject(AuthService);
 
   locations = this.locationsService.locations;
   loading = signal<boolean>(true);
-  columnsConfig = [
-    { id: 'name', header: 'Name', field: 'name', type: 'text' as const },
-    { id: 'description', header: 'Description', field: 'description', type: 'text' as const },
-    { id: 'createdAt', header: 'Created At', field: 'createdAt', type: 'date' as const, dateFormat: 'dd/MM/yyyy' },
-    { id: 'actions', header: '', type: 'actions' as const }
-  ];
+  columnsConfig = computed(() => {
+    this.translationService.currentLangSignal();
+    return [
+      { id: 'name', header: this.translationService.instant('locations.columns.name'), field: 'name', type: 'text' as const },
+      { id: 'description', header: this.translationService.instant('locations.columns.description'), field: 'description', type: 'text' as const },
+      { id: 'createdAt', header: this.translationService.instant('locations.columns.created_at'), field: 'createdAt', type: 'date' as const, dateFormat: 'dd/MM/yyyy' },
+      { id: 'actions', header: '', type: 'actions' as const }
+    ];
+  });
 
   ngOnInit() {
     this.loading.set(true);
@@ -43,7 +49,7 @@ export class Location implements OnInit {
       error: (err) => {
         console.error(err);
         this.loading.set(false);
-        this.showAlert('Error fetching locations', 'Close');
+        this.showAlert(this.translationService.instant('locations.alerts.fetch_error'), this.translationService.instant('shared.actions.close'));
       }
     });
   }
@@ -53,14 +59,14 @@ export class Location implements OnInit {
       if (result) {
         this.locationsService.createLocation(result).subscribe({
           next: () => {
-            this.showAlert('Location created successfully', 'Close');
+            this.showAlert(this.translationService.instant('locations.alerts.created'), this.translationService.instant('shared.actions.close'));
           },
           error: (err) => {
-            let errorMessage = 'Error creating location';
+            let errorMessage = this.translationService.instant('locations.alerts.create_error');
             if (err.status === 400 && err.error?.errors) {
               errorMessage = err.error.errors[0].message;
             }
-            this.showAlert(errorMessage, 'Close');
+            this.showAlert(errorMessage, this.translationService.instant('shared.actions.close'));
           }
         });
       }
@@ -79,13 +85,25 @@ export class Location implements OnInit {
     const ref = this.dialog.open(LocationForm, { width: '400px', data: { mode: 'edit', initial: { name: row.name, description: row.description } } });
     ref.afterClosed().subscribe(values => {
       if (values) {
-        const confirmRef = this.dialog.open(ConfirmDialog, { width: '300px', data: { title: 'Confirm', message: 'Save changes?', confirmLabel: 'Save', cancelLabel: 'Cancel' } });
+        const confirmRef = this.dialog.open(ConfirmDialog, { 
+          width: '300px', 
+          data: { 
+            title: this.translationService.instant('shared.confirm_dialog.save_changes_title'), 
+            message: this.translationService.instant('shared.confirm_dialog.save_changes_message'), 
+            confirmLabel: this.translationService.instant('shared.actions.save'), 
+            cancelLabel: this.translationService.instant('shared.actions.cancel') 
+          } 
+        });
         confirmRef.afterClosed().subscribe(confirmed => {
           if (confirmed) {
             this.locationsService.updateLocation(row.id, values).subscribe({
               next: () => {
-                this.showAlert('Location updated successfully', 'Close');
-              }
+                this.showAlert(this.translationService.instant('locations.alerts.updated'), this.translationService.instant('shared.actions.close'));
+              },
+              error: () => this.showAlert(
+                this.translationService.instant('locations.alerts.update_error'),
+                this.translationService.instant('shared.actions.close')
+              )
             });
           }
         });
@@ -93,13 +111,21 @@ export class Location implements OnInit {
     });
   }
   deleteLocation(id: string) {
-    const ref = this.dialog.open(ConfirmDialog, { width: '300px' });
+    const ref = this.dialog.open(ConfirmDialog, {
+      width: '300px',
+      data: {
+        title:        this.translationService.instant('shared.confirm_dialog.default_title'),
+        message:      this.translationService.instant('shared.confirm_dialog.default_message'),
+        confirmLabel: this.translationService.instant('shared.actions.delete'),
+        cancelLabel:  this.translationService.instant('shared.actions.cancel'),
+        destructive:  true,
+      }
+    });
     ref.afterClosed().subscribe(confirmed => {
       if (confirmed) {
         this.locationsService.deleteLocation(id).subscribe({
-          next: () => {
-            this.showAlert('Location deleted successfully', 'Close');
-          }
+          next:  () => this.showAlert(this.translationService.instant('locations.alerts.deleted'), this.translationService.instant('shared.actions.close')),
+          error: () => this.showAlert(this.translationService.instant('locations.alerts.delete_error'), this.translationService.instant('shared.actions.close')),
         });
       }
     });

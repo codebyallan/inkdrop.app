@@ -14,11 +14,13 @@ import { IToner } from '../toner/types';
 import { IPrinter } from '../printer/types';
 import { LocationsService } from '../location/services/location-service';
 import { ILocation } from '../location/types';
+import { TranslationService } from '../../core/services/translation.service';
+import { TranslateModule } from '@ngx-translate/core';
 import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-movement',
-  imports: [MatButtonModule, MatIconModule, MatSnackBarModule, PageLayoutComponent, UiTableComponent, MatDialogModule],
+  imports: [MatButtonModule, MatIconModule, MatSnackBarModule, PageLayoutComponent, UiTableComponent, MatDialogModule, TranslateModule],
   templateUrl: './movement.html',
   styleUrl: './movement.scss',
 })
@@ -27,6 +29,7 @@ export class Movement implements OnInit {
   private tonersService = inject(TonersService);
   private printersService = inject(PrintersService);
   private locationsService = inject(LocationsService);
+  private translationService = inject(TranslationService);
   private _snackBar = inject(MatSnackBar);
   private dialog = inject(MatDialog);
 
@@ -35,18 +38,29 @@ export class Movement implements OnInit {
   private tonersMap = new Map<string, string>();
   private printersMap = new Map<string, { name: string, locationId: string }>();
   loading = signal<boolean>(true);
-
-  columnsConfig = [
-    { id: 'tonerModel', header: 'Toner', field: 'tonerModel', type: 'text' as const },
-    { id: 'printerName', header: 'Printer', field: 'printerName', type: 'text' as const },
-    { id: 'quantity', header: 'Quantity', field: 'quantity', type: 'text' as const },
-    { id: 'type', header: 'Type', field: 'type', type: 'text' as const },
-    { id: 'description', header: 'Description', field: 'description', type: 'text' as const },
-    { id: 'createdAt', header: 'Created At', field: 'createdAt', type: 'date' as const, dateFormat: 'dd/MM/yyyy' }
-  ];
+  columnsConfig = computed(() => {
+    this.translationService.currentLangSignal();
+    return [
+      { id: 'tonerModel', header: this.translationService.instant('movements.columns.toner'), field: 'tonerModel', type: 'text' as const },
+      { id: 'printerName', header: this.translationService.instant('movements.columns.printer'), field: 'printerName', type: 'text' as const },
+      { id: 'quantity', header: this.translationService.instant('movements.columns.quantity'), field: 'quantity', type: 'text' as const },
+      { 
+        id: 'type', 
+        header: this.translationService.instant('movements.columns.type'), 
+        field: 'type', 
+        type: 'text' as const,
+        transform: (val: any) => (val?.toString().toLowerCase() === 'in') 
+          ? this.translationService.instant('movements.type_in') 
+          : this.translationService.instant('movements.type_out')
+      },
+      { id: 'description', header: this.translationService.instant('movements.columns.description'), field: 'description', type: 'text' as const },
+      { id: 'createdAt', header: this.translationService.instant('movements.columns.created_at'), field: 'createdAt', type: 'date' as const, dateFormat: 'dd/MM/yyyy' }
+    ];
+  });
 
   // Computed signal to handle the dynamic composition of Printer - Location
   movementsWithDetails = computed(() => {
+    this.translationService.currentLangSignal();
     const list = this.movements();
     const tonersMap = this.tonersMap;
     const printersMap = this.printersMap;
@@ -56,7 +70,7 @@ export class Movement implements OnInit {
       const printer = m.printerId ? printersMap.get(m.printerId) : null;
       const locationName = printer ? locationsMap.get(printer.locationId) : '';
       const printerDisplay = printer 
-        ? `${printer.name} - ${locationName || 'No Location'}` 
+        ? `${printer.name} - ${locationName || this.translationService.instant('shared.no_location')}` 
         : (m.printerName || '');
 
       return {
@@ -84,7 +98,7 @@ export class Movement implements OnInit {
       error: (err) => {
         console.error(err);
         this.loading.set(false);
-        this.showAlert('Error initializing movements data', 'Close');
+        this.showAlert(this.translationService.instant('movements.alerts.fetch_error'), this.translationService.instant('shared.actions.close'));
       }
     });
   }
@@ -97,14 +111,14 @@ export class Movement implements OnInit {
       if (result) {
         this.movementsService.createMovement(result).subscribe({
           next: () => {
-            this.showAlert('Movement created successfully', 'Close');
+            this.showAlert(this.translationService.instant('movements.alerts.created'), this.translationService.instant('shared.actions.close'));
           },
           error: (err) => {
-            let errorMessage = 'Error creating movement';
+            let errorMessage = this.translationService.instant('movements.alerts.create_error');
             if (err?.status === 400 && err?.error?.errors && err.error.errors[0]?.message) {
               errorMessage = err.error.errors[0].message;
             }
-            this.showAlert(errorMessage, 'Close');
+            this.showAlert(errorMessage, this.translationService.instant('shared.actions.close'));
           }
         });
       }

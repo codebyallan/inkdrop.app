@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
@@ -13,16 +13,19 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { PrinterForm } from './components/printer-form/printer-form';
 import { ConfirmDialog } from '../../shared/components/confirm-dialog/confirm-dialog';
 import { AuthService } from '../../core/services/auth.service';
+import { TranslationService } from '../../core/services/translation.service';
+import { TranslateModule } from '@ngx-translate/core';
 import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-printer',
-  imports: [MatButtonModule, MatIconModule, MatSnackBarModule, PageLayoutComponent, UiTableComponent, MatDialogModule],
+  imports: [MatButtonModule, MatIconModule, MatSnackBarModule, PageLayoutComponent, UiTableComponent, MatDialogModule, TranslateModule],
   templateUrl: './printer.html',
   styleUrl: './printer.scss',
 })
 export class Printer implements OnInit {
   private printersService = inject(PrintersService);
+  private translationService = inject(TranslationService);
   private _snackBar = inject(MatSnackBar);
   private locationsService = inject(LocationsService);
   private dialog = inject(MatDialog);
@@ -31,15 +34,18 @@ export class Printer implements OnInit {
   printers = this.printersService.printers;
   private locationsMap = new Map<string, string>();
   loading = signal<boolean>(true);
-  columnsConfig = [
-    { id: 'name', header: 'Name', field: 'name', type: 'text' as const },
-    { id: 'model', header: 'Model', field: 'model', type: 'text' as const },
-    { id: 'manufacturer', header: 'Manufacturer', field: 'manufacturer', type: 'text' as const },
-    { id: 'ipAddress', header: 'IP Address', field: 'ipAddress', type: 'text' as const },
-    { id: 'locationName', header: 'Location', field: 'locationName', type: 'text' as const },
-    { id: 'createdAt', header: 'Created At', field: 'createdAt', type: 'date' as const, dateFormat: 'dd/MM/yyyy' },
-    { id: 'actions', header: '', type: 'actions' as const }
-  ];
+  columnsConfig = computed(() => {
+    this.translationService.currentLangSignal();
+    return [
+      { id: 'name', header: this.translationService.instant('printers.columns.name'), field: 'name', type: 'text' as const },
+      { id: 'model', header: this.translationService.instant('printers.columns.model'), field: 'model', type: 'text' as const },
+      { id: 'manufacturer', header: this.translationService.instant('printers.columns.manufacturer'), field: 'manufacturer', type: 'text' as const },
+      { id: 'ipAddress', header: this.translationService.instant('printers.columns.ip_address'), field: 'ipAddress', type: 'text' as const },
+      { id: 'locationName', header: this.translationService.instant('printers.columns.location'), field: 'locationName', type: 'text' as const },
+      { id: 'createdAt', header: this.translationService.instant('printers.columns.created_at'), field: 'createdAt', type: 'date' as const, dateFormat: 'dd/MM/yyyy' },
+      { id: 'actions', header: '', type: 'actions' as const }
+    ];
+  });
 
   ngOnInit() {
     this.loading.set(true);
@@ -56,7 +62,7 @@ export class Printer implements OnInit {
       error: (err) => {
         console.error(err);
         this.loading.set(false);
-        this.showAlert('Error initializing printers data', 'Close');
+        this.showAlert(this.translationService.instant('printers.alerts.fetch_error'), this.translationService.instant('shared.actions.close'));
       },
     });
   }
@@ -81,15 +87,23 @@ export class Printer implements OnInit {
     });
     ref.afterClosed().subscribe(values => {
       if (values) {
-        const confirmRef = this.dialog.open(ConfirmDialog, { width: '300px', data: { title: 'Confirm', message: 'Save changes?', confirmLabel: 'Save', cancelLabel: 'Cancel' } });
+        const confirmRef = this.dialog.open(ConfirmDialog, { 
+          width: '300px', 
+          data: { 
+            title: this.translationService.instant('shared.confirm_dialog.save_changes_title'), 
+            message: this.translationService.instant('shared.confirm_dialog.save_changes_message'), 
+            confirmLabel: this.translationService.instant('shared.actions.save'), 
+            cancelLabel: this.translationService.instant('shared.actions.cancel') 
+          } 
+        });
         confirmRef.afterClosed().subscribe(confirmed => {
           if (confirmed) {
             this.printersService.updatePrinter(row.id, values).subscribe({
               next: () => {
                 this.printersService.applyLocationNames(this.locationsMap);
-                this.showAlert('Printer updated successfully', 'Close');
+                this.showAlert(this.translationService.instant('printers.alerts.updated'), this.translationService.instant('shared.actions.close'));
               },
-              error: () => this.showAlert('Error updating printer', 'Close')
+              error: () => this.showAlert(this.translationService.instant('printers.alerts.update_error'), this.translationService.instant('shared.actions.close'))
             });
           }
         });
@@ -97,14 +111,21 @@ export class Printer implements OnInit {
     });
   }
   deletePrinter(id: string) {
-    const ref = this.dialog.open(ConfirmDialog, { width: '300px' });
+    const ref = this.dialog.open(ConfirmDialog, {
+      width: '300px',
+      data: {
+        title:        this.translationService.instant('shared.confirm_dialog.default_title'),
+        message:      this.translationService.instant('shared.confirm_dialog.default_message'),
+        confirmLabel: this.translationService.instant('shared.actions.delete'),
+        cancelLabel:  this.translationService.instant('shared.actions.cancel'),
+        destructive:  true,
+      }
+    });
     ref.afterClosed().subscribe(confirmed => {
       if (confirmed) {
         this.printersService.deletePrinter(id).subscribe({
-          next: () => {
-            this.showAlert('Printer deleted successfully', 'Close');
-          },
-          error: () => this.showAlert('Error deleting printer', 'Close')
+          next:  () => this.showAlert(this.translationService.instant('printers.alerts.deleted'), this.translationService.instant('shared.actions.close')),
+          error: () => this.showAlert(this.translationService.instant('printers.alerts.delete_error'), this.translationService.instant('shared.actions.close')),
         });
       }
     });
@@ -117,14 +138,14 @@ export class Printer implements OnInit {
         this.printersService.createPrinter(result).subscribe({
           next: () => {
             this.printersService.applyLocationNames(this.locationsMap);
-            this.showAlert('Printer created successfully', 'Close');
+            this.showAlert(this.translationService.instant('printers.alerts.created'), this.translationService.instant('shared.actions.close'));
           },
           error: (err) => {
-            let errorMessage = 'Error creating printer';
+            let errorMessage = this.translationService.instant('printers.alerts.create_error');
             if (err?.status === 400 && err?.error?.errors && err.error.errors[0]?.message) {
               errorMessage = err.error.errors[0].message;
             }
-            this.showAlert(errorMessage, 'Close');
+            this.showAlert(errorMessage, this.translationService.instant('shared.actions.close'));
           }
         });
       }

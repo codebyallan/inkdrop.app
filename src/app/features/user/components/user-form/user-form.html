@@ -1,40 +1,40 @@
-<h2 mat-dialog-title>{{ (data.mode === 'edit') ? 'Edit User' : 'New User' }}</h2>
+<h2 mat-dialog-title>{{ (data.mode === 'edit') ? ('users.form_title_edit' | translate) : ('users.form_title_new' | translate) }}</h2>
 <mat-dialog-content>
   <form [formGroup]="form" class="flex flex-col gap-4 pt-2">
     <mat-form-field>
-      <mat-label>Username</mat-label>
+      <mat-label>{{ 'users.fields.username' | translate }}</mat-label>
       <input matInput formControlName="username" />
-      <app-validation-message [control]="form.controls.username" [label]="'Username'"></app-validation-message>
+      <app-validation-message [control]="form.controls.username" [label]="'users.fields.username' | translate"></app-validation-message>
     </mat-form-field>
 
     <mat-form-field>
-      <mat-label>Email</mat-label>
+      <mat-label>{{ 'users.fields.email' | translate }}</mat-label>
       <input matInput formControlName="email" />
-      <app-validation-message [control]="form.controls.email" [label]="'Email'"></app-validation-message>
+      <app-validation-message [control]="form.controls.email" [label]="'users.fields.email' | translate"></app-validation-message>
     </mat-form-field>
 
     @if (data.mode !== 'edit') {
       <mat-form-field>
-        <mat-label>Password</mat-label>
+        <mat-label>{{ 'users.fields.password' | translate }}</mat-label>
         <input matInput type="password" formControlName="password" />
-        <app-validation-message [control]="form.controls.password" [label]="'Password'"></app-validation-message>
+        <app-validation-message [control]="form.controls.password" [label]="'users.fields.password' | translate"></app-validation-message>
       </mat-form-field>
     }
 
     @if (!isEditingSelf) {
       <mat-form-field>
-        <mat-label>Role</mat-label>
+        <mat-label>{{ 'users.fields.role' | translate }}</mat-label>
         <mat-select formControlName="role">
-          @for (role of ROLES; track role.value) {
+          @for (role of ROLES(); track role.value) {
             <mat-option [value]="role.value">{{ role.label }}</mat-option>
           }
         </mat-select>
-        <app-validation-message [control]="form.controls.role" [label]="'Role'"></app-validation-message>
+        <app-validation-message [control]="form.controls.role" [label]="'users.fields.role' | translate"></app-validation-message>
       </mat-form-field>
     }
   </form>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-  <button mat-stroked-button (click)="cancel()">Cancel</button>
-  <button mat-flat-button (click)="save()" [disabled]="form.invalid">Save</button>
+  <button mat-stroked-button (click)="cancel()">{{ 'shared.actions.cancel' | translate }}</button>
+  <button mat-flat-button (click)="save()" [disabled]="form.invalid">{{ 'shared.actions.save' | translate }}</button>
 </mat-dialog-actions>

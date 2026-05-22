@@ -1,9 +1,9 @@
-<app-page-layout [title]="'Printers'">
+<app-page-layout [title]="'printers.page_title' | translate">
   @if (authService.isAdmin()) {
     <button page-actions mat-flat-button (click)="openDialog()">
       <mat-icon>add</mat-icon>
-      New
+      {{ 'shared.actions.new' | translate }}
     </button>
   }
-  <app-ui-table [data]="printers()" [columns]="columnsConfig" [loading]="loading()" (action)="onTableAction($event)"></app-ui-table>
+  <app-ui-table [data]="printers()" [columns]="columnsConfig()" [loading]="loading()" (action)="onTableAction($event)"></app-ui-table>
 </app-page-layout>

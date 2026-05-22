@@ -1,32 +1,32 @@
-<h2 mat-dialog-title>{{ (data.mode === 'edit') ? 'Edit Printer' : 'New Printer' }}</h2>
+<h2 mat-dialog-title>{{ (data.mode === 'edit') ? ('printers.form_title_edit' | translate) : ('printers.form_title_new' | translate) }}</h2>
 <mat-dialog-content>
   <form [formGroup]="form" class="flex flex-col gap-4 pt-2">
     <mat-form-field>
-      <mat-label>Name</mat-label>
+      <mat-label>{{ 'printers.fields.name' | translate }}</mat-label>
       <input matInput formControlName="name" />
-      <app-validation-message [control]="form.controls.name" [label]="'Name'"></app-validation-message>
+      <app-validation-message [control]="form.controls.name" [label]="'printers.fields.name' | translate"></app-validation-message>
     </mat-form-field>
 
     <mat-form-field>
-      <mat-label>Model</mat-label>
+      <mat-label>{{ 'printers.fields.model' | translate }}</mat-label>
       <input matInput formControlName="model" />
-      <app-validation-message [control]="form.controls.model" [label]="'Model'"></app-validation-message>
+      <app-validation-message [control]="form.controls.model" [label]="'printers.fields.model' | translate"></app-validation-message>
     </mat-form-field>
 
     <mat-form-field>
-      <mat-label>Manufacturer</mat-label>
+      <mat-label>{{ 'printers.fields.manufacturer' | translate }}</mat-label>
       <input matInput formControlName="manufacturer" />
-      <app-validation-message [control]="form.controls.manufacturer" [label]="'Manufacturer'"></app-validation-message>
+      <app-validation-message [control]="form.controls.manufacturer" [label]="'printers.fields.manufacturer' | translate"></app-validation-message>
     </mat-form-field>
 
     <mat-form-field>
-      <mat-label>IP Address</mat-label>
+      <mat-label>{{ 'printers.fields.ip_address' | translate }}</mat-label>
       <input matInput formControlName="ipAddress" />
-      <app-validation-message [control]="form.controls.ipAddress" [label]="'IP Address'"></app-validation-message>
+      <app-validation-message [control]="form.controls.ipAddress" [label]="'printers.fields.ip_address' | translate"></app-validation-message>
     </mat-form-field>
 
     <mat-form-field>
-      <mat-label>Location</mat-label>
+      <mat-label>{{ 'printers.fields.location' | translate }}</mat-label>
       <mat-select formControlName="locationId">
         @for (loc of data.locations; track loc.id) {
           <mat-option [value]="loc.id">
@@ -34,11 +34,11 @@
           </mat-option>
         }
       </mat-select>
-      <app-validation-message [control]="form.controls.locationId" [label]="'Location'"></app-validation-message>
+      <app-validation-message [control]="form.controls.locationId" [label]="'printers.fields.location' | translate"></app-validation-message>
     </mat-form-field>
   </form>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-  <button mat-stroked-button (click)="cancel()">Cancel</button>
-  <button mat-flat-button (click)="save()" [disabled]="form.invalid">Save</button>
+  <button mat-stroked-button (click)="cancel()">{{ 'shared.actions.cancel' | translate }}</button>
+  <button mat-flat-button (click)="save()" [disabled]="form.invalid">{{ 'shared.actions.save' | translate }}</button>
 </mat-dialog-actions>

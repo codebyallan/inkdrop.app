@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
@@ -10,16 +10,19 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ConfirmDialog } from '../../shared/components/confirm-dialog/confirm-dialog';
 import { UserForm } from './components/user-form/user-form';
 import { AuthService } from '../../core/services/auth.service';
+import { TranslationService } from '../../core/services/translation.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-user',
   standalone: true,
-  imports: [MatButtonModule, MatIconModule, MatSnackBarModule, PageLayoutComponent, UiTableComponent, MatDialogModule],
+  imports: [MatButtonModule, MatIconModule, MatSnackBarModule, PageLayoutComponent, UiTableComponent, MatDialogModule, TranslateModule],
   templateUrl: './user.html',
   styleUrl: './user.scss',
 })
 export class User implements OnInit {
   private userService = inject(UserService);
+  private translationService = inject(TranslationService);
   private _snackBar = inject(MatSnackBar);
   private dialog = inject(MatDialog);
   public authService = inject(AuthService);
@@ -27,32 +30,39 @@ export class User implements OnInit {
   users = this.userService.users;
   loading = signal<boolean>(true);
 
-  columnsConfig = [
-    { id: 'username', header: 'Username', field: 'username', type: 'text' as const },
-    { id: 'email', header: 'Email', field: 'email', type: 'text' as const },
-    { 
-      id: 'role', 
-      header: 'Role', 
-      field: 'role', 
-      type: 'text' as const, 
-      transform: (val: any) => {
-        // 1. Se já for a string 'Admin' ou 'Technician', retorna ela mesma
-        if (val === 'Admin' || val === 'Technician') return val;
-        
-        // 2. Se for um número (ou string numérica), traduz usando o ROLE_MAP
-        const numericRole = Number(val);
-        const roleLabel = ROLE_MAP[numericRole as UserRole];
-        
-        if (roleLabel) return roleLabel;
+  columnsConfig = computed(() => {
+    this.translationService.currentLangSignal();
+    return [
+      { id: 'username', header: this.translationService.instant('users.columns.username'), field: 'username', type: 'text' as const },
+      { id: 'email', header: this.translationService.instant('users.columns.email'), field: 'email', type: 'text' as const },
+      { 
+        id: 'role', 
+        header: this.translationService.instant('users.columns.role'), 
+        field: 'role', 
+        type: 'text' as const, 
+        transform: (val: any) => {
+          if (val === 'Admin') return this.translationService.instant('users.role_admin');
+          if (val === 'Technician') return this.translationService.instant('users.role_technician');
+          
+          const numericRole = Number(val);
+          const roleLabel = ROLE_MAP[numericRole as UserRole];
+          
+          if (roleLabel) {
+            // For numeric roles, we check if there is a translation for that label
+            // Or we just return the label. Since ROLE_MAP labels are likely 'Admin'/'Technician'
+            if (roleLabel === 'Admin') return this.translationService.instant('users.role_admin');
+            if (roleLabel === 'Technician') return this.translationService.instant('users.role_technician');
+            return roleLabel;
+          }
 
-        console.warn(`Unexpected role value received from API:`, val);
-        return 'Unknown';
-      } 
-    },
-    { id: 'isActive', header: 'Status', field: 'isActive', type: 'badge' as const },
-    { id: 'createdAt', header: 'Created At', field: 'createdAt', type: 'date' as const, dateFormat: 'dd/MM/yyyy' },
-    { id: 'actions', header: '', type: 'actions' as const }
-  ];
+          return this.translationService.instant('users.role_unknown');
+        } 
+      },
+      { id: 'isActive', header: this.translationService.instant('users.columns.status'), field: 'isActive', type: 'badge' as const },
+      { id: 'createdAt', header: this.translationService.instant('users.columns.created_at'), field: 'createdAt', type: 'date' as const, dateFormat: 'dd/MM/yyyy' },
+      { id: 'actions', header: '', type: 'actions' as const }
+    ];
+  });
 
   ngOnInit() {
     this.loading.set(true);
@@ -62,7 +72,7 @@ export class User implements OnInit {
       },
       error: () => {
         this.loading.set(false);
-        this.showAlert('Error fetching users', 'Close');
+        this.showAlert(this.translationService.instant('users.alerts.fetch_error'), this.translationService.instant('shared.actions.close'));
       },
     });
   }
@@ -89,22 +99,27 @@ export class User implements OnInit {
     ref.afterClosed().subscribe(values => {
       if (values) {
         if (row.id === this.authService.currentUser()?.id && values.role !== row.role) {
-          this.showAlert('You cannot change your own role', 'Close');
+          this.showAlert(this.translationService.instant('users.alerts.cannot_change_own_role'), this.translationService.instant('shared.actions.close'));
           return;
         }
 
         const confirmRef = this.dialog.open(ConfirmDialog, { 
           width: '300px', 
-          data: { title: 'Confirm', message: 'Save changes?', confirmLabel: 'Save', cancelLabel: 'Cancel' } 
+          data: { 
+            title: this.translationService.instant('shared.confirm_dialog.save_changes_title'), 
+            message: this.translationService.instant('shared.confirm_dialog.save_changes_message'), 
+            confirmLabel: this.translationService.instant('shared.actions.save'), 
+            cancelLabel: this.translationService.instant('shared.actions.cancel') 
+          } 
         });
         
         confirmRef.afterClosed().subscribe(confirmed => {
           if (confirmed) {
             this.userService.updateUser(row.id, values).subscribe({
               next: () => {
-                this.showAlert('User updated successfully', 'Close');
+                this.showAlert(this.translationService.instant('users.alerts.updated'), this.translationService.instant('shared.actions.close'));
               },
-              error: () => this.showAlert('Error updating user', 'Close')
+              error: () => this.showAlert(this.translationService.instant('users.alerts.update_error'), this.translationService.instant('shared.actions.close'))
             });
           }
         });
@@ -114,22 +129,27 @@ export class User implements OnInit {
 
   deleteUser(id: string) {
     if (id === this.authService.currentUser()?.id) {
-      this.showAlert('You cannot delete your own account', 'Close');
+      this.showAlert(this.translationService.instant('users.alerts.cannot_delete_self'), this.translationService.instant('shared.actions.close'));
       return;
     }
 
     const ref = this.dialog.open(ConfirmDialog, { 
       width: '300px', 
-      data: { title: 'Confirm Delete', message: 'Are you sure you want to delete this user?', confirmLabel: 'Delete', cancelLabel: 'Cancel' } 
+      data: { 
+        title: this.translationService.instant('shared.confirm_dialog.delete_user_title'), 
+        message: this.translationService.instant('shared.confirm_dialog.delete_user_message'), 
+        confirmLabel: this.translationService.instant('shared.actions.delete'), 
+        cancelLabel: this.translationService.instant('shared.actions.cancel') 
+      } 
     });
     
     ref.afterClosed().subscribe(confirmed => {
       if (confirmed) {
         this.userService.deleteUser(id).subscribe({
           next: () => {
-            this.showAlert('User deleted successfully', 'Close');
+            this.showAlert(this.translationService.instant('users.alerts.deleted'), this.translationService.instant('shared.actions.close'));
           },
-          error: () => this.showAlert('Error deleting user', 'Close')
+          error: () => this.showAlert(this.translationService.instant('users.alerts.delete_error'), this.translationService.instant('shared.actions.close'))
         });
       }
     });
@@ -137,26 +157,36 @@ export class User implements OnInit {
 
   toggleUserStatus(row: IUser) {
     if (row.id === this.authService.currentUser()?.id && row.isActive) {
-      this.showAlert('You cannot deactivate your own account', 'Close');
+      this.showAlert(this.translationService.instant('users.alerts.cannot_deactivate_self'), this.translationService.instant('shared.actions.close'));
       return;
     }
 
     const action = row.isActive ? 'deactivate' : 'activate';
-    const message = row.isActive ? 'Deactivate user?' : 'Activate user?';
+    const message = row.isActive ? this.translationService.instant('shared.confirm_dialog.deactivate_message') : this.translationService.instant('shared.confirm_dialog.activate_message');
     
     const ref = this.dialog.open(ConfirmDialog, { 
       width: '300px', 
-      data: { title: 'Confirm Status Change', message, confirmLabel: 'Confirm', cancelLabel: 'Cancel' } 
+      data: { 
+        title: this.translationService.instant('shared.confirm_dialog.status_change_title'), 
+        message, 
+        confirmLabel: this.translationService.instant('shared.actions.confirm'), 
+        cancelLabel: this.translationService.instant('shared.actions.cancel') 
+      } 
     });
 
     ref.afterClosed().subscribe(confirmed => {
       if (confirmed) {
-        const serviceCall = row.isActive ? this.userService.deactivateUser(row.id) : this.userService.activateUser(row.id);
+        const isDeactivating = row.isActive;
+        const successKey = isDeactivating ? 'users.alerts.deactivated' : 'users.alerts.activated';
+        const errorKey   = isDeactivating ? 'users.alerts.deactivate_error' : 'users.alerts.activate_error';
+
+        const serviceCall = isDeactivating
+          ? this.userService.deactivateUser(row.id)
+          : this.userService.activateUser(row.id);
+
         serviceCall.subscribe({
-          next: () => {
-            this.showAlert(`User ${action === 'activate' ? 'activated' : 'deactivated'} successfully`, 'Close');
-          },
-          error: () => this.showAlert(`Error ${action}ing user`, 'Close')
+          next:  () => this.showAlert(this.translationService.instant(successKey), this.translationService.instant('shared.actions.close')),
+          error: () => this.showAlert(this.translationService.instant(errorKey), this.translationService.instant('shared.actions.close')),
         });
       }
     });
@@ -168,14 +198,14 @@ export class User implements OnInit {
       if (result) {
         this.userService.createUser(result).subscribe({
           next: () => {
-            this.showAlert('User created successfully', 'Close');
+            this.showAlert(this.translationService.instant('users.alerts.created'), this.translationService.instant('shared.actions.close'));
           },
           error: (err) => {
-            let errorMessage = 'Error creating user';
+            let errorMessage = this.translationService.instant('users.alerts.create_error');
             if (err?.status === 400 && err?.error?.errors && err.error.errors[0]?.message) {
               errorMessage = err.error.errors[0].message;
             }
-            this.showAlert(errorMessage, 'Close');
+            this.showAlert(errorMessage, this.translationService.instant('shared.actions.close'));
           }
         });
       }

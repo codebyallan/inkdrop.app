@@ -4,25 +4,25 @@
       <div class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mb-4 shadow-md p-2">
         <mat-icon class="!text-white !text-3xl !w-auto !h-auto">lock</mat-icon>
       </div>
-      <mat-card-title class="text-center text-xl font-semibold">Welcome back!</mat-card-title>
-      <p class="text-center text-sm text-gray-500 mt-1">Manage your printing infrastructure with ease</p>
+      <mat-card-title class="text-center text-xl font-semibold">{{ 'login.title' | translate }}</mat-card-title>
+      <p class="text-center text-sm text-gray-500 mt-1">{{ 'login.subtitle' | translate }}</p>
     </div>
     
     <mat-card-content>
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-4">
         <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Username</mat-label>
-          <input matInput formControlName="username" placeholder="Enter your username">
+          <mat-label>{{ 'login.username_label' | translate }}</mat-label>
+          <input matInput formControlName="username" [placeholder]="'login.username_placeholder' | translate">
           <mat-error *ngIf="loginForm.get('username')?.hasError('required')">
-            Username is required
+            {{ 'shared.validation.required' | translate:{ label: ('login.username_label' | translate) } }}
           </mat-error>
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Password</mat-label>
-          <input matInput type="password" formControlName="password" placeholder="Enter your password">
+          <mat-label>{{ 'login.password_label' | translate }}</mat-label>
+          <input matInput type="password" formControlName="password" [placeholder]="'login.password_placeholder' | translate">
           <mat-error *ngIf="loginForm.get('password')?.hasError('required')">
-            Password is required
+            {{ 'shared.validation.required' | translate:{ label: ('login.password_label' | translate) } }}
           </mat-error>
         </mat-form-field>
 
@@ -30,7 +30,7 @@
           @if(isLoading()){
             <mat-spinner diameter="24" class="login-spinner"></mat-spinner>
           } @else {
-            <span>Login</span>
+            <span>{{ 'login.submit' | translate }}</span>
           }
         </button>
       </form>

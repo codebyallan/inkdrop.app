@@ -1,8 +1,8 @@
-<app-page-layout [title]="'Movements'">
+<app-page-layout [title]="'movements.page_title' | translate">
   <button page-actions mat-flat-button (click)="openDialog()">
     <mat-icon>add</mat-icon>
-    New
+    {{ 'shared.actions.new' | translate }}
   </button>
-  <app-ui-table [data]="movementsWithDetails()" [columns]="columnsConfig" [loading]="loading()"></app-ui-table>
+  <app-ui-table [data]="movementsWithDetails()" [columns]="columnsConfig()" [loading]="loading()"></app-ui-table>
 </app-page-layout>
 

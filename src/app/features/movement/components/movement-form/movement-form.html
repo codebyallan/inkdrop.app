@@ -1,52 +1,53 @@
-<h2 mat-dialog-title>New Movement</h2>
+<h2 mat-dialog-title>{{ 'movements.form_title' | translate }}</h2>
 <mat-dialog-content>
-  <form [formGroup]="form" class="flex flex-col gap-4 pt-2">
-    <mat-form-field>
-      <mat-label>Toner</mat-label>
+  <form [formGroup]="form" class="flex flex-col gap-2 pt-2">
+    <mat-form-field subscriptSizing="dynamic">
+      <mat-label>{{ 'movements.fields.toner' | translate }}</mat-label>
       <mat-select formControlName="tonerId">
         @for (t of data.toners; track t.id) {
           <mat-option [value]="t.id">{{ t.label }}</mat-option>
         }
       </mat-select>
-      <app-validation-message [control]="form.controls.tonerId" [label]="'Toner'"></app-validation-message>
+      <app-validation-message [control]="form.controls.tonerId" [label]="'movements.fields.toner' | translate"></app-validation-message>
     </mat-form-field>
 
     @if (form.controls.type.value === 'out') {
-      <mat-form-field>
-        <mat-label>Printer</mat-label>
+      <mat-form-field subscriptSizing="dynamic">
+        <mat-label>{{ 'movements.fields.printer' | translate }}</mat-label>
         <mat-select formControlName="printerId">
           @for (p of data.printers; track p.id) {
             <mat-option [value]="p.id">{{ p.name }}</mat-option>
           }
         </mat-select>
-        <app-validation-message [control]="form.controls.printerId" [label]="'Printer'"></app-validation-message>
+        <app-validation-message [control]="form.controls.printerId" [label]="'movements.fields.printer' | translate"></app-validation-message>
       </mat-form-field>
     }
 
-    <mat-form-field>
-      <mat-label>Quantity</mat-label>
+    <mat-form-field subscriptSizing="dynamic">
+      <mat-label>{{ 'movements.fields.quantity' | translate }}</mat-label>
       <input matInput type="number" formControlName="quantity" />
-      <app-validation-message [control]="form.controls.quantity" [label]="'Quantity'"></app-validation-message>
+      <app-validation-message [control]="form.controls.quantity" [label]="'movements.fields.quantity' | translate"></app-validation-message>
     </mat-form-field>
 
-    <mat-form-field>
-      <mat-label>Type</mat-label>
+    <mat-form-field subscriptSizing="dynamic">
+      <mat-label>{{ 'movements.fields.type' | translate }}</mat-label>
       <mat-select formControlName="type">
-        <mat-option value="in">in</mat-option>
-        <mat-option value="out">out</mat-option>
+        <mat-option [value]="'in'">{{ 'movements.type_in' | translate }}</mat-option>
+        <mat-option [value]="'out'">{{ 'movements.type_out' | translate }}</mat-option>
       </mat-select>
-      <app-validation-message [control]="form.controls.type" [label]="'Type'"></app-validation-message>
+      <app-validation-message [control]="form.controls.type" [label]="'movements.fields.type' | translate"></app-validation-message>
     </mat-form-field>
 
-    <mat-form-field>
-      <mat-label>Description (optional)</mat-label>
+    <mat-form-field subscriptSizing="dynamic">
+      <mat-label>{{ (form.controls.type.value === 'out' ? 'movements.fields.description' : 'movements.fields.description_optional') | translate }}</mat-label>
       <input matInput formControlName="description" />
+      <app-validation-message [control]="form.controls.description" [label]="(form.controls.type.value === 'out' ? 'movements.fields.description' : 'movements.fields.description_optional') | translate"></app-validation-message>
     </mat-form-field>
   </form>
 
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-  <button mat-stroked-button (click)="cancel()">Cancel</button>
-  <button mat-flat-button (click)="save()" [disabled]="form.invalid">Save</button>
+  <button mat-stroked-button (click)="cancel()">{{ 'shared.actions.cancel' | translate }}</button>
+  <button mat-flat-button (click)="save()" [disabled]="form.invalid">{{ 'shared.actions.save' | translate }}</button>
 </mat-dialog-actions>
 

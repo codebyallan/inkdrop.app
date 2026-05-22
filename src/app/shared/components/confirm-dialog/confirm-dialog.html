@@ -1,11 +1,13 @@
-<h2 mat-dialog-title>{{ data.title || 'Confirm' }}</h2>
+<h2 mat-dialog-title>{{ data.title || ('shared.confirm_dialog.default_title' | translate) }}</h2>
 <mat-dialog-content>
-  {{ data.message || 'Are you sure you want to delete this item?' }}
+  {{ data.message || ('shared.confirm_dialog.default_message' | translate) }}
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-  <button mat-stroked-button (click)="dialogRef.close(false)">{{ data.cancelLabel || 'Cancel' }}</button>
+  <button mat-stroked-button (click)="dialogRef.close(false)">
+    {{ data.cancelLabel || ('shared.actions.cancel' | translate) }}
+  </button>
   <button mat-flat-button [ngClass]="{ 'delete-btn': data.destructive }" (click)="dialogRef.close(true)">
-    {{ data.confirmLabel || 'Delete' }}
+    {{ data.confirmLabel || ('shared.actions.delete' | translate) }}
   </button>
 </mat-dialog-actions>
 

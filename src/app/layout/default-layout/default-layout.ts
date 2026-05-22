@@ -14,6 +14,8 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { AuthService } from '../../core/services/auth.service';
+import { TranslationService } from '../../core/services/translation.service';
+import { TranslateModule } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -31,7 +33,8 @@ import { CommonModule } from '@angular/common';
     Navbar, 
     MatDividerModule, 
     MatProgressSpinnerModule, 
-    MatSnackBarModule
+    MatSnackBarModule,
+    TranslateModule
   ],
   templateUrl: './default-layout.html',
   styleUrl: './default-layout.scss',
@@ -39,6 +42,7 @@ import { CommonModule } from '@angular/common';
 export class DefaultLayout implements OnInit {
   private breakpointObserver = inject(BreakpointObserver);
   private authService = inject(AuthService);
+  private translationService = inject(TranslationService);
   private router = inject(Router);
   private snackBar = inject(MatSnackBar);
   
@@ -76,16 +80,17 @@ export class DefaultLayout implements OnInit {
   }
 
   protected readonly NavItems = computed(() => {
+    this.translationService.currentLangSignal();
     const items: Array<NavItem> = [
-      { route: '/dashboard', icon: 'dashboard', name: 'Dashboard' },
-      { route: '/toners', icon: 'inventory_2', name: 'Toners' },
-      { route: '/printers', icon: 'print', name: 'Printers' },
-      { route: '/locations', icon: 'location_on', name: 'Locations' },
-      { route: '/movements', icon: 'swap_horiz', name: 'Movements' }
+      { route: '/dashboard', icon: 'dashboard', name: this.translationService.instant('nav.dashboard') },
+      { route: '/toners', icon: 'inventory_2', name: this.translationService.instant('nav.toners') },
+      { route: '/printers', icon: 'print', name: this.translationService.instant('nav.printers') },
+      { route: '/locations', icon: 'location_on', name: this.translationService.instant('nav.locations') },
+      { route: '/movements', icon: 'swap_horiz', name: this.translationService.instant('nav.movements') }
     ];
 
     if (this.isAdmin()) {
-      items.push({ route: '/users', icon: 'manage_accounts', name: 'Users' });
+      items.push({ route: '/users', icon: 'manage_accounts', name: this.translationService.instant('nav.users') });
     }
 
     return items;

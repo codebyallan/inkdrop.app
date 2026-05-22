@@ -9,8 +9,10 @@ import { TonersService } from '../toner/services/toner-service';
 import { PrintersService } from '../printer/services/printer-service';
 import { MovementsService } from '../movement/services/movement-service';
 import { LocationsService } from '../location/services/location-service';
+import { TranslationService } from '../../core/services/translation.service';
 import { MovementForm } from '../movement/components/movement-form/movement-form';
 import { UiTableComponent } from '../../shared/components/ui-table/ui-table';
+import { TranslateModule } from '@ngx-translate/core';
 import { IToner } from '../toner/types';
 import { IPrinter } from '../printer/types';
 import { IMovement } from '../movement/types';
@@ -18,7 +20,7 @@ import { ILocation } from '../location/types';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [MatCardModule, MatButtonModule, MatSnackBarModule, MatDialogModule, UiTableComponent],
+  imports: [MatCardModule, MatButtonModule, MatSnackBarModule, MatDialogModule, UiTableComponent, TranslateModule],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
 })
@@ -27,6 +29,7 @@ export class Dashboard implements OnInit {
   private printersService = inject(PrintersService);
   private movementsService = inject(MovementsService);
   private locationsService = inject(LocationsService);
+  private translationService = inject(TranslationService);
   private _snackBar = inject(MatSnackBar);
   private dialog = inject(MatDialog);
   private router = inject(Router);
@@ -51,6 +54,7 @@ export class Dashboard implements OnInit {
   });
 
   movementsWithNames = computed(() => {
+    this.translationService.currentLangSignal();
     const list = this.movements();
     const tonersMap = new Map(this.toners().map((t) => [t.id, `${t.model} - ${t.color}`]));
     const printersMap = new Map(this.printers().map((p) => [p.id, { name: p.name, locationId: p.locationId }]));
@@ -60,7 +64,7 @@ export class Dashboard implements OnInit {
       const printer = m.printerId ? printersMap.get(m.printerId) : null;
       const locationName = printer ? locationsMap.get(printer.locationId) : '';
       const printerDisplay = printer 
-        ? `${printer.name} - ${locationName || 'No Location'}` 
+        ? `${printer.name} - ${locationName || this.translationService.instant('shared.no_location')}` 
         : (m.printerName ?? '');
 
       return {
@@ -78,13 +82,24 @@ export class Dashboard implements OnInit {
       .slice(0, 3);
   });
 
-  recentMovementsColumns = [
-    { id: 'createdAt', header: 'Date', field: 'createdAt', type: 'date' as const, dateFormat: 'dd/MM/yyyy' },
-    { id: 'printerName', header: 'Printer', field: 'printerName', type: 'text' as const },
-    { id: 'type', header: 'Type', field: 'type', type: 'text' as const },
-    { id: 'tonerModel', header: 'Toner', field: 'tonerModel', type: 'text' as const },
-    { id: 'quantity', header: 'Quantity', field: 'quantity', type: 'text' as const },
-  ];
+  recentMovementsColumns = computed(() => {
+    this.translationService.currentLangSignal();
+    return [
+      { id: 'createdAt', header: this.translationService.instant('shared.columns.date'), field: 'createdAt', type: 'date' as const, dateFormat: 'dd/MM/yyyy' },
+      { id: 'printerName', header: this.translationService.instant('movements.columns.printer'), field: 'printerName', type: 'text' as const },
+      { 
+        id: 'type', 
+        header: this.translationService.instant('movements.columns.type'), 
+        field: 'type', 
+        type: 'text' as const,
+        transform: (val: any) => (val?.toString().toLowerCase() === 'in') 
+          ? this.translationService.instant('movements.type_in') 
+          : this.translationService.instant('movements.type_out')
+      },
+      { id: 'tonerModel', header: this.translationService.instant('movements.columns.toner'), field: 'tonerModel', type: 'text' as const },
+      { id: 'quantity', header: this.translationService.instant('movements.columns.quantity'), field: 'quantity', type: 'text' as const },
+    ];
+  });
 
   private readonly lowStockThreshold = 3;
 
@@ -103,7 +118,7 @@ export class Dashboard implements OnInit {
       },
       error: () => {
         this.loading.set(false);
-        this.showAlert('Error loading dashboard data', 'Close');
+        this.showAlert(this.translationService.instant('dashboard.alerts.fetch_error'), this.translationService.instant('shared.actions.close'));
       },
     });
   }
@@ -122,14 +137,14 @@ export class Dashboard implements OnInit {
       if (result) {
         this.movementsService.createMovement(result).subscribe({
           next: () => {
-            this.showAlert('Movement created successfully', 'Close');
+            this.showAlert(this.translationService.instant('movements.alerts.created'), this.translationService.instant('shared.actions.close'));
           },
           error: (err) => {
             const errorMessage =
               err?.status === 400 && err?.error?.errors?.[0]?.message
                 ? err.error.errors[0].message
-                : 'Error creating movement';
-            this.showAlert(errorMessage, 'Close');
+                : this.translationService.instant('movements.alerts.create_error');
+            this.showAlert(errorMessage, this.translationService.instant('shared.actions.close'));
           },
         });
       }

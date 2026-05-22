@@ -5,10 +5,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
 import { ValidationMessageComponent } from '../../../../shared/components/validation-message/validation-message';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-toner-form',
-  imports: [ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatDialogModule, ValidationMessageComponent],
+  imports: [ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatDialogModule, ValidationMessageComponent, TranslateModule],
   templateUrl: './toner-form.html',
   styleUrl: './toner-form.scss',
 })

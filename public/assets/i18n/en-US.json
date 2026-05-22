@@ -1,0 +1,219 @@
+{
+  "nav": {
+    "dashboard": "Dashboard",
+    "toners": "Toners",
+    "printers": "Printers",
+    "locations": "Locations",
+    "movements": "Movements",
+    "users": "Users"
+  },
+  "login": {
+    "title": "Welcome back!",
+    "subtitle": "Manage your printing infrastructure with ease",
+    "username_label": "Username",
+    "username_placeholder": "Enter your username",
+    "password_label": "Password",
+    "password_placeholder": "Enter your password",
+    "submit": "Login",
+    "alerts": {
+      "failed": "Login failed. Please check your credentials."
+    }
+  },
+  "layout": {
+    "greeting": "Hello, {{ name }}"
+  },
+  "dashboard": {
+    "kpi": {
+      "toners_in_stock": "Toners in Stock",
+      "low_toners": "Low Toners",
+      "active_printers": "Active Printers",
+      "movements_today": "Movements Today"
+    },
+    "recent_movements": "Recent Movements",
+    "btn_new_movement": "New Movement",
+    "btn_view_history": "View Complete History",
+    "alerts": {
+      "fetch_error": "Error loading dashboard data"
+    }
+  },
+  "toners": {
+    "page_title": "Toners",
+    "form_title_new": "New Toner",
+    "form_title_edit": "Edit Toner",
+    "columns": {
+      "model": "Model",
+      "manufacturer": "Manufacturer",
+      "color": "Color",
+      "quantity": "Quantity",
+      "created_at": "Created At"
+    },
+    "fields": {
+      "model": "Model",
+      "manufacturer": "Manufacturer",
+      "color": "Color"
+    },
+    "alerts": {
+      "fetch_error": "Error fetching toners",
+      "created": "Toner created successfully",
+      "create_error": "Error creating toner",
+      "updated": "Toner updated successfully",
+      "update_error": "Error updating toner",
+      "deleted": "Toner deleted successfully",
+      "delete_error": "Error deleting toner"
+    }
+  },
+  "printers": {
+    "page_title": "Printers",
+    "form_title_new": "New Printer",
+    "form_title_edit": "Edit Printer",
+    "columns": {
+      "name": "Name",
+      "model": "Model",
+      "manufacturer": "Manufacturer",
+      "ip_address": "IP Address",
+      "location": "Location",
+      "created_at": "Created At"
+    },
+    "fields": {
+      "name": "Name",
+      "model": "Model",
+      "manufacturer": "Manufacturer",
+      "ip_address": "IP Address",
+      "location": "Location"
+    },
+    "alerts": {
+      "fetch_error": "Error initializing printers data",
+      "created": "Printer created successfully",
+      "create_error": "Error creating printer",
+      "updated": "Printer updated successfully",
+      "update_error": "Error updating printer",
+      "deleted": "Printer deleted successfully",
+      "delete_error": "Error deleting printer"
+    }
+  },
+  "locations": {
+    "page_title": "Locations",
+    "form_title_new": "New Location",
+    "form_title_edit": "Edit Location",
+    "columns": {
+      "name": "Name",
+      "description": "Description",
+      "created_at": "Created At"
+    },
+    "fields": {
+      "name": "Name",
+      "description": "Description"
+    },
+    "alerts": {
+      "fetch_error": "Error fetching locations",
+      "created": "Location created successfully",
+      "create_error": "Error creating location",
+      "updated": "Location updated successfully",
+      "update_error": "Error updating location",
+      "deleted": "Location deleted successfully",
+      "delete_error": "Error deleting location"
+    }
+  },
+  "movements": {
+    "page_title": "Movements",
+    "form_title": "New Movement",
+    "type_in": "Entry",
+    "type_out": "Exit",
+    "columns": {
+      "toner": "Toner",
+      "printer": "Printer",
+      "quantity": "Quantity",
+      "type": "Type",
+      "description": "Description",
+      "created_at": "Created At"
+    },
+    "fields": {
+      "toner": "Toner",
+      "printer": "Printer",
+      "quantity": "Quantity",
+      "type": "Type",
+      "description": "Description",
+      "description_optional": "Description (Optional)"
+    },
+    "alerts": {
+      "fetch_error": "Error initializing movements data",
+      "created": "Movement created successfully",
+      "create_error": "Error creating movement"
+    }
+  },
+  "users": {
+    "page_title": "Users",
+    "btn_new": "New User",
+    "form_title_new": "New User",
+    "form_title_edit": "Edit User",
+    "role_admin": "Admin",
+    "role_technician": "Technician",
+    "role_unknown": "Unknown",
+    "status_active": "Active",
+    "status_inactive": "Inactive",
+    "columns": {
+      "username": "Username",
+      "email": "Email",
+      "role": "Role",
+      "status": "Status",
+      "created_at": "Created At"
+    },
+    "fields": {
+      "username": "Username",
+      "email": "Email",
+      "password": "Password",
+      "role": "Role"
+    },
+    "alerts": {
+      "fetch_error": "Error fetching users",
+      "cannot_change_own_role": "You cannot change your own role",
+      "updated": "User updated successfully",
+      "update_error": "Error updating user",
+      "cannot_delete_self": "You cannot delete your own account",
+      "deleted": "User deleted successfully",
+      "delete_error": "Error deleting user",
+      "cannot_deactivate_self": "You cannot deactivate your own account",
+      "activated": "User activated successfully",
+      "deactivated": "User deactivated successfully",
+      "activate_error": "Error activating user",
+      "deactivate_error": "Error deactivating user",
+      "created": "User created successfully",
+      "create_error": "Error creating user"
+    }
+  },
+  "shared": {
+    "no_location": "No Location",
+    "alerts": {
+      "logged_in": "Logged in successfully!"
+    },
+    "columns": {
+      "date": "Date"
+    },
+    "actions": {
+      "new": "New",
+      "save": "Save",
+      "cancel": "Cancel",
+      "close": "Close",
+      "delete": "Delete",
+      "confirm": "Confirm"
+    },
+    "confirm_dialog": {
+      "default_title": "Confirm",
+      "default_message": "Are you sure you want to delete this item?",
+      "save_changes_title": "Confirm",
+      "save_changes_message": "Save changes?",
+      "delete_user_title": "Confirm Delete",
+      "delete_user_message": "Are you sure you want to delete this user?",
+      "status_change_title": "Confirm Status Change",
+      "deactivate_message": "Deactivate user?",
+      "activate_message": "Activate user?"
+    },
+    "validation": {
+      "required": "{{ label }} is required",
+      "min_length": "{{ label }} must be at least {{ min }} characters",
+      "max_length": "{{ label }} must be at most {{ max }} characters",
+      "email": "Invalid {{ label }}",
+      "invalid": "{{ label }} is invalid"
+    }
+  }
+}

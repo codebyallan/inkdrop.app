@@ -5,10 +5,11 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { DatePipe } from '@angular/common';
 import { AuthService } from '../../../core/services/auth.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-ui-table',
-  imports: [CommonModule, MatTableModule, MatButtonModule, MatIconModule, DatePipe],
+  imports: [CommonModule, MatTableModule, MatButtonModule, MatIconModule, DatePipe, TranslateModule],
   templateUrl: './ui-table.html',
   styleUrl: './ui-table.scss',
 })

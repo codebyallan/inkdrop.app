@@ -1,13 +1,13 @@
-<app-page-layout [title]="'Users'">
+<app-page-layout [title]="'users.page_title' | translate">
   @if (authService.isAdmin()) {
     <button page-actions mat-flat-button (click)="openDialog()">
       <mat-icon>add</mat-icon>
-      New User
+      {{ 'users.btn_new' | translate }}
     </button>
   }
   <app-ui-table 
     [data]="users()" 
-    [columns]="columnsConfig" 
+    [columns]="columnsConfig()" 
     [loading]="loading()" 
     [showToggle]="true"
     (action)="onTableAction($event)">

@@ -1,10 +1,10 @@
-<app-page-layout [title]="'Toners'">
+<app-page-layout [title]="'toners.page_title' | translate">
   @if (authService.isAdmin()) {
     <button page-actions mat-flat-button (click)="openDialog()">
       <mat-icon>add</mat-icon>
-      New
+      {{ 'shared.actions.new' | translate }}
     </button>
   }
-  <app-ui-table [data]="toners()" [columns]="columnsConfig" [loading]="loading()" (action)="onTableAction($event)"></app-ui-table>
+  <app-ui-table [data]="toners()" [columns]="columnsConfig()" [loading]="loading()" (action)="onTableAction($event)"></app-ui-table>
 </app-page-layout>
 

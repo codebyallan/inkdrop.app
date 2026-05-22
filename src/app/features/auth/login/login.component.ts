@@ -11,7 +11,9 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
 import { lastValueFrom } from 'rxjs';
 import { AuthService } from '../../../core/services/auth.service';
+import { TranslationService } from '../../../core/services/translation.service';
 import { LoginRequest } from '../../../types/login-request.type';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-login',
@@ -25,7 +27,8 @@ import { LoginRequest } from '../../../types/login-request.type';
     MatButtonModule, 
     MatSnackBarModule,
     MatProgressSpinnerModule,
-    MatIconModule
+    MatIconModule,
+    TranslateModule
   ],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
@@ -33,6 +36,7 @@ import { LoginRequest } from '../../../types/login-request.type';
 export class LoginComponent {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
+  private translationService = inject(TranslationService);
   private router = inject(Router);
   private snackBar = inject(MatSnackBar);
 
@@ -62,13 +66,21 @@ export class LoginComponent {
       const request: LoginRequest = this.loginForm.value;
       await lastValueFrom(this.authService.login(request));
 
-      this.snackBar.open('Logged in successfully!', 'Close', { duration: 3000 });
+      this.snackBar.open(
+        this.translationService.instant('shared.alerts.logged_in'), 
+        this.translationService.instant('shared.actions.close'), 
+        { duration: 3000 }
+      );
       this.router.navigate(['/dashboard']);
     } catch (error) {
-      this.snackBar.open('Login failed. Please check your credentials.', 'Close', { 
-        duration: 5000,
-        panelClass: ['error-snackbar']
-      });
+      this.snackBar.open(
+        this.translationService.instant('login.alerts.failed'), 
+        this.translationService.instant('shared.actions.close'), 
+        { 
+          duration: 5000,
+          panelClass: ['error-snackbar']
+        }
+      );
     } finally {
       this.isLoading.set(false);
     }

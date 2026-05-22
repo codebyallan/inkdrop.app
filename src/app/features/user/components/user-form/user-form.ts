@@ -8,6 +8,9 @@ import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/materia
 import { ValidationMessageComponent } from '../../../../shared/components/validation-message/validation-message';
 import { INVERSE_ROLE_MAP } from '../../types';
 import { AuthService } from '../../../../core/services/auth.service';
+import { TranslationService } from '../../../../core/services/translation.service';
+import { TranslateModule } from '@ngx-translate/core';
+import { computed } from '@angular/core';
 
 @Component({
   selector: 'app-user-form',
@@ -19,7 +22,8 @@ import { AuthService } from '../../../../core/services/auth.service';
     MatSelectModule, 
     MatButtonModule, 
     MatDialogModule, 
-    ValidationMessageComponent
+    ValidationMessageComponent,
+    TranslateModule
   ],
   templateUrl: './user-form.html',
   styleUrl: './user-form.scss',
@@ -27,9 +31,16 @@ import { AuthService } from '../../../../core/services/auth.service';
 export class UserForm implements OnInit {
   private dialogRef = inject(MatDialogRef<UserForm>);
   private authService = inject(AuthService);
+  private t = inject(TranslationService);
   public data: { mode?: 'create' | 'edit'; initial?: any } = {};
   
-  protected readonly ROLES = Object.entries(INVERSE_ROLE_MAP).map(([label, value]) => ({ label, value }));
+  protected readonly ROLES = computed(() => {
+    this.t.currentLangSignal();
+    return [
+      { value: 0, label: this.t.instant('users.role_admin') },
+      { value: 1, label: this.t.instant('users.role_technician') },
+    ];
+  });
 
   constructor(@Optional() @Inject(MAT_DIALOG_DATA) data: { mode?: 'create' | 'edit'; initial?: any } | null) {
     if (data) this.data = data;

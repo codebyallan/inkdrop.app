@@ -30,25 +30,25 @@
     <section class="kpi-grid">
       <mat-card class="kpi-card kpi-card--toners">
         <mat-card-content>
-          <p class="kpi-label">Toners in Stock</p>
+          <p class="kpi-label">{{ 'dashboard.kpi.toners_in_stock' | translate }}</p>
           <p class="kpi-value">{{ tonersInStock() }}</p>
         </mat-card-content>
       </mat-card>
       <mat-card class="kpi-card kpi-card--low-toners">
         <mat-card-content>
-          <p class="kpi-label">Low Toners</p>
+          <p class="kpi-label">{{ 'dashboard.kpi.low_toners' | translate }}</p>
           <p class="kpi-value">{{ lowTonersCount() }}</p>
         </mat-card-content>
       </mat-card>
       <mat-card class="kpi-card kpi-card--printers">
         <mat-card-content>
-          <p class="kpi-label">Active Printers</p>
+          <p class="kpi-label">{{ 'dashboard.kpi.active_printers' | translate }}</p>
           <p class="kpi-value">{{ activePrintersCount() }}</p>
         </mat-card-content>
       </mat-card>
       <mat-card class="kpi-card kpi-card--movements">
         <mat-card-content>
-          <p class="kpi-label">Movements Today</p>
+          <p class="kpi-label">{{ 'dashboard.kpi.movements_today' | translate }}</p>
           <p class="kpi-value">{{ movementsToday() }}</p>
         </mat-card-content>
       </mat-card>
@@ -56,10 +56,10 @@
   }
 
   <section class="recent-movements">
-    <h2 class="recent-movements__title">Recent Movements</h2>
+    <h2 class="recent-movements__title">{{ 'dashboard.recent_movements' | translate }}</h2>
     <app-ui-table
       [data]="recentMovements()"
-      [columns]="recentMovementsColumns"
+      [columns]="recentMovementsColumns()"
       [loading]="loading()"
       [skeletonRows]="3"
     />
@@ -67,10 +67,10 @@
 
   <div class="flex flex-wrap gap-2 mt-auto pt-4">
     <button mat-flat-button color="primary" (click)="openNewMovement()">
-      New Movement
+      {{ 'dashboard.btn_new_movement' | translate }}
     </button>
     <button mat-stroked-button (click)="goToHistory()">
-      View Complete History
+      {{ 'dashboard.btn_view_history' | translate }}
     </button>
   </div>
 </div>
