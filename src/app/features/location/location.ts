@@ -53,13 +53,9 @@ export class Location implements OnInit {
     ref.afterClosed().subscribe(result => {
       if (result) {
         this.locationsService.createLocation(result).subscribe({
-          next: () => {
-            this.locationsService.getLocations().subscribe({
-              next: (data) => {
-                this.locations.set(data);
-                this.showAlert('Location created successfully', 'Close');
-              }
-            });
+          next: (created) => {
+            this.locations.update(prev => [...prev, created]);
+            this.showAlert('Location created successfully', 'Close');
           },
           error: (err) => {
             let errorMessage = 'Error creating location';
@@ -89,13 +85,11 @@ export class Location implements OnInit {
         confirmRef.afterClosed().subscribe(confirmed => {
           if (confirmed) {
             this.locationsService.updateLocation(row.id, values).subscribe({
-              next: () => {
-                this.locationsService.getLocations().subscribe({
-                  next: (data) => {
-                    this.locations.set(data);
-                    this.showAlert('Location updated successfully', 'Close');
-                  }
-                });
+              next: (updated) => {
+                this.locations.update(prev => 
+                  prev.map(l => l.id === updated.id ? updated : l)
+                );
+                this.showAlert('Location updated successfully', 'Close');
               }
             });
           }

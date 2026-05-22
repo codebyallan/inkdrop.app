@@ -13,6 +13,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { PrinterForm } from './components/printer-form/printer-form';
 import { ConfirmDialog } from '../../shared/components/confirm-dialog/confirm-dialog';
 import { AuthService } from '../../core/services/auth.service';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-printer',
@@ -42,22 +43,21 @@ export class Printer implements OnInit {
 
   ngOnInit() {
     this.loading.set(true);
-    this.locationsService.getLocations().subscribe({
-      next: (locs: ILocation[]) => {
-        this.locationsMap = new Map(locs.map(l => [l.id, l.name]));
-        this.applyLocationNames();
-      },
-      error: () => this.showAlert('Error fetching locations', 'Close')
-    });
-    this.printersService.getPrinters().subscribe({
-      next: (data) => {
-        this.printers.set(data);
+    
+    forkJoin({
+      locations: this.locationsService.getLocations(),
+      printers: this.printersService.getPrinters()
+    }).subscribe({
+      next: ({ locations, printers }) => {
+        this.locationsMap = new Map(locations.map(l => [l.id, l.name]));
+        this.printers.set(printers);
         this.applyLocationNames();
         this.loading.set(false);
       },
-      error: () => {
+      error: (err) => {
+        console.error(err);
         this.loading.set(false);
-        this.showAlert('Error fetching printers', 'Close');
+        this.showAlert('Error initializing printers data', 'Close');
       },
     });
   }
@@ -86,15 +86,12 @@ export class Printer implements OnInit {
         confirmRef.afterClosed().subscribe(confirmed => {
           if (confirmed) {
             this.printersService.updatePrinter(row.id, values).subscribe({
-              next: () => {
-                this.printersService.getPrinters().subscribe({
-                  next: (data) => {
-                    this.printers.set(data);
-                    this.applyLocationNames();
-                    this.showAlert('Printer updated successfully', 'Close');
-                  },
-                  error: () => this.showAlert('Error refreshing printers list', 'Close')
-                });
+              next: (updated) => {
+                this.printers.update(prev => 
+                  prev.map(p => p.id === updated.id ? updated : p)
+                );
+                this.applyLocationNames();
+                this.showAlert('Printer updated successfully', 'Close');
               },
               error: () => this.showAlert('Error updating printer', 'Close')
             });
@@ -123,15 +120,10 @@ export class Printer implements OnInit {
     ref.afterClosed().subscribe(result => {
       if (result) {
         this.printersService.createPrinter(result).subscribe({
-          next: () => {
-            this.printersService.getPrinters().subscribe({
-              next: (data) => {
-                this.printers.set(data);
-                this.applyLocationNames();
-                this.showAlert('Printer created successfully', 'Close');
-              },
-              error: () => this.showAlert('Error refreshing printers list', 'Close')
-            });
+          next: (created) => {
+            this.printers.update(prev => [...prev, created]);
+            this.applyLocationNames();
+            this.showAlert('Printer created successfully', 'Close');
           },
           error: (err) => {
             let errorMessage = 'Error creating printer';

@@ -14,6 +14,7 @@ import { IToner } from '../toner/types';
 import { IPrinter } from '../printer/types';
 import { LocationsService } from '../location/services/location-service';
 import { ILocation } from '../location/types';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-movement',
@@ -69,36 +70,23 @@ export class Movement implements OnInit {
   ngOnInit() {
     this.loading.set(true);
     
-    // Fetch all dependencies first to ensure maps are populated
-    this.tonersService.getToners().subscribe({
-      next: (toners: IToner[]) => {
+    forkJoin({
+      toners: this.tonersService.getToners(),
+      printers: this.printersService.getPrinters(),
+      locations: this.locationsService.getLocations(),
+      movements: this.movementsService.getMovements()
+    }).subscribe({
+      next: ({ toners, printers, locations, movements }) => {
         this.tonersMap = new Map(toners.map(t => [t.id, `${t.model} - ${t.color}`]));
-      },
-      error: () => this.showAlert('Error fetching toners', 'Close')
-    });
-
-    this.printersService.getPrinters().subscribe({
-      next: (printers: IPrinter[]) => {
         this.printersMap = new Map(printers.map(p => [p.id, { name: p.name, locationId: p.locationId }]));
-      },
-      error: () => this.showAlert('Error fetching printers', 'Close')
-    });
-
-    this.locationsService.getLocations().subscribe({
-      next: (locs: ILocation[]) => {
-        this.locations.set(locs);
-      },
-      error: () => this.showAlert('Error fetching locations', 'Close')
-    });
-
-    this.movementsService.getMovements().subscribe({
-      next: (data) => {
-        this.movements.set(data);
+        this.locations.set(locations);
+        this.movements.set(movements);
         this.loading.set(false);
       },
-      error: () => {
+      error: (err) => {
+        console.error(err);
         this.loading.set(false);
-        this.showAlert('Error fetching movements', 'Close');
+        this.showAlert('Error initializing movements data', 'Close');
       }
     });
   }
@@ -110,14 +98,9 @@ export class Movement implements OnInit {
     ref.afterClosed().subscribe(result => {
       if (result) {
         this.movementsService.createMovement(result).subscribe({
-          next: () => {
-            this.movementsService.getMovements().subscribe({
-              next: (data) => {
-                this.movements.set(data);
-                this.showAlert('Movement created successfully', 'Close');
-              },
-              error: () => this.showAlert('Error refreshing movements list', 'Close')
-            });
+          next: (created) => {
+            this.movements.update(prev => [...prev, created]);
+            this.showAlert('Movement created successfully', 'Close');
           },
           error: (err) => {
             let errorMessage = 'Error creating movement';

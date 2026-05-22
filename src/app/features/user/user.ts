@@ -106,8 +106,10 @@ export class User implements OnInit {
         confirmRef.afterClosed().subscribe(confirmed => {
           if (confirmed) {
             this.userService.updateUser(row.id, values).subscribe({
-              next: () => {
-                this.loadUsers();
+              next: (updated) => {
+                this.users.update(prev =>
+                  prev.map(u => u.id === updated.id ? updated : u)
+                );
                 this.showAlert('User updated successfully', 'Close');
               },
               error: () => this.showAlert('Error updating user', 'Close')
@@ -161,7 +163,9 @@ export class User implements OnInit {
         const serviceCall = row.isActive ? this.userService.deactivateUser(row.id) : this.userService.activateUser(row.id);
         serviceCall.subscribe({
           next: () => {
-            this.loadUsers();
+            this.users.update(prev =>
+              prev.map(u => u.id === row.id ? { ...u, isActive: !row.isActive } : u)
+            );
             this.showAlert(`User ${action === 'activate' ? 'activated' : 'deactivated'} successfully`, 'Close');
           },
           error: () => this.showAlert(`Error ${action}ing user`, 'Close')
@@ -175,8 +179,8 @@ export class User implements OnInit {
     ref.afterClosed().subscribe(result => {
       if (result) {
         this.userService.createUser(result).subscribe({
-          next: () => {
-            this.loadUsers();
+          next: (created) => {
+            this.users.update(prev => [...prev, created]);
             this.showAlert('User created successfully', 'Close');
           },
           error: (err) => {

@@ -64,14 +64,11 @@ export class Toner implements OnInit {
         confirmRef.afterClosed().subscribe(confirmed => {
           if (confirmed) {
             this.tonersService.updateToner(row.id, values).subscribe({
-              next: () => {
-                this.tonersService.getToners().subscribe({
-                  next: (data) => {
-                    this.toners.set(data);
-                    this.showAlert('Toner updated successfully', 'Close');
-                  },
-                  error: () => this.showAlert('Error refreshing toners list', 'Close')
-                });
+              next: (updated) => {
+                this.toners.update(prev => 
+                  prev.map(t => t.id === updated.id ? updated : t)
+                );
+                this.showAlert('Toner updated successfully', 'Close');
               },
               error: () => this.showAlert('Error updating toner', 'Close')
             });
@@ -101,14 +98,9 @@ export class Toner implements OnInit {
     ref.afterClosed().subscribe(result => {
       if (result) {
         this.tonersService.createToner(result).subscribe({
-          next: () => {
-            this.tonersService.getToners().subscribe({
-              next: (data) => {
-                this.toners.set(data);
-                this.showAlert('Toner created successfully', 'Close');
-              },
-              error: () => this.showAlert('Error refreshing toners list', 'Close')
-            });
+          next: (created) => {
+            this.toners.update(prev => [...prev, created]);
+            this.showAlert('Toner created successfully', 'Close');
           },
           error: (err) => {
             let errorMessage = 'Error creating toner';
