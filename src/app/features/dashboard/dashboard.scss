@@ -2,6 +2,8 @@
   display: block;
 }
 
+// ─── KPI grid ────────────────────────────────────────────────────────────────
+
 .kpi-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -51,32 +53,72 @@
     color: var(--mat-sys-on-surface, #1c1b1f);
   }
 
-  &--toners {
-    border-left: 10px solid #1565c0;
-  }
+  &--toners    { border-left: 10px solid #1565c0; }
+  &--low-toners { border-left: 10px solid #f57c00; }
+  &--printers  { border-left: 10px solid #2e7d32; }
+  &--movements { border-left: 10px solid #e65100; }
+}
 
-  &--low-toners {
-    border-left: 10px solid #f57c00;
-  }
+// ─── Tables row ──────────────────────────────────────────────────────────────
 
-  &--printers {
-    border-left: 10px solid #2e7d32;
-  }
+.tables-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  width: 100%;
+  align-items: start;
 
-  &--movements {
-    border-left: 10px solid #e65100;
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
   }
 }
 
-.recent-movements {
+// ─── Table panel ─────────────────────────────────────────────────────────────
+
+.table-panel {
+  // min-width: 0 é obrigatório em grid items com overflow interno.
+  // Sem isso, o item expande além do 1fr em vez de acionar o scroll.
+  min-width: 0;
+
   padding: 1.25rem 1.5rem;
   border-radius: 12px;
   background-color: var(--mat-sys-surface, #fff);
   border: 1px solid var(--mat-sys-outline-variant, #e0e0e0);
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.25rem;
+  }
+
   &__title {
     margin: 0 0 1.25rem 0;
     font-size: 1.25rem;
     font-weight: 600;
     color: var(--mat-sys-on-surface, #1c1b1f);
+  }
+
+  &__header &__title {
+    margin-bottom: 0;
+  }
+
+  &__badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.2rem 0.65rem;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+
+    &--ok   { background-color: #e8f5e9; color: #2e7d32; }
+    &--warn { background-color: #fff3e0; color: #e65100; }
+  }
+
+  &--warning {
+    border-left: 10px solid #f57c00;
   }
 }

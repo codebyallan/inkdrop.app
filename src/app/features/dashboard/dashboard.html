@@ -1,5 +1,8 @@
 <div class="h-full flex flex-col p-4 gap-4">
+
   @if (loading()) {
+
+    <!-- ── KPI skeleton ── -->
     <section class="kpi-grid">
       <mat-card class="kpi-card kpi-card--toners">
         <mat-card-content>
@@ -26,7 +29,22 @@
         </mat-card-content>
       </mat-card>
     </section>
+
+    <!-- ── Tables skeleton: mesma estrutura visual do estado real ── -->
+    <section class="tables-row">
+      <div class="table-panel">
+        <div class="h-5 w-[18ch] rounded bg-[var(--mat-sys-surface-variant)] opacity-60 animate-pulse mb-5"></div>
+        <app-ui-table [data]="[]" [columns]="recentMovementsColumns()" [loading]="true" [skeletonRows]="3" />
+      </div>
+      <div class="table-panel table-panel--warning">
+        <div class="h-5 w-[20ch] rounded bg-[var(--mat-sys-surface-variant)] opacity-60 animate-pulse mb-5"></div>
+        <app-ui-table [data]="[]" [columns]="lowTonersColumns()" [loading]="true" [skeletonRows]="3" />
+      </div>
+    </section>
+
   } @else {
+
+    <!-- ── KPI real ── -->
     <section class="kpi-grid">
       <mat-card class="kpi-card kpi-card--toners">
         <mat-card-content>
@@ -53,17 +71,46 @@
         </mat-card-content>
       </mat-card>
     </section>
-  }
 
-  <section class="recent-movements">
-    <h2 class="recent-movements__title">{{ 'dashboard.recent_movements' | translate }}</h2>
-    <app-ui-table
-      [data]="recentMovements()"
-      [columns]="recentMovementsColumns()"
-      [loading]="loading()"
-      [skeletonRows]="3"
-    />
-  </section>
+    <!-- ── Tables row: responsivo, side-by-side em desktop, empilhado em mobile ── -->
+    <section class="tables-row">
+
+      <!-- Movimentações Recentes -->
+      <div class="table-panel">
+        <h2 class="table-panel__title">{{ 'dashboard.recent_movements' | translate }}</h2>
+        <app-ui-table
+          [data]="recentMovements()"
+          [columns]="recentMovementsColumns()"
+          [loading]="false"
+          [skeletonRows]="3"
+        />
+      </div>
+
+      <!-- Toners com Estoque Baixo -->
+      <div class="table-panel table-panel--warning">
+        <div class="table-panel__header">
+          <h2 class="table-panel__title">{{ 'dashboard.low_stock_toners' | translate }}</h2>
+          @if (lowTonersCount() === 0) {
+            <span class="table-panel__badge table-panel__badge--ok">
+              {{ 'dashboard.low_stock_ok' | translate }}
+            </span>
+          } @else {
+            <span class="table-panel__badge table-panel__badge--warn">
+              {{ lowTonersCount() }} {{ 'dashboard.low_stock_alert' | translate }}
+            </span>
+          }
+        </div>
+        <app-ui-table
+          [data]="lowTonersTableData()"
+          [columns]="lowTonersColumns()"
+          [loading]="false"
+          [skeletonRows]="3"
+        />
+      </div>
+
+    </section>
+
+  }
 
   <div class="flex flex-wrap gap-2 mt-auto pt-4">
     <button mat-flat-button color="primary" (click)="openNewMovement()">
@@ -72,5 +119,9 @@
     <button mat-stroked-button (click)="goToHistory()">
       {{ 'dashboard.btn_view_history' | translate }}
     </button>
+    <button mat-stroked-button (click)="goToToners()">
+      {{ 'dashboard.btn_manage_toners' | translate }}
+    </button>
   </div>
+
 </div>

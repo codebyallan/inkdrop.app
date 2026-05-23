@@ -34,7 +34,11 @@
     "btn_view_history": "Ver Histórico Completo",
     "alerts": {
       "fetch_error": "Erro ao carregar dados do dashboard"
-    }
+    },
+    "low_stock_toners": "Toners com Estoque Baixo",
+    "low_stock_ok": "Estoque ok",
+    "low_stock_alert": "toner(s) em alerta",
+    "btn_manage_toners": "Gerenciar Toners"
   },
   "toners": {
     "page_title": "Toners",

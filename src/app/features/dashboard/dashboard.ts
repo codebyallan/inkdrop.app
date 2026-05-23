@@ -63,8 +63,8 @@ export class Dashboard implements OnInit {
     return list.map((m) => {
       const printer = m.printerId ? printersMap.get(m.printerId) : null;
       const locationName = printer ? locationsMap.get(printer.locationId) : '';
-      const printerDisplay = printer 
-        ? `${printer.name} - ${locationName || this.translationService.instant('shared.no_location')}` 
+      const printerDisplay = printer
+        ? `${printer.name} - ${locationName || this.translationService.instant('shared.no_location')}`
         : (m.printerName ?? '');
 
       return {
@@ -87,19 +87,37 @@ export class Dashboard implements OnInit {
     return [
       { id: 'createdAt', header: this.translationService.instant('shared.columns.date'), field: 'createdAt', type: 'date' as const, dateFormat: 'dd/MM/yyyy' },
       { id: 'printerName', header: this.translationService.instant('movements.columns.printer'), field: 'printerName', type: 'text' as const },
-      { 
-        id: 'type', 
-        header: this.translationService.instant('movements.columns.type'), 
-        field: 'type', 
+      {
+        id: 'type',
+        header: this.translationService.instant('movements.columns.type'),
+        field: 'type',
         type: 'text' as const,
-        transform: (val: any) => (val?.toString().toLowerCase() === 'in') 
-          ? this.translationService.instant('movements.type_in') 
+        transform: (val: string) => (val?.toString().toLowerCase() === 'in')
+          ? this.translationService.instant('movements.type_in')
           : this.translationService.instant('movements.type_out')
       },
       { id: 'tonerModel', header: this.translationService.instant('movements.columns.toner'), field: 'tonerModel', type: 'text' as const },
       { id: 'quantity', header: this.translationService.instant('movements.columns.quantity'), field: 'quantity', type: 'text' as const },
     ];
   });
+
+  // ─── Low Stock Toners table ───────────────────────────────────────────────
+
+  lowTonersTableData = computed(() =>
+    [...this.lowToners()].sort((a, b) => (a.quantity ?? 0) - (b.quantity ?? 0))
+  );
+
+  lowTonersColumns = computed(() => {
+    this.translationService.currentLangSignal();
+    return [
+      { id: 'model', header: this.translationService.instant('toners.columns.model'), field: 'model', type: 'text' as const },
+      { id: 'color', header: this.translationService.instant('toners.columns.color'), field: 'color', type: 'text' as const },
+      { id: 'manufacturer', header: this.translationService.instant('toners.columns.manufacturer'), field: 'manufacturer', type: 'text' as const },
+      { id: 'quantity', header: this.translationService.instant('toners.columns.quantity'), field: 'quantity', type: 'text' as const },
+    ];
+  });
+
+  // ─────────────────────────────────────────────────────────────────────────
 
   private readonly lowStockThreshold = 3;
 
@@ -118,7 +136,10 @@ export class Dashboard implements OnInit {
       },
       error: () => {
         this.loading.set(false);
-        this.showAlert(this.translationService.instant('dashboard.alerts.fetch_error'), this.translationService.instant('shared.actions.close'));
+        this.showAlert(
+          this.translationService.instant('dashboard.alerts.fetch_error'),
+          this.translationService.instant('shared.actions.close')
+        );
       },
     });
   }
@@ -137,7 +158,10 @@ export class Dashboard implements OnInit {
       if (result) {
         this.movementsService.createMovement(result).subscribe({
           next: () => {
-            this.showAlert(this.translationService.instant('movements.alerts.created'), this.translationService.instant('shared.actions.close'));
+            this.showAlert(
+              this.translationService.instant('movements.alerts.created'),
+              this.translationService.instant('shared.actions.close')
+            );
           },
           error: (err) => {
             const errorMessage =
@@ -153,6 +177,10 @@ export class Dashboard implements OnInit {
 
   goToHistory() {
     this.router.navigate(['/movements']);
+  }
+
+  goToToners() {
+    this.router.navigate(['/toners']);
   }
 
   private showAlert(msg: string, action: string) {

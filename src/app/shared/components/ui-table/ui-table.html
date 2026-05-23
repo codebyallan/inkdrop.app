@@ -1,7 +1,7 @@
 @if (loading()) {
   <div class="w-full" role="status" aria-live="polite">
     <div class="border-b border-[var(--mat-sys-outline-variant)]">
-      <div class="grid min-h-14" [style.gridTemplateColumns]="gridTemplate()">
+      <div class="grid min-h-12" [style.gridTemplateColumns]="gridTemplate()">
         @for (col of columns(); track col.id) {
           <div class="px-4 flex items-center">
             <div class="h-4 w-[8ch] rounded-md bg-[var(--mat-sys-surface-variant)] opacity-60 animate-pulse"></div>
@@ -11,7 +11,7 @@
     </div>
     <div class="divide-y divide-[var(--mat-sys-outline-variant)]">
       @for (r of skeletonRowsArray(); track r) {
-        <div class="grid min-h-14" [style.gridTemplateColumns]="gridTemplate()">
+        <div class="grid min-h-12" [style.gridTemplateColumns]="gridTemplate()">
           @for (col of columns(); track col.id) {
             <div class="px-4 flex items-center">
               <div class="h-3 rounded bg-[var(--mat-sys-surface-variant)] opacity-60 animate-pulse" [style.width.%]="col.type === 'actions' ? 40 : 60"></div>

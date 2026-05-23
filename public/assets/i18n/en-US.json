@@ -34,7 +34,11 @@
     "btn_view_history": "View Complete History",
     "alerts": {
       "fetch_error": "Error loading dashboard data"
-    }
+    },
+    "low_stock_toners": "Low Stock Toners",
+    "low_stock_ok": "All stocked",
+    "low_stock_alert": "toner(s) low",
+    "btn_manage_toners": "Manage Toners"
   },
   "toners": {
     "page_title": "Toners",

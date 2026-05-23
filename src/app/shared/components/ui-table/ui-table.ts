@@ -31,7 +31,7 @@ export class UiTableComponent {
     const mapWidth = (c: { id: string; type?: 'text' | 'date' | 'actions' | 'badge' }) => {
       if (c.type === 'actions') return '96px';
       if (c.type === 'date' || c.type === 'badge' || /date|createdat/i.test(c.id)) return '128px';
-      return 'minmax(160px, 1fr)';
+      return 'minmax(0, 1fr)';
     };
     return cols.map(mapWidth).join(' ');
   });
