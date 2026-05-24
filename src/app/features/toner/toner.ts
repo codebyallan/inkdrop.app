@@ -2,6 +2,7 @@ import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { PageLayoutComponent } from '../../shared/components/page-layout/page-layout';
 import { UiTableComponent } from '../../shared/components/ui-table/ui-table';
 import { TonersService } from './services/toner-service';
@@ -15,7 +16,7 @@ import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-toner',
-  imports: [MatButtonModule, MatIconModule, MatSnackBarModule, PageLayoutComponent, UiTableComponent, MatDialogModule, TranslateModule],
+  imports: [MatButtonModule, MatIconModule, MatSnackBarModule, MatProgressBarModule, PageLayoutComponent, UiTableComponent, MatDialogModule, TranslateModule],
   templateUrl: './toner.html',
   styleUrl: './toner.scss',
 })
@@ -53,6 +54,19 @@ export class Toner implements OnInit {
     });
   }
 
+  refresh() {
+    this.loading.set(true);
+    this.tonersService.getToners(true).subscribe({
+      next: () => {
+        this.loading.set(false);
+      },
+      error: () => {
+        this.loading.set(false);
+        this.showAlert(this.translationService.instant('toners.alerts.fetch_error'), this.translationService.instant('shared.actions.close'));
+      },
+    });
+  }
+
   onTableAction(evt: { type: string; row: IToner }) {
     if (evt.type === 'delete') {
       this.deleteToner(evt.row.id);
@@ -65,24 +79,11 @@ export class Toner implements OnInit {
     const ref = this.dialog.open(TonerForm, { width: '500px', data: { mode: 'edit', initial: { model: row.model, manufacturer: row.manufacturer, color: row.color } } });
     ref.afterClosed().subscribe(values => {
       if (values) {
-        const confirmRef = this.dialog.open(ConfirmDialog, { 
-          width: '300px', 
-          data: { 
-            title: this.translationService.instant('shared.confirm_dialog.save_changes_title'), 
-            message: this.translationService.instant('shared.confirm_dialog.save_changes_message'), 
-            confirmLabel: this.translationService.instant('shared.actions.save'), 
-            cancelLabel: this.translationService.instant('shared.actions.cancel') 
-          } 
-        });
-        confirmRef.afterClosed().subscribe(confirmed => {
-          if (confirmed) {
-            this.tonersService.updateToner(row.id, values).subscribe({
-              next: () => {
-                this.showAlert(this.translationService.instant('toners.alerts.updated'), this.translationService.instant('shared.actions.close'));
-              },
-              error: () => this.showAlert(this.translationService.instant('toners.alerts.update_error'), this.translationService.instant('shared.actions.close'))
-            });
-          }
+        this.tonersService.updateToner(row.id, values).subscribe({
+          next: () => {
+            this.showAlert(this.translationService.instant('toners.alerts.updated'), this.translationService.instant('shared.actions.close'));
+          },
+          error: () => this.showAlert(this.translationService.instant('toners.alerts.update_error'), this.translationService.instant('shared.actions.close'))
         });
       }
     });

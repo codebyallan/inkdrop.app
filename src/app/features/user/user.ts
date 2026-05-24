@@ -2,6 +2,7 @@ import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { PageLayoutComponent } from '../../shared/components/page-layout/page-layout';
 import { UiTableComponent } from '../../shared/components/ui-table/ui-table';
 import { UserService } from './services/user-service';
@@ -16,7 +17,7 @@ import { TranslateModule } from '@ngx-translate/core';
 @Component({
   selector: 'app-user',
   standalone: true,
-  imports: [MatButtonModule, MatIconModule, MatSnackBarModule, PageLayoutComponent, UiTableComponent, MatDialogModule, TranslateModule],
+  imports: [MatButtonModule, MatIconModule, MatSnackBarModule, MatProgressBarModule, PageLayoutComponent, UiTableComponent, MatDialogModule, TranslateModule],
   templateUrl: './user.html',
   styleUrl: './user.scss',
 })
@@ -48,8 +49,6 @@ export class User implements OnInit {
           const roleLabel = ROLE_MAP[numericRole as UserRole];
           
           if (roleLabel) {
-            // For numeric roles, we check if there is a translation for that label
-            // Or we just return the label. Since ROLE_MAP labels are likely 'Admin'/'Technician'
             if (roleLabel === 'Admin') return this.translationService.instant('users.role_admin');
             if (roleLabel === 'Technician') return this.translationService.instant('users.role_technician');
             return roleLabel;
@@ -67,6 +66,19 @@ export class User implements OnInit {
   ngOnInit() {
     this.loading.set(true);
     this.userService.getUsers().subscribe({
+      next: () => {
+        this.loading.set(false);
+      },
+      error: () => {
+        this.loading.set(false);
+        this.showAlert(this.translationService.instant('users.alerts.fetch_error'), this.translationService.instant('shared.actions.close'));
+      },
+    });
+  }
+
+  refresh() {
+    this.loading.set(true);
+    this.userService.getUsers(true).subscribe({
       next: () => {
         this.loading.set(false);
       },
@@ -103,25 +115,11 @@ export class User implements OnInit {
           return;
         }
 
-        const confirmRef = this.dialog.open(ConfirmDialog, { 
-          width: '300px', 
-          data: { 
-            title: this.translationService.instant('shared.confirm_dialog.save_changes_title'), 
-            message: this.translationService.instant('shared.confirm_dialog.save_changes_message'), 
-            confirmLabel: this.translationService.instant('shared.actions.save'), 
-            cancelLabel: this.translationService.instant('shared.actions.cancel') 
-          } 
-        });
-        
-        confirmRef.afterClosed().subscribe(confirmed => {
-          if (confirmed) {
-            this.userService.updateUser(row.id, values).subscribe({
-              next: () => {
-                this.showAlert(this.translationService.instant('users.alerts.updated'), this.translationService.instant('shared.actions.close'));
-              },
-              error: () => this.showAlert(this.translationService.instant('users.alerts.update_error'), this.translationService.instant('shared.actions.close'))
-            });
-          }
+        this.userService.updateUser(row.id, values).subscribe({
+          next: () => {
+            this.showAlert(this.translationService.instant('users.alerts.updated'), this.translationService.instant('shared.actions.close'));
+          },
+          error: () => this.showAlert(this.translationService.instant('users.alerts.update_error'), this.translationService.instant('shared.actions.close'))
         });
       }
     });

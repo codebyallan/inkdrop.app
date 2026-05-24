@@ -1,9 +1,17 @@
 <app-page-layout [title]="'users.page_title' | translate">
+  <button page-actions mat-icon-button (click)="refresh()" [disabled]="loading()">
+    <mat-icon>refresh</mat-icon>
+  </button>
+
   @if (authService.isAdmin()) {
     <button page-actions mat-flat-button (click)="openDialog()">
       <mat-icon>add</mat-icon>
       {{ 'users.btn_new' | translate }}
     </button>
+  }
+  
+  @if (loading()) {
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
   }
   <app-ui-table 
     [data]="users()" 

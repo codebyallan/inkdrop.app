@@ -20,7 +20,7 @@ export class UserService {
   constructor() {
     this.cacheEvent.events$.subscribe(entity => {
       if (entity === 'user') {
-        this.getUsers(true).subscribe();
+        this.getUsers(true).subscribe({ error: err => console.error('Background refresh users failed:', err) });
       }
     });
   }

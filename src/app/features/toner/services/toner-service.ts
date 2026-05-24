@@ -23,8 +23,8 @@ export class TonersService {
     // Listen for changes that affect toners
     this.cacheEvent.events$.subscribe(entity => {
       if (entity === 'toner' || entity === 'movement') {
-        this.getToners(true).subscribe();
-        this.getLowStock(3, true).subscribe();
+        this.getToners(true).subscribe({ error: err => console.error('Background refresh toners failed:', err) });
+        this.getLowStock(3, true).subscribe({ error: err => console.error('Background refresh low stock failed:', err) });
       }
     });
   }

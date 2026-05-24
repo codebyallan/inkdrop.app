@@ -5,6 +5,7 @@ import { ILocation } from './types';
 import { DatePipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatDialog } from '@angular/material/dialog';
 import { LocationForm } from './components/location-form/location-form';
 import { ConfirmDialog } from '../../shared/components/confirm-dialog/confirm-dialog';
@@ -17,7 +18,7 @@ import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-location',
-  imports: [MatTableModule, MatButtonModule, MatIconModule, MatSnackBarModule, PageLayoutComponent, UiTableComponent, TranslateModule],
+  imports: [MatTableModule, MatButtonModule, MatIconModule, MatSnackBarModule, MatProgressBarModule, PageLayoutComponent, UiTableComponent, TranslateModule],
   templateUrl: './location.html',
   styleUrl: './location.scss',
 })
@@ -43,6 +44,20 @@ export class Location implements OnInit {
   ngOnInit() {
     this.loading.set(true);
     this.locationsService.getLocations().subscribe({
+      next: () => {
+        this.loading.set(false);
+      },
+      error: (err) => {
+        console.error(err);
+        this.loading.set(false);
+        this.showAlert(this.translationService.instant('locations.alerts.fetch_error'), this.translationService.instant('shared.actions.close'));
+      }
+    });
+  }
+
+  refresh() {
+    this.loading.set(true);
+    this.locationsService.getLocations(true).subscribe({
       next: () => {
         this.loading.set(false);
       },
@@ -85,31 +100,19 @@ export class Location implements OnInit {
     const ref = this.dialog.open(LocationForm, { width: '400px', data: { mode: 'edit', initial: { name: row.name, description: row.description } } });
     ref.afterClosed().subscribe(values => {
       if (values) {
-        const confirmRef = this.dialog.open(ConfirmDialog, { 
-          width: '300px', 
-          data: { 
-            title: this.translationService.instant('shared.confirm_dialog.save_changes_title'), 
-            message: this.translationService.instant('shared.confirm_dialog.save_changes_message'), 
-            confirmLabel: this.translationService.instant('shared.actions.save'), 
-            cancelLabel: this.translationService.instant('shared.actions.cancel') 
-          } 
-        });
-        confirmRef.afterClosed().subscribe(confirmed => {
-          if (confirmed) {
-            this.locationsService.updateLocation(row.id, values).subscribe({
-              next: () => {
-                this.showAlert(this.translationService.instant('locations.alerts.updated'), this.translationService.instant('shared.actions.close'));
-              },
-              error: () => this.showAlert(
-                this.translationService.instant('locations.alerts.update_error'),
-                this.translationService.instant('shared.actions.close')
-              )
-            });
-          }
+        this.locationsService.updateLocation(row.id, values).subscribe({
+          next: () => {
+            this.showAlert(this.translationService.instant('locations.alerts.updated'), this.translationService.instant('shared.actions.close'));
+          },
+          error: () => this.showAlert(
+            this.translationService.instant('locations.alerts.update_error'),
+            this.translationService.instant('shared.actions.close')
+          )
         });
       }
     });
   }
+
   deleteLocation(id: string) {
     const ref = this.dialog.open(ConfirmDialog, {
       width: '300px',

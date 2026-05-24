@@ -20,7 +20,7 @@ export class LocationsService {
   constructor() {
     this.cacheEvent.events$.subscribe(entity => {
       if (entity === 'location') {
-        this.getLocations(true).subscribe();
+        this.getLocations(true).subscribe({ error: err => console.error('Background refresh locations failed:', err) });
       }
     });
   }

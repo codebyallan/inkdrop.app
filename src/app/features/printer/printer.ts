@@ -2,6 +2,7 @@ import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { DatePipe } from '@angular/common';
 import { PageLayoutComponent } from '../../shared/components/page-layout/page-layout';
 import { UiTableComponent } from '../../shared/components/ui-table/ui-table';
@@ -19,7 +20,7 @@ import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-printer',
-  imports: [MatButtonModule, MatIconModule, MatSnackBarModule, PageLayoutComponent, UiTableComponent, MatDialogModule, TranslateModule],
+  imports: [MatButtonModule, MatIconModule, MatSnackBarModule, MatProgressBarModule, PageLayoutComponent, UiTableComponent, MatDialogModule, TranslateModule],
   templateUrl: './printer.html',
   styleUrl: './printer.scss',
 })
@@ -56,7 +57,26 @@ export class Printer implements OnInit {
     }).subscribe({
       next: ({ locations }) => {
         this.locationsMap = new Map(locations.map(l => [l.id, l.name]));
-        this.applyLocationNames();
+        this.printersService.applyLocationNames(this.locationsMap);
+        this.loading.set(false);
+      },
+      error: (err) => {
+        console.error(err);
+        this.loading.set(false);
+        this.showAlert(this.translationService.instant('printers.alerts.fetch_error'), this.translationService.instant('shared.actions.close'));
+      },
+    });
+  }
+
+  refresh() {
+    this.loading.set(true);
+    forkJoin({
+      locations: this.locationsService.getLocations(true),
+      printers: this.printersService.getPrinters(true)
+    }).subscribe({
+      next: ({ locations }) => {
+        this.locationsMap = new Map(locations.map(l => [l.id, l.name]));
+        this.printersService.applyLocationNames(this.locationsMap);
         this.loading.set(false);
       },
       error: (err) => {
@@ -87,29 +107,17 @@ export class Printer implements OnInit {
     });
     ref.afterClosed().subscribe(values => {
       if (values) {
-        const confirmRef = this.dialog.open(ConfirmDialog, { 
-          width: '300px', 
-          data: { 
-            title: this.translationService.instant('shared.confirm_dialog.save_changes_title'), 
-            message: this.translationService.instant('shared.confirm_dialog.save_changes_message'), 
-            confirmLabel: this.translationService.instant('shared.actions.save'), 
-            cancelLabel: this.translationService.instant('shared.actions.cancel') 
-          } 
-        });
-        confirmRef.afterClosed().subscribe(confirmed => {
-          if (confirmed) {
-            this.printersService.updatePrinter(row.id, values).subscribe({
-              next: () => {
-                this.printersService.applyLocationNames(this.locationsMap);
-                this.showAlert(this.translationService.instant('printers.alerts.updated'), this.translationService.instant('shared.actions.close'));
-              },
-              error: () => this.showAlert(this.translationService.instant('printers.alerts.update_error'), this.translationService.instant('shared.actions.close'))
-            });
-          }
+        this.printersService.updatePrinter(row.id, values).subscribe({
+          next: () => {
+            this.printersService.applyLocationNames(this.locationsMap);
+            this.showAlert(this.translationService.instant('printers.alerts.updated'), this.translationService.instant('shared.actions.close'));
+          },
+          error: () => this.showAlert(this.translationService.instant('printers.alerts.update_error'), this.translationService.instant('shared.actions.close'))
         });
       }
     });
   }
+
   deletePrinter(id: string) {
     const ref = this.dialog.open(ConfirmDialog, {
       width: '300px',

@@ -20,7 +20,7 @@ export class PrintersService {
   constructor() {
     this.cacheEvent.events$.subscribe(entity => {
       if (entity === 'printer' || entity === 'location') {
-        this.getPrinters(true).subscribe();
+        this.getPrinters(true).subscribe({ error: err => console.error('Background refresh printers failed:', err) });
       }
     });
   }
