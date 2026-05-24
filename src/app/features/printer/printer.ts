@@ -38,8 +38,8 @@ export class Printer implements OnInit {
     this.translationService.currentLangSignal();
     return [
       { id: 'name', header: this.translationService.instant('printers.columns.name'), field: 'name', type: 'text' as const },
-      { id: 'model', header: this.translationService.instant('printers.columns.model'), field: 'model', type: 'text' as const },
       { id: 'manufacturer', header: this.translationService.instant('printers.columns.manufacturer'), field: 'manufacturer', type: 'text' as const },
+      { id: 'model', header: this.translationService.instant('printers.columns.model'), field: 'model', type: 'text' as const },
       { id: 'ipAddress', header: this.translationService.instant('printers.columns.ip_address'), field: 'ipAddress', type: 'text' as const },
       { id: 'locationName', header: this.translationService.instant('printers.columns.location'), field: 'locationName', type: 'text' as const },
       { id: 'createdAt', header: this.translationService.instant('printers.columns.created_at'), field: 'createdAt', type: 'date' as const, dateFormat: 'dd/MM/yyyy' },

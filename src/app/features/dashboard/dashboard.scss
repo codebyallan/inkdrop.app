@@ -10,13 +10,8 @@
   gap: 1.5rem;
   width: 100%;
 
-  @media (max-width: 900px) {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  @media (max-width: 500px) {
-    grid-template-columns: 1fr;
-  }
+  @media (max-width: 900px) { grid-template-columns: repeat(2, 1fr); }
+  @media (max-width: 500px)  { grid-template-columns: 1fr; }
 }
 
 .kpi-card {
@@ -53,33 +48,28 @@
     color: var(--mat-sys-on-surface, #1c1b1f);
   }
 
-  &--toners    { border-left: 10px solid #1565c0; }
+  &--toners     { border-left: 10px solid #1565c0; }
   &--low-toners { border-left: 10px solid #f57c00; }
-  &--printers  { border-left: 10px solid #2e7d32; }
-  &--movements { border-left: 10px solid #e65100; }
+  &--printers   { border-left: 10px solid #2e7d32; }
+  &--movements  { border-left: 10px solid #e65100; }
 }
 
 // ─── Tables row ──────────────────────────────────────────────────────────────
 
 .tables-row {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 3fr 2fr;
   gap: 1.5rem;
   width: 100%;
   align-items: start;
 
-  @media (max-width: 900px) {
-    grid-template-columns: 1fr;
-  }
+  @media (max-width: 900px) { grid-template-columns: 1fr; }
 }
 
 // ─── Table panel ─────────────────────────────────────────────────────────────
 
 .table-panel {
-  // min-width: 0 é obrigatório em grid items com overflow interno.
-  // Sem isso, o item expande além do 1fr em vez de acionar o scroll.
   min-width: 0;
-
   padding: 1.25rem 1.5rem;
   border-radius: 12px;
   background-color: var(--mat-sys-surface, #fff);
@@ -118,7 +108,53 @@
     &--warn { background-color: #fff3e0; color: #e65100; }
   }
 
+  // "See all" footer for when there are more than 3 toner cartridges with low stock.
+  &__see-all {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-top: 0.75rem;
+    padding: 0.4rem 0;
+    width: 100%;
+    background: none;
+    border: none;
+    border-top: 1px solid var(--mat-sys-outline-variant, #e0e0e0);
+    cursor: pointer;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #f57c00;
+    letter-spacing: 0.01em;
+    transition: opacity 0.15s ease;
+
+    &:hover { opacity: 0.75; }
+  }
+
+  &__see-all-arrow {
+    font-size: 1rem;
+    line-height: 1;
+  }
+
+  // ── Variants ──────────────────────────────────────────────────────────────
+
+  &--movements {
+    border-left: 10px solid #e65100;
+  }
+
   &--warning {
     border-left: 10px solid #f57c00;
+
+    // Reduce horizontal and vertical padding of cells to fit without scroll
+    ::ng-deep {
+      th.mat-mdc-header-cell,
+      td.mat-mdc-cell {
+        padding-left: 8px;
+        padding-right: 8px;
+      }
+
+      .mat-mdc-row,
+      .mat-mdc-header-row {
+        height: 40px;
+      }
+    }
   }
 }

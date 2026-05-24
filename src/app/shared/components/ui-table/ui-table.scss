@@ -5,11 +5,3 @@
 :host ::ng-deep .delete-btn {
   color: var(--mat-sys-error);
 }
-
-// Impede que células quebrem linha — força scroll horizontal em vez de wrapping
-:host ::ng-deep {
-  th.mat-mdc-header-cell,
-  td.mat-mdc-cell {
-    white-space: nowrap;
-  }
-}

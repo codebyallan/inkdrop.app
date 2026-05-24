@@ -45,13 +45,14 @@ export class Movement implements OnInit {
       { id: 'printerName', header: this.translationService.instant('movements.columns.printer'), field: 'printerName', type: 'text' as const },
       { id: 'quantity', header: this.translationService.instant('movements.columns.quantity'), field: 'quantity', type: 'text' as const },
       { 
-        id: 'type', 
-        header: this.translationService.instant('movements.columns.type'), 
-        field: 'type', 
-        type: 'text' as const,
-        transform: (val: any) => (val?.toString().toLowerCase() === 'in') 
-          ? this.translationService.instant('movements.type_in') 
-          : this.translationService.instant('movements.type_out')
+        id: 'type',
+        header: this.translationService.instant('movements.columns.type'),
+        field: 'type',
+        type: 'icon' as const,
+        transform: (val: any) => val?.toString().toLowerCase() === 'in' ? 'arrow_upward' : 'arrow_downward',
+        colorTransform: (val: any) => val?.toString().toLowerCase() === 'in' ? '#2e7d32' : '#c62828',
+        tooltipTransform: (val: any, _row: any, t = this.translationService) =>
+          val?.toString().toLowerCase() === 'in' ? t.instant('movements.type_in') : t.instant('movements.type_out'),
       },
       { id: 'description', header: this.translationService.instant('movements.columns.description'), field: 'description', type: 'text' as const },
       { id: 'createdAt', header: this.translationService.instant('movements.columns.created_at'), field: 'createdAt', type: 'date' as const, dateFormat: 'dd/MM/yyyy' }
@@ -105,7 +106,11 @@ export class Movement implements OnInit {
 
   openDialog() {
     const toners = Array.from(this.tonersMap.entries()).map(([id, label]) => ({ id, label }));
-    const printers = Array.from(this.printersMap.entries()).map(([id, { name }]) => ({ id, name }));
+    const locationsMap = new Map(this.locations().map(l => [l.id, l.name]));
+    const printers = Array.from(this.printersMap.entries()).map(([id, { name, locationId }]) => ({
+      id,
+      name: locationId ? `${name} - ${locationsMap.get(locationId) ?? name}` : name,
+    }));
     const ref = this.dialog.open(MovementForm, { width: '560px', data: { toners, printers } });
     ref.afterClosed().subscribe(result => {
       if (result) {

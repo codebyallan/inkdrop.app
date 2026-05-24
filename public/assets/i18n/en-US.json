@@ -38,7 +38,8 @@
     "low_stock_toners": "Low Stock Toners",
     "low_stock_ok": "All stocked",
     "low_stock_alert": "toner(s) low",
-    "btn_manage_toners": "Manage Toners"
+    "btn_manage_toners": "Manage Toners",
+    "low_stock_more": "more in alert — See all"
   },
   "toners": {
     "page_title": "Toners",

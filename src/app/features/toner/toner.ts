@@ -31,8 +31,8 @@ export class Toner implements OnInit {
   columnsConfig = computed(() => {
     this.translationService.currentLangSignal();
     return [
-      { id: 'model', header: this.translationService.instant('toners.columns.model'), field: 'model', type: 'text' as const },
       { id: 'manufacturer', header: this.translationService.instant('toners.columns.manufacturer'), field: 'manufacturer', type: 'text' as const },
+      { id: 'model', header: this.translationService.instant('toners.columns.model'), field: 'model', type: 'text' as const },
       { id: 'color', header: this.translationService.instant('toners.columns.color'), field: 'color', type: 'text' as const },
       { id: 'quantity', header: this.translationService.instant('toners.columns.quantity'), field: 'quantity', type: 'text' as const },
       { id: 'createdAt', header: this.translationService.instant('toners.columns.created_at'), field: 'createdAt', type: 'date' as const, dateFormat: 'dd/MM/yyyy' },

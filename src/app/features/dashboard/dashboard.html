@@ -30,9 +30,9 @@
       </mat-card>
     </section>
 
-    <!-- ── Tables skeleton: mesma estrutura visual do estado real ── -->
+    <!-- ── Tables skeleton ── -->
     <section class="tables-row">
-      <div class="table-panel">
+      <div class="table-panel table-panel--movements">
         <div class="h-5 w-[18ch] rounded bg-[var(--mat-sys-surface-variant)] opacity-60 animate-pulse mb-5"></div>
         <app-ui-table [data]="[]" [columns]="recentMovementsColumns()" [loading]="true" [skeletonRows]="3" />
       </div>
@@ -72,11 +72,11 @@
       </mat-card>
     </section>
 
-    <!-- ── Tables row: responsivo, side-by-side em desktop, empilhado em mobile ── -->
+    <!-- ── Tables row ── -->
     <section class="tables-row">
 
-      <!-- Movimentações Recentes -->
-      <div class="table-panel">
+      <!-- Recent Movements -->
+      <div class="table-panel table-panel--movements">
         <h2 class="table-panel__title">{{ 'dashboard.recent_movements' | translate }}</h2>
         <app-ui-table
           [data]="recentMovements()"
@@ -86,7 +86,7 @@
         />
       </div>
 
-      <!-- Toners com Estoque Baixo -->
+      <!-- Toners with Low Stock -->
       <div class="table-panel table-panel--warning">
         <div class="table-panel__header">
           <h2 class="table-panel__title">{{ 'dashboard.low_stock_toners' | translate }}</h2>
@@ -100,12 +100,20 @@
             </span>
           }
         </div>
+
         <app-ui-table
           [data]="lowTonersTableData()"
           [columns]="lowTonersColumns()"
           [loading]="false"
           [skeletonRows]="3"
         />
+
+        @if (extraLowTonersCount() > 0) {
+          <button class="table-panel__see-all" (click)="goToToners()">
+            + {{ extraLowTonersCount() }} {{ 'dashboard.low_stock_more' | translate }}
+            <span class="table-panel__see-all-arrow">→</span>
+          </button>
+        }
       </div>
 
     </section>

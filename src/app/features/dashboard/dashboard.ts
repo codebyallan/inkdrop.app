@@ -85,16 +85,18 @@ export class Dashboard implements OnInit {
   recentMovementsColumns = computed(() => {
     this.translationService.currentLangSignal();
     return [
-      { id: 'createdAt', header: this.translationService.instant('shared.columns.date'), field: 'createdAt', type: 'date' as const, dateFormat: 'dd/MM/yyyy' },
+      { id: 'createdAt', header: this.translationService.instant('shared.columns.date'), field: 'createdAt', type: 'date' as const, dateFormat: 'dd/MM' },
       { id: 'printerName', header: this.translationService.instant('movements.columns.printer'), field: 'printerName', type: 'text' as const },
       {
         id: 'type',
         header: this.translationService.instant('movements.columns.type'),
         field: 'type',
-        type: 'text' as const,
-        transform: (val: string) => (val?.toString().toLowerCase() === 'in')
+        type: 'icon' as const,
+        transform: (val: string) => val?.toString().toLowerCase() === 'in' ? 'arrow_upward' : 'arrow_downward',
+        colorTransform: (val: string) => val?.toString().toLowerCase() === 'in' ? '#2e7d32' : '#c62828',
+        tooltipTransform: (val: string) => val?.toString().toLowerCase() === 'in'
           ? this.translationService.instant('movements.type_in')
-          : this.translationService.instant('movements.type_out')
+          : this.translationService.instant('movements.type_out'),
       },
       { id: 'tonerModel', header: this.translationService.instant('movements.columns.toner'), field: 'tonerModel', type: 'text' as const },
       { id: 'quantity', header: this.translationService.instant('movements.columns.quantity'), field: 'quantity', type: 'text' as const },
@@ -104,15 +106,19 @@ export class Dashboard implements OnInit {
   // ─── Low Stock Toners table ───────────────────────────────────────────────
 
   lowTonersTableData = computed(() =>
-    [...this.lowToners()].sort((a, b) => (a.quantity ?? 0) - (b.quantity ?? 0))
+    [...this.lowToners()]
+      .sort((a, b) => (a.quantity ?? 0) - (b.quantity ?? 0))
+      .slice(0, 3)
   );
+
+  extraLowTonersCount = computed(() => Math.max(0, this.lowToners().length - 3));
 
   lowTonersColumns = computed(() => {
     this.translationService.currentLangSignal();
     return [
+      { id: 'manufacturer', header: this.translationService.instant('toners.columns.manufacturer'), field: 'manufacturer', type: 'text' as const },
       { id: 'model', header: this.translationService.instant('toners.columns.model'), field: 'model', type: 'text' as const },
       { id: 'color', header: this.translationService.instant('toners.columns.color'), field: 'color', type: 'text' as const },
-      { id: 'manufacturer', header: this.translationService.instant('toners.columns.manufacturer'), field: 'manufacturer', type: 'text' as const },
       { id: 'quantity', header: this.translationService.instant('toners.columns.quantity'), field: 'quantity', type: 'text' as const },
     ];
   });
@@ -149,7 +155,13 @@ export class Dashboard implements OnInit {
       id: t.id,
       label: `${t.model} - ${t.color}`,
     }));
-    const printers = this.printers().map((p) => ({ id: p.id, name: p.name }));
+    const locationsMap = new Map(this.locations().map((l) => [l.id, l.name]));
+    const printers = this.printers().map((p) => ({
+      id: p.id,
+      name: p.locationId
+        ? `${p.name} - ${locationsMap.get(p.locationId) ?? p.name}`
+        : p.name,
+    }));
     const ref = this.dialog.open(MovementForm, {
       width: '560px',
       data: { toners, printers },
