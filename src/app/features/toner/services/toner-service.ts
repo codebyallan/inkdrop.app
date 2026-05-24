@@ -4,12 +4,14 @@ import { Observable, of } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { IToner } from '../types';
 import { tap } from 'rxjs/operators';
+import { CacheEventService } from '../../../core/services/cache-event.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TonersService {
   private http = inject(HttpClient);
+  private cacheEvent = inject(CacheEventService);
   private API_URL = `${environment.BASE_URL}/toner`;
 
   private _toners = signal<IToner[]>([]);
@@ -17,8 +19,18 @@ export class TonersService {
   public readonly toners = this._toners.asReadonly();
   public readonly lowToners = this._lowToners.asReadonly();
 
-  getToners(): Observable<IToner[]> {
-    if (this._toners().length > 0) {
+  constructor() {
+    // Listen for changes that affect toners
+    this.cacheEvent.events$.subscribe(entity => {
+      if (entity === 'toner' || entity === 'movement') {
+        this.getToners(true).subscribe();
+        this.getLowStock(3, true).subscribe();
+      }
+    });
+  }
+
+  getToners(forceRefresh = false): Observable<IToner[]> {
+    if (!forceRefresh && this._toners().length > 0) {
       return of(this._toners());
     }
     return this.http.get<IToner[]>(this.API_URL).pipe(
@@ -26,8 +38,8 @@ export class TonersService {
     );
   }
 
-  getLowStock(threshold = 3): Observable<IToner[]> {
-    if (this._lowToners().length > 0) {
+  getLowStock(threshold = 3, forceRefresh = false): Observable<IToner[]> {
+    if (!forceRefresh && this._lowToners().length > 0) {
       return of(this._lowToners());
     }
     return this.http.get<IToner[]>(`${this.API_URL}/low`, {
@@ -41,7 +53,7 @@ export class TonersService {
     return this.http.post<IToner>(this.API_URL, payload).pipe(
       tap(created => {
         this._toners.update(prev => [...prev, created]);
-        this._lowToners.set([]);
+        this.cacheEvent.broadcast('toner');
       })
     );
   }
@@ -51,7 +63,7 @@ export class TonersService {
         this._toners.update(prev => 
           prev.map(t => t.id === updated.id ? updated : t)
         );
-        this._lowToners.set([]);
+        this.cacheEvent.broadcast('toner');
       })
     );
   }
@@ -60,6 +72,7 @@ export class TonersService {
       tap(() => {
         this._toners.update(prev => prev.filter(t => t.id !== id));
         this._lowToners.update(prev => prev.filter(t => t.id !== id));
+        this.cacheEvent.broadcast('toner');
       })
     );
   }
