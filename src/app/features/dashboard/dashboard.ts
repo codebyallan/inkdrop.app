@@ -10,6 +10,7 @@ import { PrintersService } from '../printer/services/printer-service';
 import { MovementsService } from '../movement/services/movement-service';
 import { LocationsService } from '../location/services/location-service';
 import { TranslationService } from '../../core/services/translation.service';
+import { AuthService } from '../../core/services/auth.service';
 import { MovementForm } from '../movement/components/movement-form/movement-form';
 import { UiTableComponent } from '../../shared/components/ui-table/ui-table';
 import { TranslateModule } from '@ngx-translate/core';
@@ -30,6 +31,7 @@ export class Dashboard implements OnInit {
   private movementsService = inject(MovementsService);
   private locationsService = inject(LocationsService);
   private translationService = inject(TranslationService);
+  public authService = inject(AuthService);
   private _snackBar = inject(MatSnackBar);
   private dialog = inject(MatDialog);
   private router = inject(Router);

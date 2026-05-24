@@ -127,9 +127,11 @@
     <button mat-stroked-button (click)="goToHistory()">
       {{ 'dashboard.btn_view_history' | translate }}
     </button>
-    <button mat-stroked-button (click)="goToToners()">
-      {{ 'dashboard.btn_manage_toners' | translate }}
-    </button>
+    @if (authService.isAdmin()) {
+      <button mat-stroked-button (click)="goToToners()">
+        {{ 'dashboard.btn_manage_toners' | translate }}
+      </button>
+    }
   </div>
 
 </div>
