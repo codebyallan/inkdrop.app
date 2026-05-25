@@ -26,9 +26,17 @@ export class PrintersService {
   }
 
   getPrinters(forceRefresh = false): Observable<IPrinter[]> {
-    if (!forceRefresh && this._printers().length > 0) {
+    const hasCache = this._printers().length > 0;
+
+    if (!forceRefresh && hasCache) {
+      // Return cache immediately and refresh in background (Stale-While-Revalidate)
+      this.http.get<IPrinter[]>(this.API_URL).pipe(
+        tap(data => this._printers.set(data))
+      ).subscribe({ error: err => console.error('Background refresh printers failed:', err) });
+
       return of(this._printers());
     }
+
     return this.http.get<IPrinter[]>(this.API_URL).pipe(
       tap(data => this._printers.set(data))
     );

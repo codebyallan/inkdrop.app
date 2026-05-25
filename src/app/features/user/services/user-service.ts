@@ -26,9 +26,17 @@ export class UserService {
   }
 
   getUsers(forceRefresh = false): Observable<IUser[]> {
-    if (!forceRefresh && this._users().length > 0) {
+    const hasCache = this._users().length > 0;
+
+    if (!forceRefresh && hasCache) {
+      // Return cache immediately and refresh in background (Stale-While-Revalidate)
+      this.http.get<IUser[]>(this.API_URL).pipe(
+        tap(data => this._users.set(data))
+      ).subscribe({ error: err => console.error('Background refresh users failed:', err) });
+
       return of(this._users());
     }
+
     return this.http.get<IUser[]>(this.API_URL).pipe(
       tap(data => this._users.set(data))
     );

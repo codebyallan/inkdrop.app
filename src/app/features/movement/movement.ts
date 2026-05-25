@@ -36,9 +36,7 @@ export class Movement implements OnInit {
 
   movements = this.movementsService.movements;
   locations = this.locationsService.locations;
-  private tonersMap = new Map<string, string>();
-  private printersMap = new Map<string, { name: string, locationId: string }>();
-  loading = signal<boolean>(true);
+  loading = signal<boolean>(false);
   columnsConfig = computed(() => {
     this.translationService.currentLangSignal();
     return [
@@ -60,16 +58,25 @@ export class Movement implements OnInit {
     ];
   });
 
-  // Computed signal to handle the dynamic composition of Printer - Location
+  // Derived signals to handle the dynamic composition of Printer - Location
+  // Using computed signals instead of plain Maps to ensure reactivity with SWR
+  private tonersMap = computed(() => {
+    return new Map(this.tonersService.toners().map(t => [t.id, `${t.model} - ${t.color}`]));
+  });
+
+  private printersMap = computed(() => {
+    return new Map(this.printersService.printers().map(p => [p.id, { name: p.name, locationId: p.locationId }]));
+  });
+
   movementsWithDetails = computed(() => {
     this.translationService.currentLangSignal();
     const list = this.movements();
-    const tonersMap = this.tonersMap;
-    const printersMap = this.printersMap;
+    const tMap = this.tonersMap();
+    const pMap = this.printersMap();
     const locationsMap = new Map(this.locations().map(l => [l.id, l.name]));
 
     return list.map(m => {
-      const printer = m.printerId ? printersMap.get(m.printerId) : null;
+      const printer = m.printerId ? pMap.get(m.printerId) : null;
       const locationName = printer ? locationsMap.get(printer.locationId) : '';
       const printerDisplay = printer 
         ? `${printer.name} - ${locationName || this.translationService.instant('shared.no_location')}` 
@@ -77,14 +84,22 @@ export class Movement implements OnInit {
 
       return {
         ...m,
-        tonerModel: m.tonerId ? (tonersMap.get(m.tonerId) || m.tonerModel || '') : (m.tonerModel || ''),
+        tonerModel: m.tonerId ? (tMap.get(m.tonerId) || m.tonerModel || '') : (m.tonerModel || ''),
         printerName: printerDisplay
       };
     });
   });
 
   ngOnInit() {
-    this.loading.set(true);
+    // Only show loading if we have absolutely no data in any of the required signals
+    const hasCache = this.movements().length > 0 || 
+                     this.tonersService.toners().length > 0 || 
+                     this.printersService.printers().length > 0 || 
+                     this.locations().length > 0;
+
+    if (!hasCache) {
+      this.loading.set(true);
+    }
     
     forkJoin({
       toners: this.tonersService.getToners(),
@@ -92,9 +107,7 @@ export class Movement implements OnInit {
       locations: this.locationsService.getLocations(),
       movements: this.movementsService.getMovements()
     }).subscribe({
-      next: ({ toners, printers }) => {
-        this.tonersMap = new Map(toners.map(t => [t.id, `${t.model} - ${t.color}`]));
-        this.printersMap = new Map(printers.map(p => [p.id, { name: p.name, locationId: p.locationId }]));
+      next: () => {
         this.loading.set(false);
       },
       error: (err) => {
@@ -113,9 +126,7 @@ export class Movement implements OnInit {
       locations: this.locationsService.getLocations(true),
       movements: this.movementsService.getMovements(true),
     }).subscribe({
-      next: ({ toners, printers }) => {
-        this.tonersMap   = new Map(toners.map(t => [t.id, `${t.model} - ${t.color}`]));
-        this.printersMap = new Map(printers.map(p => [p.id, { name: p.name, locationId: p.locationId }]));
+      next: () => {
         this.loading.set(false);
       },
       error: (err) => {
@@ -127,9 +138,12 @@ export class Movement implements OnInit {
   }
 
   openDialog() {
-    const toners = Array.from(this.tonersMap.entries()).map(([id, label]) => ({ id, label }));
+    const tMap = this.tonersMap();
     const locationsMap = new Map(this.locations().map(l => [l.id, l.name]));
-    const printers = Array.from(this.printersMap.entries()).map(([id, { name, locationId }]) => ({
+    const pMap = this.printersMap();
+    
+    const toners = Array.from(tMap.entries()).map(([id, label]) => ({ id, label }));
+    const printers = Array.from(pMap.entries()).map(([id, { name, locationId }]) => ({
       id,
       name: locationId ? `${name} - ${locationsMap.get(locationId) ?? name}` : name,
     }));

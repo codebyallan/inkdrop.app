@@ -130,7 +130,16 @@ export class Dashboard implements OnInit {
   private readonly lowStockThreshold = 3;
 
   ngOnInit() {
-    this.loading.set(true);
+    // Use OR (||) instead of AND (&&) because any cached entity means we can show something 
+    // and avoid a full-page loading flicker
+    const hasCache = this.toners().length > 0 || 
+                     this.printers().length > 0 || 
+                     this.locations().length > 0 || 
+                     this.movements().length > 0;
+
+    if (!hasCache) {
+      this.loading.set(true);
+    }
 
     forkJoin({
       toners: this.tonersService.getToners(),

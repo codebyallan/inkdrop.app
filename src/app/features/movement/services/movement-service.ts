@@ -18,9 +18,17 @@ export class MovementsService {
   public readonly movements = this._movements.asReadonly();
 
   getMovements(forceRefresh = false): Observable<IMovement[]> {
-    if (!forceRefresh && this._movements().length > 0) {
+    const hasCache = this._movements().length > 0;
+
+    if (!forceRefresh && hasCache) {
+      // Return cache immediately and refresh in background (Stale-While-Revalidate)
+      this.http.get<IMovement[]>(this.API_URL).pipe(
+        tap(data => this._movements.set(data))
+      ).subscribe({ error: err => console.error('Background refresh movements failed:', err) });
+
       return of(this._movements());
     }
+
     return this.http.get<IMovement[]>(this.API_URL).pipe(
       tap(data => this._movements.set(data))
     );

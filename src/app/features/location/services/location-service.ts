@@ -26,9 +26,17 @@ export class LocationsService {
   }
 
   getLocations(forceRefresh = false): Observable<ILocation[]> {
-    if (!forceRefresh && this._locations().length > 0) {
+    const hasCache = this._locations().length > 0;
+
+    if (!forceRefresh && hasCache) {
+      // Return cache immediately and refresh in background (Stale-While-Revalidate)
+      this.http.get<ILocation[]>(this.API_URL).pipe(
+        tap(data => this._locations.set(data))
+      ).subscribe({ error: err => console.error('Background refresh locations failed:', err) });
+
       return of(this._locations());
     }
+
     return this.http.get<ILocation[]>(this.API_URL).pipe(
       tap(data => this._locations.set(data))
     );
