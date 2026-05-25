@@ -2,6 +2,7 @@ import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { PageLayoutComponent } from '../../shared/components/page-layout/page-layout';
 import { UiTableComponent } from '../../shared/components/ui-table/ui-table';
 import { MovementsService } from './services/movement-service';
@@ -20,7 +21,7 @@ import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-movement',
-  imports: [MatButtonModule, MatIconModule, MatSnackBarModule, PageLayoutComponent, UiTableComponent, MatDialogModule, TranslateModule],
+  imports: [MatButtonModule, MatIconModule, MatSnackBarModule, MatProgressBarModule, PageLayoutComponent, UiTableComponent, MatDialogModule, TranslateModule],
   templateUrl: './movement.html',
   styleUrl: './movement.scss',
 })
@@ -101,6 +102,27 @@ export class Movement implements OnInit {
         this.loading.set(false);
         this.showAlert(this.translationService.instant('movements.alerts.fetch_error'), this.translationService.instant('shared.actions.close'));
       }
+    });
+  }
+
+  refresh() {
+    this.loading.set(true);
+    forkJoin({
+      toners:    this.tonersService.getToners(true),
+      printers:  this.printersService.getPrinters(true),
+      locations: this.locationsService.getLocations(true),
+      movements: this.movementsService.getMovements(true),
+    }).subscribe({
+      next: ({ toners, printers }) => {
+        this.tonersMap   = new Map(toners.map(t => [t.id, `${t.model} - ${t.color}`]));
+        this.printersMap = new Map(printers.map(p => [p.id, { name: p.name, locationId: p.locationId }]));
+        this.loading.set(false);
+      },
+      error: (err) => {
+        console.error(err);
+        this.loading.set(false);
+        this.showAlert(this.translationService.instant('movements.alerts.fetch_error'), this.translationService.instant('shared.actions.close'));
+      },
     });
   }
 

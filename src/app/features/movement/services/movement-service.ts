@@ -17,8 +17,8 @@ export class MovementsService {
   private _movements = signal<IMovement[]>([]);
   public readonly movements = this._movements.asReadonly();
 
-  getMovements(): Observable<IMovement[]> {
-    if (this._movements().length > 0) {
+  getMovements(forceRefresh = false): Observable<IMovement[]> {
+    if (!forceRefresh && this._movements().length > 0) {
       return of(this._movements());
     }
     return this.http.get<IMovement[]>(this.API_URL).pipe(

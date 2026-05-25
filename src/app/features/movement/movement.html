@@ -1,8 +1,16 @@
 <app-page-layout [title]="'movements.page_title' | translate">
+  <button page-actions mat-icon-button (click)="refresh()" [disabled]="loading()">
+    <mat-icon>refresh</mat-icon>
+  </button>
+
   <button page-actions mat-flat-button (click)="openDialog()">
     <mat-icon>add</mat-icon>
     {{ 'shared.actions.new' | translate }}
   </button>
+
+  @if (loading()) {
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  }
   <app-ui-table [data]="movementsWithDetails()" [columns]="columnsConfig()" [loading]="loading()"></app-ui-table>
 </app-page-layout>
 
