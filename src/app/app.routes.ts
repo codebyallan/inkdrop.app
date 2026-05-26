@@ -1,10 +1,10 @@
 import { Routes } from '@angular/router';
 import { DefaultLayout } from './layout/default-layout/default-layout';
-import { Dashboard } from './features/dashboard/dashboard';
-import { Location } from './features/location/location';
-import { Printer } from './features/printer/printer';
-import { Toner } from './features/toner/toner';
-import { Movement } from './features/movement/movement';
+import { Dashboard } from './features/dashboard/dashboard.component';
+import { Location } from './features/location/location.component';
+import { Printer } from './features/printer/printer.component';
+import { Toner } from './features/toner/toner.component';
+import { Movement } from './features/movement/movement.component';
 import { authGuard, guestGuard, verifiedAuthGuard } from './core/guards/auth.guard';
 import { adminGuard } from './core/guards/admin.guard';
 
@@ -27,7 +27,7 @@ export const routes: Routes = [
             { path: 'movements', component: Movement },
             { 
               path: 'users', 
-              loadComponent: () => import('./features/user/user').then(m => m.User), 
+              loadComponent: () => import('./features/user/user.component').then(m => m.User), 
               canActivate: [adminGuard] 
             }
         ]

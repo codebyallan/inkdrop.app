@@ -9,7 +9,7 @@ import { TonersService } from './services/toner-service';
 import { IToner } from './types';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ConfirmDialog } from '../../shared/components/confirm-dialog/confirm-dialog';
-import { TonerForm } from './components/toner-form/toner-form';
+import { TonerForm } from './components/toner-form/toner-form.component';
 import { AuthService } from '../../core/services/auth.service';
 import { TranslationService } from '../../core/services/translation.service';
 import { TranslateModule } from '@ngx-translate/core';
@@ -17,8 +17,8 @@ import { TranslateModule } from '@ngx-translate/core';
 @Component({
   selector: 'app-toner',
   imports: [MatButtonModule, MatIconModule, MatSnackBarModule, MatProgressBarModule, PageLayoutComponent, UiTableComponent, MatDialogModule, TranslateModule],
-  templateUrl: './toner.html',
-  styleUrl: './toner.scss',
+  templateUrl: './toner.component.html',
+  styleUrl: './toner.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Toner implements OnInit {

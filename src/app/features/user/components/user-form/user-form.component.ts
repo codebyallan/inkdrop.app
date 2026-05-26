@@ -25,8 +25,8 @@ import { computed } from '@angular/core';
     ValidationMessageComponent,
     TranslateModule
   ],
-  templateUrl: './user-form.html',
-  styleUrl: './user-form.scss',
+  templateUrl: './user-form.component.html',
+  styleUrl: './user-form.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UserForm implements OnInit {

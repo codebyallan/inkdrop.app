@@ -8,7 +8,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatDialog } from '@angular/material/dialog';
-import { LocationForm } from './components/location-form/location-form';
+import { LocationForm } from './components/location-form/location-form.component';
 import { ConfirmDialog } from '../../shared/components/confirm-dialog/confirm-dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { PageLayoutComponent } from '../../shared/components/page-layout/page-layout';
@@ -20,8 +20,8 @@ import { TranslateModule } from '@ngx-translate/core';
 @Component({
   selector: 'app-location',
   imports: [MatTableModule, MatButtonModule, MatIconModule, MatSnackBarModule, MatProgressBarModule, PageLayoutComponent, UiTableComponent, TranslateModule],
-  templateUrl: './location.html',
-  styleUrl: './location.scss',
+  templateUrl: './location.component.html',
+  styleUrl: './location.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Location implements OnInit {

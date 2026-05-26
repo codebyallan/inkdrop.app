@@ -10,8 +10,8 @@ import { TranslateModule } from '@ngx-translate/core';
 @Component({
   selector: 'app-location-form',
   imports: [ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatDialogModule, ValidationMessageComponent, TranslateModule],
-  templateUrl: './location-form.html',
-  styleUrl: './location-form.scss',
+  templateUrl: './location-form.component.html',
+  styleUrl: './location-form.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LocationForm implements OnInit {

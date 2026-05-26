@@ -15,8 +15,8 @@ type DialogData = { locations: Array<{ id: string; name: string }>, mode?: 'crea
 @Component({
   selector: 'app-printer-form',
   imports: [ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatDialogModule, MatSelectModule, ValidationMessageComponent, TranslateModule],
-  templateUrl: './printer-form.html',
-  styleUrl: './printer-form.scss',
+  templateUrl: './printer-form.component.html',
+  styleUrl: './printer-form.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PrinterForm implements OnInit {

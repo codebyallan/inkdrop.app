@@ -11,7 +11,7 @@ import { IPrinter } from './types';
 import { LocationsService } from '../location/services/location-service';
 import { ILocation } from '../location/types';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { PrinterForm } from './components/printer-form/printer-form';
+import { PrinterForm } from './components/printer-form/printer-form.component';
 import { ConfirmDialog } from '../../shared/components/confirm-dialog/confirm-dialog';
 import { AuthService } from '../../core/services/auth.service';
 import { TranslationService } from '../../core/services/translation.service';
@@ -21,8 +21,8 @@ import { forkJoin } from 'rxjs';
 @Component({
   selector: 'app-printer',
   imports: [MatButtonModule, MatIconModule, MatSnackBarModule, MatProgressBarModule, PageLayoutComponent, UiTableComponent, MatDialogModule, TranslateModule],
-  templateUrl: './printer.html',
-  styleUrl: './printer.scss',
+  templateUrl: './printer.component.html',
+  styleUrl: './printer.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Printer implements OnInit {

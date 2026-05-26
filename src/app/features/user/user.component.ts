@@ -9,7 +9,7 @@ import { UserService } from './services/user-service';
 import { IUser, ROLE_MAP, UserRole } from './types';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ConfirmDialog } from '../../shared/components/confirm-dialog/confirm-dialog';
-import { UserForm } from './components/user-form/user-form';
+import { UserForm } from './components/user-form/user-form.component';
 import { AuthService } from '../../core/services/auth.service';
 import { TranslationService } from '../../core/services/translation.service';
 import { TranslateModule } from '@ngx-translate/core';
@@ -18,8 +18,8 @@ import { TranslateModule } from '@ngx-translate/core';
   selector: 'app-user',
   standalone: true,
   imports: [MatButtonModule, MatIconModule, MatSnackBarModule, MatProgressBarModule, PageLayoutComponent, UiTableComponent, MatDialogModule, TranslateModule],
-  templateUrl: './user.html',
-  styleUrl: './user.scss',
+  templateUrl: './user.component.html',
+  styleUrl: './user.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class User implements OnInit {

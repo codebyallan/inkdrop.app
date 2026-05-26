@@ -11,7 +11,7 @@ import { MovementsService } from '../movement/services/movement-service';
 import { LocationsService } from '../location/services/location-service';
 import { TranslationService } from '../../core/services/translation.service';
 import { AuthService } from '../../core/services/auth.service';
-import { MovementForm } from '../movement/components/movement-form/movement-form';
+import { MovementForm } from '../movement/components/movement-form/movement-form.component';
 import { UiTableComponent } from '../../shared/components/ui-table/ui-table';
 import { TranslateModule } from '@ngx-translate/core';
 import { IToner } from '../toner/types';
@@ -22,8 +22,8 @@ import { ILocation } from '../location/types';
 @Component({
   selector: 'app-dashboard',
   imports: [MatCardModule, MatButtonModule, MatSnackBarModule, MatDialogModule, UiTableComponent, TranslateModule],
-  templateUrl: './dashboard.html',
-  styleUrl: './dashboard.scss',
+  templateUrl: './dashboard.component.html',
+  styleUrl: './dashboard.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Dashboard implements OnInit {

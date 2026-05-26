@@ -17,8 +17,8 @@ type DialogData = { toners: Array<{ id: string; label: string }>, printers: Arra
 @Component({
   selector: 'app-movement-form',
   imports: [ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatDialogModule, MatSelectModule, ValidationMessageComponent, TranslateModule],
-  templateUrl: './movement-form.html',
-  styleUrl: './movement-form.scss',
+  templateUrl: './movement-form.component.html',
+  styleUrl: './movement-form.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MovementForm implements OnInit {

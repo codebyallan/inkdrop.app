@@ -8,7 +8,7 @@ import { UiTableComponent } from '../../shared/components/ui-table/ui-table';
 import { MovementsService } from './services/movement-service';
 import { IMovement } from './types';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MovementForm } from './components/movement-form/movement-form';
+import { MovementForm } from './components/movement-form/movement-form.component';
 import { TonersService } from '../toner/services/toner-service';
 import { PrintersService } from '../printer/services/printer-service';
 import { IToner } from '../toner/types';
@@ -22,8 +22,8 @@ import { forkJoin } from 'rxjs';
 @Component({
   selector: 'app-movement',
   imports: [MatButtonModule, MatIconModule, MatSnackBarModule, MatProgressBarModule, PageLayoutComponent, UiTableComponent, MatDialogModule, TranslateModule],
-  templateUrl: './movement.html',
-  styleUrl: './movement.scss',
+  templateUrl: './movement.component.html',
+  styleUrl: './movement.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Movement implements OnInit {

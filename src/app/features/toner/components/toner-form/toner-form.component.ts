@@ -10,8 +10,8 @@ import { TranslateModule } from '@ngx-translate/core';
 @Component({
   selector: 'app-toner-form',
   imports: [ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatDialogModule, ValidationMessageComponent, TranslateModule],
-  templateUrl: './toner-form.html',
-  styleUrl: './toner-form.scss',
+  templateUrl: './toner-form.component.html',
+  styleUrl: './toner-form.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TonerForm implements OnInit {
