@@ -16,8 +16,12 @@ export class TonersService {
 
   private _toners = signal<IToner[]>([]);
   private _lowToners = signal<IToner[]>([]);
+  private _loaded = signal(false);
+  private _lowStockLoaded = signal(false);
   public readonly toners = this._toners.asReadonly();
   public readonly lowToners = this._lowToners.asReadonly();
+  public readonly isLoaded = this._loaded.asReadonly();
+  public readonly isLowStockLoaded = this._lowStockLoaded.asReadonly();
 
   constructor() {
     // Listen for changes that affect toners
@@ -30,31 +34,40 @@ export class TonersService {
   }
 
   getToners(forceRefresh = false): Observable<IToner[]> {
-    const hasCache = this._toners().length > 0;
+    const hasCache = this._loaded();
 
     if (!forceRefresh && hasCache) {
       // Return cache immediately and refresh in background (Stale-While-Revalidate)
       this.http.get<IToner[]>(this.API_URL).pipe(
-        tap(data => this._toners.set(data))
+        tap(data => {
+          this._toners.set(data);
+          this._loaded.set(true);
+        })
       ).subscribe({ error: err => console.error('Background refresh toners failed:', err) });
 
       return of(this._toners());
     }
 
     return this.http.get<IToner[]>(this.API_URL).pipe(
-      tap(data => this._toners.set(data))
+      tap(data => {
+        this._toners.set(data);
+        this._loaded.set(true);
+      })
     );
   }
 
   getLowStock(threshold = 3, forceRefresh = false): Observable<IToner[]> {
-    const hasCache = this._lowToners().length > 0;
+    const hasCache = this._lowStockLoaded();
 
     if (!forceRefresh && hasCache) {
       // Return cache immediately and refresh in background (Stale-While-Revalidate)
       this.http.get<IToner[]>(`${this.API_URL}/low`, {
         params: { threshold: threshold.toString() },
       }).pipe(
-        tap(data => this._lowToners.set(data))
+        tap(data => {
+          this._lowToners.set(data);
+          this._lowStockLoaded.set(true);
+        })
       ).subscribe({ error: err => console.error('Background refresh low stock failed:', err) });
 
       return of(this._lowToners());
@@ -63,7 +76,10 @@ export class TonersService {
     return this.http.get<IToner[]>(`${this.API_URL}/low`, {
       params: { threshold: threshold.toString() },
     }).pipe(
-      tap(data => this._lowToners.set(data))
+      tap(data => {
+        this._lowToners.set(data);
+        this._lowStockLoaded.set(true);
+      })
     );
   }
 

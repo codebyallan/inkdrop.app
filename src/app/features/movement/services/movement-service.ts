@@ -15,22 +15,30 @@ export class MovementsService {
   private API_URL = `${environment.BASE_URL}/movements`;
 
   private _movements = signal<IMovement[]>([]);
+  private _loaded = signal(false);
   public readonly movements = this._movements.asReadonly();
+  public readonly isLoaded = this._loaded.asReadonly();
 
   getMovements(forceRefresh = false): Observable<IMovement[]> {
-    const hasCache = this._movements().length > 0;
+    const hasCache = this._loaded();
 
     if (!forceRefresh && hasCache) {
       // Return cache immediately and refresh in background (Stale-While-Revalidate)
       this.http.get<IMovement[]>(this.API_URL).pipe(
-        tap(data => this._movements.set(data))
+        tap(data => {
+          this._movements.set(data);
+          this._loaded.set(true);
+        })
       ).subscribe({ error: err => console.error('Background refresh movements failed:', err) });
 
       return of(this._movements());
     }
 
     return this.http.get<IMovement[]>(this.API_URL).pipe(
-      tap(data => this._movements.set(data))
+      tap(data => {
+        this._movements.set(data);
+        this._loaded.set(true);
+      })
     );
   }
   createMovement(payload: Partial<IMovement>): Observable<IMovement> {

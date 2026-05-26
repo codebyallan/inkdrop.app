@@ -15,7 +15,9 @@ export class UserService {
   private API_URL = `${environment.BASE_URL}/user`;
 
   private _users = signal<IUser[]>([]);
+  private _loaded = signal(false);
   public readonly users = this._users.asReadonly();
+  public readonly isLoaded = this._loaded.asReadonly();
 
   constructor() {
     this.cacheEvent.events$.subscribe(entity => {
@@ -26,19 +28,25 @@ export class UserService {
   }
 
   getUsers(forceRefresh = false): Observable<IUser[]> {
-    const hasCache = this._users().length > 0;
+    const hasCache = this._loaded();
 
     if (!forceRefresh && hasCache) {
       // Return cache immediately and refresh in background (Stale-While-Revalidate)
       this.http.get<IUser[]>(this.API_URL).pipe(
-        tap(data => this._users.set(data))
+        tap(data => {
+          this._users.set(data);
+          this._loaded.set(true);
+        })
       ).subscribe({ error: err => console.error('Background refresh users failed:', err) });
 
       return of(this._users());
     }
 
     return this.http.get<IUser[]>(this.API_URL).pipe(
-      tap(data => this._users.set(data))
+      tap(data => {
+        this._users.set(data);
+        this._loaded.set(true);
+      })
     );
   }
 

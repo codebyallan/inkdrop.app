@@ -15,7 +15,9 @@ export class PrintersService {
   private API_URL = `${environment.BASE_URL}/printer`;
 
   private _printers = signal<IPrinter[]>([]);
+  private _loaded = signal(false);
   public readonly printers = this._printers.asReadonly();
+  public readonly isLoaded = this._loaded.asReadonly();
 
   constructor() {
     this.cacheEvent.events$.subscribe(entity => {
@@ -26,19 +28,25 @@ export class PrintersService {
   }
 
   getPrinters(forceRefresh = false): Observable<IPrinter[]> {
-    const hasCache = this._printers().length > 0;
+    const hasCache = this._loaded();
 
     if (!forceRefresh && hasCache) {
       // Return cache immediately and refresh in background (Stale-While-Revalidate)
       this.http.get<IPrinter[]>(this.API_URL).pipe(
-        tap(data => this._printers.set(data))
+        tap(data => {
+          this._printers.set(data);
+          this._loaded.set(true);
+        })
       ).subscribe({ error: err => console.error('Background refresh printers failed:', err) });
 
       return of(this._printers());
     }
 
     return this.http.get<IPrinter[]>(this.API_URL).pipe(
-      tap(data => this._printers.set(data))
+      tap(data => {
+        this._printers.set(data);
+        this._loaded.set(true);
+      })
     );
   }
   createPrinter(payload: Partial<IPrinter>): Observable<IPrinter> {

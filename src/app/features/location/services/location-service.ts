@@ -15,7 +15,9 @@ export class LocationsService {
   private API_URL = `${environment.BASE_URL}/location`;
   
   private _locations = signal<ILocation[]>([]);
+  private _loaded = signal(false);
   public readonly locations = this._locations.asReadonly();
+  public readonly isLoaded = this._loaded.asReadonly();
 
   constructor() {
     this.cacheEvent.events$.subscribe(entity => {
@@ -26,19 +28,25 @@ export class LocationsService {
   }
 
   getLocations(forceRefresh = false): Observable<ILocation[]> {
-    const hasCache = this._locations().length > 0;
+    const hasCache = this._loaded();
 
     if (!forceRefresh && hasCache) {
       // Return cache immediately and refresh in background (Stale-While-Revalidate)
       this.http.get<ILocation[]>(this.API_URL).pipe(
-        tap(data => this._locations.set(data))
+        tap(data => {
+          this._locations.set(data);
+          this._loaded.set(true);
+        })
       ).subscribe({ error: err => console.error('Background refresh locations failed:', err) });
 
       return of(this._locations());
     }
 
     return this.http.get<ILocation[]>(this.API_URL).pipe(
-      tap(data => this._locations.set(data))
+      tap(data => {
+        this._locations.set(data);
+        this._loaded.set(true);
+      })
     );
   }
   createLocation(payload: Partial<ILocation>): Observable<ILocation> {
