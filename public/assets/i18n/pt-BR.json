@@ -5,6 +5,7 @@
     "printers": "Impressoras",
     "locations": "Locais",
     "movements": "Movimentações",
+    "settings": "Configurações",
     "users": "Usuários"
   },
   "login": {
@@ -147,6 +148,30 @@
       "fetch_error": "Erro ao carregar dados das movimentações",
       "created": "Movimentação criada com sucesso",
       "create_error": "Erro ao criar movimentação"
+    }
+  },
+  "settings": {
+    "title": "Configurações",
+    "security": {
+      "title": "Segurança",
+      "subtitle": "Altere sua senha de acesso",
+      "current_password": "Senha atual",
+      "new_password": "Nova senha",
+      "confirm_password": "Confirmar nova senha",
+      "save": "Alterar senha",
+      "changed_success": "Senha alterada com sucesso",
+      "changed_success_logout": "Senha alterada com sucesso. Por segurança, você foi deslogado. Por favor, faça login novamente.",
+      "wrong_password": "Senha atual incorreta",
+      "same_password": "A nova senha não pode ser igual à senha atual",
+      "passwords_mismatch": "As senhas não coincidem",
+      "password_strength": "A senha deve ter no mínimo 6 caracteres, incluindo letras maiúsculas, minúsculas, números e caracteres especiais"
+    },
+    "session": {
+      "title": "Sessão",
+      "subtitle": "Encerrar sua sessão no sistema",
+      "logout": "Sair",
+      "logout_title": "Confirmar Saída",
+      "logout_message": "Tem certeza que deseja encerrar sua sessão?"
     }
   },
   "users": {

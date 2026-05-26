@@ -5,6 +5,7 @@
     "printers": "Printers",
     "locations": "Locations",
     "movements": "Movements",
+    "settings": "Settings",
     "users": "Users"
   },
   "login": {
@@ -147,6 +148,30 @@
       "fetch_error": "Error initializing movements data",
       "created": "Movement created successfully",
       "create_error": "Error creating movement"
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "security": {
+      "title": "Security",
+      "subtitle": "Change your access password",
+      "current_password": "Current Password",
+      "new_password": "New Password",
+      "confirm_password": "Confirm New Password",
+      "save": "Change Password",
+      "changed_success": "Password changed successfully",
+      "changed_success_logout": "Password changed successfully. For security reasons, you have been logged out. Please login again.",
+      "wrong_password": "Incorrect current password",
+      "same_password": "New password cannot be the same as current password",
+      "passwords_mismatch": "Passwords do not match",
+      "password_strength": "Password must be at least 6 characters, including uppercase, lowercase, numbers and special characters"
+    },
+    "session": {
+      "title": "Session",
+      "subtitle": "End your system session",
+      "logout": "Logout",
+      "logout_title": "Confirm Logout",
+      "logout_message": "Are you sure you want to end your session?"
     }
   },
   "users": {

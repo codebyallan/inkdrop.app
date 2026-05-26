@@ -26,6 +26,10 @@ export const routes: Routes = [
             { path: 'toners', component: Toner },
             { path: 'movements', component: Movement },
             { 
+              path: 'settings', 
+              loadComponent: () => import('./features/settings/settings.component').then(m => m.SettingsComponent) 
+            },
+            { 
               path: 'users', 
               loadComponent: () => import('./features/user/user.component').then(m => m.User), 
               canActivate: [adminGuard] 

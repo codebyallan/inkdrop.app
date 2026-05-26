@@ -1,0 +1,62 @@
+<app-page-layout [title]="'settings.title' | translate">
+  <div class="max-w-xl flex flex-col gap-6">
+    
+    <!-- Security Card -->
+    <mat-card appearance="outlined">
+      <mat-card-header>
+        <mat-card-title>{{ 'settings.security.title' | translate }}</mat-card-title>
+        <mat-card-subtitle>{{ 'settings.security.subtitle' | translate }}</mat-card-subtitle>
+      </mat-card-header>
+      
+      <mat-card-content>
+        <form [formGroup]="passwordForm" (ngSubmit)="onChangePassword()" class="flex flex-col gap-4 mt-4">
+          
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'settings.security.current_password' | translate }}</mat-label>
+            <input matInput type="password" formControlName="currentPassword">
+            <app-validation-message [control]="passwordForm.get('currentPassword')" [label]="'settings.security.current_password' | translate"></app-validation-message>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'settings.security.new_password' | translate }}</mat-label>
+            <input matInput type="password" formControlName="newPassword">
+            <app-validation-message 
+              [control]="passwordForm.get('newPassword')" 
+              [label]="passwordForm.get('newPassword')?.hasError('pattern') ? ('settings.security.password_strength' | translate) : ('settings.security.new_password' | translate)">
+            </app-validation-message>
+          </mat-form-field>
+
+          <button mat-flat-button color="primary" type="submit" [disabled]="passwordForm.invalid || isChangingPassword()">
+            @if(isChangingPassword()) {
+              <mat-spinner diameter="20"></mat-spinner>
+            } @else {
+              <span>{{ 'settings.security.save' | translate }}</span>
+            }
+          </button>
+        </form>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Session Card -->
+    <mat-card appearance="outlined">
+      <mat-card-header>
+        <mat-card-title>{{ 'settings.session.title' | translate }}</mat-card-title>
+        <mat-card-subtitle>{{ 'settings.session.subtitle' | translate }}</mat-card-subtitle>
+      </mat-card-header>
+      
+      <mat-card-content class="mt-4">
+        <button mat-stroked-button color="warn" (click)="onLogout()" [disabled]="isLoggingOut()">
+          @if(isLoggingOut()) {
+            <mat-spinner diameter="20"></mat-spinner>
+          } @else {
+            <div class="flex items-center gap-2">
+              <mat-icon>logout</mat-icon>
+              <span>{{ 'settings.session.logout' | translate }}</span>
+            </div>
+          }
+        </button>
+      </mat-card-content>
+    </mat-card>
+
+  </div>
+</app-page-layout>

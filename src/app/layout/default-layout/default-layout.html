@@ -25,12 +25,10 @@
             @if(user()){
             <div class="flex items-center gap-3">
                 <span class="font-medium">{{ 'layout.greeting' | translate:{ name: user()?.username } }}</span>
-                <button mat-icon-button (click)="onLogout()" [disabled]="isLoggingOut()">
-                    @if(isLoggingOut()){
-                      <mat-spinner diameter="20"></mat-spinner>
-                    } @else {
-                      <mat-icon style="color: var(--mat-sys-error)">logout</mat-icon>
-                    }
+                <button mat-icon-button
+                  routerLink="/settings"
+                  [matTooltip]="'nav.settings' | translate">
+                  <mat-icon>settings</mat-icon>
                 </button>
             </div>
             }
