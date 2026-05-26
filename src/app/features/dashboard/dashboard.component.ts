@@ -56,30 +56,8 @@ export class Dashboard implements OnInit {
     ).length;
   });
 
-  movementsWithNames = computed(() => {
-    this.translationService.currentLangSignal();
-    const list = this.movements();
-    const tonersMap = new Map(this.toners().map((t) => [t.id, `${t.model} - ${t.color}`]));
-    const printersMap = new Map(this.printers().map((p) => [p.id, { name: p.name, locationId: p.locationId }]));
-    const locationsMap = new Map(this.locations().map((l) => [l.id, l.name]));
-
-    return list.map((m) => {
-      const printer = m.printerId ? printersMap.get(m.printerId) : null;
-      const locationName = printer ? locationsMap.get(printer.locationId) : '';
-      const printerDisplay = printer
-        ? `${printer.name} - ${locationName || this.translationService.instant('shared.no_location')}`
-        : (m.printerName ?? '');
-
-      return {
-        ...m,
-        tonerModel: m.tonerId ? (tonersMap.get(m.tonerId) ?? m.tonerModel ?? '') : (m.tonerModel ?? ''),
-        printerName: printerDisplay,
-      };
-    });
-  });
-
   recentMovements = computed(() => {
-    const withNames = this.movementsWithNames();
+    const withNames = this.movementsService.movementsDisplay();
     return [...withNames]
       .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
       .slice(0, 3);

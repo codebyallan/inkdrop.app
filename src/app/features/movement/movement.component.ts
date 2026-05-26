@@ -36,6 +36,7 @@ export class Movement implements OnInit {
   private dialog = inject(MatDialog);
 
   movements = this.movementsService.movements;
+  movementsWithDetails = this.movementsService.movementsDisplay;
   locations = this.locationsService.locations;
   loading = signal<boolean>(false);
   columnsConfig = computed(() => {
@@ -59,6 +60,7 @@ export class Movement implements OnInit {
     ];
   });
 
+  // Removed duplicated mapping logic.
   // Derived signals to handle the dynamic composition of Printer - Location
   // Using computed signals instead of plain Maps to ensure reactivity with SWR
   private tonersMap = computed(() => {
@@ -67,28 +69,6 @@ export class Movement implements OnInit {
 
   private printersMap = computed(() => {
     return new Map(this.printersService.printers().map(p => [p.id, { name: p.name, locationId: p.locationId }]));
-  });
-
-  movementsWithDetails = computed(() => {
-    this.translationService.currentLangSignal();
-    const list = this.movements();
-    const tMap = this.tonersMap();
-    const pMap = this.printersMap();
-    const locationsMap = new Map(this.locations().map(l => [l.id, l.name]));
-
-    return list.map(m => {
-      const printer = m.printerId ? pMap.get(m.printerId) : null;
-      const locationName = printer ? locationsMap.get(printer.locationId) : '';
-      const printerDisplay = printer 
-        ? `${printer.name} - ${locationName || this.translationService.instant('shared.no_location')}` 
-        : (m.printerName || '');
-
-      return {
-        ...m,
-        tonerModel: m.tonerId ? (tMap.get(m.tonerId) || m.tonerModel || '') : (m.tonerModel || ''),
-        printerName: printerDisplay
-      };
-    });
   });
 
   ngOnInit() {

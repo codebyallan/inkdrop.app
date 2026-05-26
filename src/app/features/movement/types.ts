@@ -10,3 +10,8 @@ export interface IMovement {
   printerName?: string;
 }
 
+export interface IMovementDisplay extends IMovement {
+  tonerModel: string;
+  printerName: string;
+}
+
