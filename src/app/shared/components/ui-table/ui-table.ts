@@ -36,9 +36,12 @@ export class UiTableComponent {
   data = input<any[]>([]);
   columns = input<ColumnDef<any>[]>([]);
   showToggle = input<boolean>(false);
-  columnIds = computed(() => this.columns().map(c => c.id));
   loading = input<boolean>(false);
+  error = input<string | null>(null);
+  emptyState = input<{ title: string; subtitle: string } | null>(null);
+  retry = output<void>();
   skeletonRows = input<number>(5);
+  columnIds = computed(() => this.columns().map(c => c.id));
   skeletonRowsArray = computed(() =>
     Array.from({ length: Math.max(1, this.skeletonRows() || 0) }, (_, i) => i)
   );
@@ -63,5 +66,9 @@ export class UiTableComponent {
 
   emitAction(type: string, row: any) {
     this.action.emit({ type, row });
+  }
+
+  onRetry() {
+    this.retry.emit();
   }
 }

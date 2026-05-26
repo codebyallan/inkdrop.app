@@ -43,6 +43,7 @@ export class Dashboard implements OnInit {
   locations = this.locationsService.locations;
   movements = this.movementsService.movements;
   loading = signal<boolean>(false);
+  error = signal<string | null>(null);
 
   tonersInStock = computed(() =>
     this.toners().reduce((sum, t) => sum + (t.quantity ?? 0), 0)
@@ -129,9 +130,13 @@ export class Dashboard implements OnInit {
     }).subscribe({
       next: () => {
         this.loading.set(false);
+        this.error.set(null);
       },
-      error: () => {
+      error: (err: any) => {
         this.loading.set(false);
+        if (err.status === 400) {
+          this.error.set(err.error?.message || this.translationService.instant('shared.alerts.invalid_request'));
+        }
       },
     });
   }

@@ -36,8 +36,10 @@
       "fetch_error": "Erro ao carregar dados do dashboard"
     },
     "low_stock_toners": "Toners com Estoque Baixo",
-    "low_stock_ok": "Estoque ok",
+    "low_stock_ok": "Tudo certo por aqui!",
     "low_stock_alert": "toner(s) em alerta",
+    "low_stock_empty_title": "Sem alertas de estoque",
+    "low_stock_empty_subtitle": "Nenhum toner atingiu o limite crítico no momento.",
     "btn_manage_toners": "Gerenciar Toners",
     "low_stock_more": "toner em alerta — Ver todos"
   },
@@ -189,7 +191,11 @@
   "shared": {
     "no_location": "Sem Local",
     "alerts": {
-      "logged_in": "Login realizado com sucesso!"
+      "logged_in": "Login realizado com sucesso!",
+      "forbidden": "Você não tem permissão para acessar este recurso",
+      "offline": "Não foi possível conectar ao servidor. Verifique sua conexão com a internet",
+      "internal_error": "Erro interno no servidor. Tente novamente mais tarde",
+      "invalid_request": "Requisição inválida. Verifique os dados informados"
     },
     "columns": {
       "date": "Data"
@@ -200,7 +206,8 @@
       "cancel": "Cancelar",
       "close": "Fechar",
       "delete": "Excluir",
-      "confirm": "Confirmar"
+      "confirm": "Confirmar",
+      "retry": "Tentar Novamente"
     },
     "confirm_dialog": {
       "default_title": "Confirmar",
@@ -219,6 +226,10 @@
       "max_length": "{{ label }} deve ter no máximo {{ max }} caracteres",
       "email": "{{ label }} inválido",
       "invalid": "{{ label }} é inválido"
+    },
+    "table": {
+      "empty_title": "Nenhum registro ainda",
+      "empty_subtitle": "Adicione o seu primeiro registro para começar."
     }
   }
 }

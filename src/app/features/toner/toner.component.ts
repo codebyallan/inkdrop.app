@@ -30,6 +30,7 @@ export class Toner implements OnInit {
 
   toners = this.tonersService.toners;
   loading = signal<boolean>(true);
+  error = signal<string | null>(null);
   columnsConfig = computed<ColumnDef<IToner>[]>(() => {
     this.translationService.currentLangSignal();
     return [
@@ -47,9 +48,13 @@ export class Toner implements OnInit {
     this.tonersService.getToners().subscribe({
       next: () => {
         this.loading.set(false);
+        this.error.set(null);
       },
-      error: () => {
+      error: (err: any) => {
         this.loading.set(false);
+        if (err.status === 400) {
+          this.error.set(err.error?.message || this.translationService.instant('shared.alerts.invalid_request'));
+        }
       },
     });
   }
@@ -59,9 +64,13 @@ export class Toner implements OnInit {
     this.tonersService.getToners(true).subscribe({
       next: () => {
         this.loading.set(false);
+        this.error.set(null);
       },
-      error: () => {
+      error: (err: any) => {
         this.loading.set(false);
+        if (err.status === 400) {
+          this.error.set(err.error?.message || this.translationService.instant('shared.alerts.invalid_request'));
+        }
       },
     });
   }

@@ -106,6 +106,10 @@
           [columns]="lowTonersColumns()"
           [loading]="false"
           [skeletonRows]="3"
+          [emptyState]="{ 
+            title: 'dashboard.low_stock_empty_title' | translate, 
+            subtitle: 'dashboard.low_stock_empty_subtitle' | translate 
+          }"
         />
 
         @if (extraLowTonersCount() > 0) {

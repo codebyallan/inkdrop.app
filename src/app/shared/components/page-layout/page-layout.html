@@ -5,6 +5,12 @@
       @if (subtitle()) {
       <p class="opacity-70 text-sm">{{ subtitle() }}</p>
       }
+      @if (error()) {
+        <div class="flex items-center gap-2 text-error text-xs mt-1">
+          <mat-icon style="font-size:14px; width:14px; height:14px">error_outline</mat-icon>
+          <span>{{ error() }}</span>
+        </div>
+      }
     </div>
     <div class="flex items-center gap-2">
       <ng-content select="[page-actions]"></ng-content>

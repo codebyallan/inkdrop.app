@@ -36,6 +36,7 @@ export class Printer implements OnInit {
   printers = this.printersService.printers;
   private locationsMap = new Map<string, string>();
   loading = signal<boolean>(true);
+  error = signal<string | null>(null);
   columnsConfig = computed<ColumnDef<IPrinter>[]>(() => {
     this.translationService.currentLangSignal();
     return [
@@ -60,9 +61,13 @@ export class Printer implements OnInit {
         this.locationsMap = new Map(locations.map(l => [l.id, l.name]));
         this.printersService.applyLocationNames(this.locationsMap);
         this.loading.set(false);
+        this.error.set(null);
       },
-      error: () => {
+      error: (err: any) => {
         this.loading.set(false);
+        if (err.status === 400) {
+          this.error.set(err.error?.message || this.translationService.instant('shared.alerts.invalid_request'));
+        }
       },
     });
   }
@@ -77,9 +82,13 @@ export class Printer implements OnInit {
         this.locationsMap = new Map(locations.map(l => [l.id, l.name]));
         this.printersService.applyLocationNames(this.locationsMap);
         this.loading.set(false);
+        this.error.set(null);
       },
-      error: () => {
+      error: (err: any) => {
         this.loading.set(false);
+        if (err.status === 400) {
+          this.error.set(err.error?.message || this.translationService.instant('shared.alerts.invalid_request'));
+        }
       },
     });
   }

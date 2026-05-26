@@ -28,6 +28,25 @@
       }
     </div>
   </div>
+} @else if (error()) {
+  <div class="flex flex-col items-center justify-center py-12 text-center gap-4">
+    <mat-icon class="text-error text-5xl opacity-60">error_outline</mat-icon>
+    <div class="flex flex-col gap-1">
+      <p class="font-medium">{{ error() }}</p>
+      <p class="text-sm opacity-60">{{ 'shared.alerts.try_again' | translate }}</p>
+    </div>
+    <button mat-stroked-button (click)="onRetry()">
+      {{ 'shared.actions.retry' | translate }}
+    </button>
+  </div>
+} @else if (data().length === 0) {
+  <div class="flex flex-col items-center justify-center py-12 text-center gap-4">
+    <mat-icon class="text-5xl opacity-40">inventory_2</mat-icon>
+    <div class="flex flex-col gap-1">
+      <p class="font-medium">{{ emptyState()?.title || ('shared.table.empty_title' | translate) }}</p>
+      <p class="text-sm opacity-60">{{ emptyState()?.subtitle || ('shared.table.empty_subtitle' | translate) }}</p>
+    </div>
+  </div>
 } @else {
   <div class="overflow-x-auto">
     <table mat-table style="width:100%" [dataSource]="data()">

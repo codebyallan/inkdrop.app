@@ -39,6 +39,7 @@ export class Movement implements OnInit {
   movementsWithDetails = this.movementsService.movementsDisplay;
   locations = this.locationsService.locations;
   loading = signal<boolean>(false);
+  error = signal<string | null>(null);
   columnsConfig = computed(() => {
     this.translationService.currentLangSignal();
     return [
@@ -90,9 +91,13 @@ export class Movement implements OnInit {
     }).subscribe({
       next: () => {
         this.loading.set(false);
+        this.error.set(null);
       },
-      error: () => {
+      error: (err: any) => {
         this.loading.set(false);
+        if (err.status === 400) {
+          this.error.set(err.error?.message || this.translationService.instant('shared.alerts.invalid_request'));
+        }
       }
     });
   }
@@ -107,9 +112,13 @@ export class Movement implements OnInit {
     }).subscribe({
       next: () => {
         this.loading.set(false);
+        this.error.set(null);
       },
-      error: () => {
+      error: (err: any) => {
         this.loading.set(false);
+        if (err.status === 400) {
+          this.error.set(err.error?.message || this.translationService.instant('shared.alerts.invalid_request'));
+        }
       },
     });
   }

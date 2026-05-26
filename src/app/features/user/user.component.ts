@@ -31,6 +31,7 @@ export class User implements OnInit {
 
   users = this.userService.users;
   loading = signal<boolean>(true);
+  error = signal<string | null>(null);
 
   columnsConfig = computed<ColumnDef<IUser>[]>(() => {
     this.translationService.currentLangSignal();
@@ -70,9 +71,13 @@ export class User implements OnInit {
     this.userService.getUsers().subscribe({
       next: () => {
         this.loading.set(false);
+        this.error.set(null);
       },
-      error: () => {
+      error: (err: any) => {
         this.loading.set(false);
+        if (err.status === 400) {
+          this.error.set(err.error?.message || this.translationService.instant('shared.alerts.invalid_request'));
+        }
       },
     });
   }
@@ -82,9 +87,13 @@ export class User implements OnInit {
     this.userService.getUsers(true).subscribe({
       next: () => {
         this.loading.set(false);
+        this.error.set(null);
       },
-      error: () => {
+      error: (err: any) => {
         this.loading.set(false);
+        if (err.status === 400) {
+          this.error.set(err.error?.message || this.translationService.instant('shared.alerts.invalid_request'));
+        }
       },
     });
   }

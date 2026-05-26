@@ -36,8 +36,10 @@
       "fetch_error": "Error loading dashboard data"
     },
     "low_stock_toners": "Low Stock Toners",
-    "low_stock_ok": "All stocked",
+    "low_stock_ok": "Everything is stocked",
     "low_stock_alert": "toner(s) low",
+    "low_stock_empty_title": "No stock alerts",
+    "low_stock_empty_subtitle": "No toners have reached critical levels at the moment.",
     "btn_manage_toners": "Manage Toners",
     "low_stock_more": "more in alert — See all"
   },
@@ -189,7 +191,11 @@
   "shared": {
     "no_location": "No Location",
     "alerts": {
-      "logged_in": "Logged in successfully!"
+      "logged_in": "Logged in successfully!",
+      "forbidden": "You do not have permission to access this resource",
+      "offline": "Cannot connect to the server. Please check your internet connection",
+      "internal_error": "Internal server error. Please try again later",
+      "invalid_request": "Invalid request. Please check your data"
     },
     "columns": {
       "date": "Date"
@@ -200,7 +206,8 @@
       "cancel": "Cancel",
       "close": "Close",
       "delete": "Delete",
-      "confirm": "Confirm"
+      "confirm": "Confirm",
+      "retry": "Try Again"
     },
     "confirm_dialog": {
       "default_title": "Confirm",
@@ -219,6 +226,10 @@
       "max_length": "{{ label }} must be at most {{ max }} characters",
       "email": "Invalid {{ label }}",
       "invalid": "{{ label }} is invalid"
+    },
+    "table": {
+      "empty_title": "No records yet",
+      "empty_subtitle": "Add your first record to get started."
     }
   }
 }
