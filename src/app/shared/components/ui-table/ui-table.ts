@@ -8,18 +8,18 @@ import { DatePipe } from '@angular/common';
 import { AuthService } from '../../../core/services/auth.service';
 import { TranslateModule } from '@ngx-translate/core';
 
-export interface ColumnDef {
+export interface ColumnDef<T = Record<string, unknown>> {
   id: string;
   header?: string;
   field?: string;
   type?: 'text' | 'date' | 'actions' | 'badge' | 'icon';
   dateFormat?: string;
   /** For type='text' | 'icon': returns the displayed value (text or icon name). */
-  transform?: (value: any, row: any) => string | number;
+  transform?: (value: unknown, row: T) => string | number;
   /** For type='icon': returns the CSS color of the icon (e.g., '#2e7d32'). */
-  colorTransform?: (value: any, row: any) => string;
+  colorTransform?: (value: unknown, row: T) => string;
   /** For type='icon': tooltip text on mouse hover. */
-  tooltipTransform?: (value: any, row: any) => string;
+  tooltipTransform?: (value: unknown, row: T) => string;
 }
 
 @Component({
@@ -33,7 +33,7 @@ export class UiTableComponent {
   protected currentUserId = computed(() => this.authService.currentUser()?.id);
 
   data = input<any[]>([]);
-  columns = input<ColumnDef[]>([]);
+  columns = input<ColumnDef<any>[]>([]);
   showToggle = input<boolean>(false);
   columnIds = computed(() => this.columns().map(c => c.id));
   loading = input<boolean>(false);
@@ -45,7 +45,7 @@ export class UiTableComponent {
   gridTemplate = computed(() => {
     const cols = this.columns();
     if (!cols?.length) return '';
-    const mapWidth = (c: ColumnDef) => {
+    const mapWidth = (c: ColumnDef<any>) => {
       if (c.type === 'actions') return '96px';
       if (c.type === 'icon')   return '56px';
       if (c.type === 'date' || c.type === 'badge' || /date|createdat/i.test(c.id)) return '128px';

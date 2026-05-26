@@ -5,7 +5,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { DatePipe } from '@angular/common';
 import { PageLayoutComponent } from '../../shared/components/page-layout/page-layout';
-import { UiTableComponent } from '../../shared/components/ui-table/ui-table';
+import { UiTableComponent, ColumnDef } from '../../shared/components/ui-table/ui-table';
 import { PrintersService } from './services/printer-service';
 import { IPrinter } from './types';
 import { LocationsService } from '../location/services/location-service';
@@ -35,7 +35,7 @@ export class Printer implements OnInit {
   printers = this.printersService.printers;
   private locationsMap = new Map<string, string>();
   loading = signal<boolean>(true);
-  columnsConfig = computed(() => {
+  columnsConfig = computed<ColumnDef<IPrinter>[]>(() => {
     this.translationService.currentLangSignal();
     return [
       { id: 'name', header: this.translationService.instant('printers.columns.name'), field: 'name', type: 'text' as const },

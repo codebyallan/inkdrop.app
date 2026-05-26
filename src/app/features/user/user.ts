@@ -4,7 +4,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { PageLayoutComponent } from '../../shared/components/page-layout/page-layout';
-import { UiTableComponent } from '../../shared/components/ui-table/ui-table';
+import { UiTableComponent, ColumnDef } from '../../shared/components/ui-table/ui-table';
 import { UserService } from './services/user-service';
 import { IUser, ROLE_MAP, UserRole } from './types';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -31,7 +31,7 @@ export class User implements OnInit {
   users = this.userService.users;
   loading = signal<boolean>(true);
 
-  columnsConfig = computed(() => {
+  columnsConfig = computed<ColumnDef<IUser>[]>(() => {
     this.translationService.currentLangSignal();
     return [
       { id: 'username', header: this.translationService.instant('users.columns.username'), field: 'username', type: 'text' as const },
@@ -41,11 +41,12 @@ export class User implements OnInit {
         header: this.translationService.instant('users.columns.role'), 
         field: 'role', 
         type: 'text' as const, 
-        transform: (val: any) => {
-          if (val === 'Admin') return this.translationService.instant('users.role_admin');
-          if (val === 'Technician') return this.translationService.instant('users.role_technician');
+        transform: (val: unknown) => {
+          const value = val?.toString() || '';
+          if (value === 'Admin') return this.translationService.instant('users.role_admin');
+          if (value === 'Technician') return this.translationService.instant('users.role_technician');
           
-          const numericRole = Number(val);
+          const numericRole = Number(value);
           const roleLabel = ROLE_MAP[numericRole as UserRole];
           
           if (roleLabel) {

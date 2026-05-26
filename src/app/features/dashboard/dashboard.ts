@@ -94,9 +94,9 @@ export class Dashboard implements OnInit {
         header: this.translationService.instant('movements.columns.type'),
         field: 'type',
         type: 'icon' as const,
-        transform: (val: string) => val?.toString().toLowerCase() === 'in' ? 'arrow_upward' : 'arrow_downward',
-        colorTransform: (val: string) => val?.toString().toLowerCase() === 'in' ? '#2e7d32' : '#c62828',
-        tooltipTransform: (val: string) => val?.toString().toLowerCase() === 'in'
+        transform: (val: unknown) => val?.toString().toLowerCase() === 'in' ? 'arrow_upward' : 'arrow_downward',
+        colorTransform: (val: unknown) => val?.toString().toLowerCase() === 'in' ? '#2e7d32' : '#c62828',
+        tooltipTransform: (val: unknown) => val?.toString().toLowerCase() === 'in'
           ? this.translationService.instant('movements.type_in')
           : this.translationService.instant('movements.type_out'),
       },

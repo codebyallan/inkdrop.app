@@ -2,6 +2,7 @@ import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
 import { LocationsService } from './services/location-service';
 import { ILocation } from './types';
+import { ColumnDef } from '../../shared/components/ui-table/ui-table';
 import { DatePipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -31,7 +32,7 @@ export class Location implements OnInit {
 
   locations = this.locationsService.locations;
   loading = signal<boolean>(true);
-  columnsConfig = computed(() => {
+  columnsConfig = computed<ColumnDef<ILocation>[]>(() => {
     this.translationService.currentLangSignal();
     return [
       { id: 'name', header: this.translationService.instant('locations.columns.name'), field: 'name', type: 'text' as const },

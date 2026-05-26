@@ -48,10 +48,10 @@ export class Movement implements OnInit {
         header: this.translationService.instant('movements.columns.type'),
         field: 'type',
         type: 'icon' as const,
-        transform: (val: any) => val?.toString().toLowerCase() === 'in' ? 'arrow_upward' : 'arrow_downward',
-        colorTransform: (val: any) => val?.toString().toLowerCase() === 'in' ? '#2e7d32' : '#c62828',
-        tooltipTransform: (val: any, _row: any, t = this.translationService) =>
-          val?.toString().toLowerCase() === 'in' ? t.instant('movements.type_in') : t.instant('movements.type_out'),
+        transform: (val: unknown) => val?.toString().toLowerCase() === 'in' ? 'arrow_upward' : 'arrow_downward',
+        colorTransform: (val: unknown) => val?.toString().toLowerCase() === 'in' ? '#2e7d32' : '#c62828',
+        tooltipTransform: (val: unknown) =>
+          val?.toString().toLowerCase() === 'in' ? this.translationService.instant('movements.type_in') : this.translationService.instant('movements.type_out'),
       },
       { id: 'description', header: this.translationService.instant('movements.columns.description'), field: 'description', type: 'text' as const },
       { id: 'createdAt', header: this.translationService.instant('movements.columns.created_at'), field: 'createdAt', type: 'date' as const, dateFormat: 'dd/MM/yyyy' }

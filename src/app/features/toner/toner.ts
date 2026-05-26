@@ -4,7 +4,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { PageLayoutComponent } from '../../shared/components/page-layout/page-layout';
-import { UiTableComponent } from '../../shared/components/ui-table/ui-table';
+import { UiTableComponent, ColumnDef } from '../../shared/components/ui-table/ui-table';
 import { TonersService } from './services/toner-service';
 import { IToner } from './types';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -29,7 +29,7 @@ export class Toner implements OnInit {
 
   toners = this.tonersService.toners;
   loading = signal<boolean>(true);
-  columnsConfig = computed(() => {
+  columnsConfig = computed<ColumnDef<IToner>[]>(() => {
     this.translationService.currentLangSignal();
     return [
       { id: 'manufacturer', header: this.translationService.instant('toners.columns.manufacturer'), field: 'manufacturer', type: 'text' as const },
