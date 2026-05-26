@@ -61,10 +61,8 @@ export class Printer implements OnInit {
         this.printersService.applyLocationNames(this.locationsMap);
         this.loading.set(false);
       },
-      error: (err) => {
-        console.error(err);
+      error: () => {
         this.loading.set(false);
-        this.showAlert(this.translationService.instant('printers.alerts.fetch_error'), this.translationService.instant('shared.actions.close'));
       },
     });
   }
@@ -80,10 +78,8 @@ export class Printer implements OnInit {
         this.printersService.applyLocationNames(this.locationsMap);
         this.loading.set(false);
       },
-      error: (err) => {
-        console.error(err);
+      error: () => {
         this.loading.set(false);
-        this.showAlert(this.translationService.instant('printers.alerts.fetch_error'), this.translationService.instant('shared.actions.close'));
       },
     });
   }

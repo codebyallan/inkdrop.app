@@ -7,6 +7,7 @@ import { lastValueFrom, Observable } from 'rxjs';
 import { routes } from './app.routes';
 import { xsrfInterceptor } from './core/interceptors/xsrf.interceptor';
 import { credentialsInterceptor } from './core/interceptors/credentials.interceptor';
+import { httpErrorInterceptor } from './core/interceptors/http-error.interceptor';
 import { authErrorInterceptor } from './core/interceptors/auth-error.interceptor';
 import { AuthService } from './core/services/auth.service';
 import { environment } from '../environments/environment';
@@ -26,7 +27,7 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
-    provideHttpClient(withInterceptors([credentialsInterceptor, xsrfInterceptor, authErrorInterceptor])),
+    provideHttpClient(withInterceptors([credentialsInterceptor, xsrfInterceptor, httpErrorInterceptor, authErrorInterceptor])),
     importProvidersFrom(
       TranslateModule.forRoot({
         fallbackLang: 'en-US',

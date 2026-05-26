@@ -132,10 +132,6 @@ export class Dashboard implements OnInit {
       },
       error: () => {
         this.loading.set(false);
-        this.showAlert(
-          this.translationService.instant('dashboard.alerts.fetch_error'),
-          this.translationService.instant('shared.actions.close')
-        );
       },
     });
   }

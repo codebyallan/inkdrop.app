@@ -49,10 +49,8 @@ export class Location implements OnInit {
       next: () => {
         this.loading.set(false);
       },
-      error: (err) => {
-        console.error(err);
+      error: () => {
         this.loading.set(false);
-        this.showAlert(this.translationService.instant('locations.alerts.fetch_error'), this.translationService.instant('shared.actions.close'));
       }
     });
   }
@@ -63,10 +61,8 @@ export class Location implements OnInit {
       next: () => {
         this.loading.set(false);
       },
-      error: (err) => {
-        console.error(err);
+      error: () => {
         this.loading.set(false);
-        this.showAlert(this.translationService.instant('locations.alerts.fetch_error'), this.translationService.instant('shared.actions.close'));
       }
     });
   }

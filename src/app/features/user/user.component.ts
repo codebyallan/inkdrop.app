@@ -73,7 +73,6 @@ export class User implements OnInit {
       },
       error: () => {
         this.loading.set(false);
-        this.showAlert(this.translationService.instant('users.alerts.fetch_error'), this.translationService.instant('shared.actions.close'));
       },
     });
   }
@@ -86,7 +85,6 @@ export class User implements OnInit {
       },
       error: () => {
         this.loading.set(false);
-        this.showAlert(this.translationService.instant('users.alerts.fetch_error'), this.translationService.instant('shared.actions.close'));
       },
     });
   }
