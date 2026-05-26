@@ -32,6 +32,20 @@ This repository contains only the **frontend** (Angular SPA). It talks to a REST
 
 ---
 
+## ⚙️ Environment Variables
+
+### Mandatory variables for Production
+
+When building for production (using `set-env.js`), the following variable **must** be defined in the environment:
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `BASE_URL` | The base URL of the REST API | `https://api.inkdrop.com/api` |
+
+If this variable is missing during the build process or in the final production bundle, the application will fail to start with a critical error.
+
+---
+
 ## 🚀 Clone and run locally
 
 ### 📋 Prerequisites

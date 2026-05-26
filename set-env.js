@@ -5,10 +5,14 @@ const path = require('path');
 const targetPath = path.join(__dirname, 'src/environments/environment.ts');
 
 // Collect variables from process.env (system)
-// Use a default fallback value if not provided
+if (!process.env.BASE_URL) {
+  console.error('❌ Error: BASE_URL environment variable is required but not provided.');
+  process.exit(1);
+}
+
 const config = {
   production: true,
-  BASE_URL: process.env.BASE_URL || 'http://localhost:3000',
+  BASE_URL: process.env.BASE_URL,
 };
 
 // Build the file content in TypeScript format

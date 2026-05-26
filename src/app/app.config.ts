@@ -9,6 +9,7 @@ import { xsrfInterceptor } from './core/interceptors/xsrf.interceptor';
 import { credentialsInterceptor } from './core/interceptors/credentials.interceptor';
 import { authErrorInterceptor } from './core/interceptors/auth-error.interceptor';
 import { AuthService } from './core/services/auth.service';
+import { environment } from '../environments/environment';
 
 export class CustomTranslateLoader implements TranslateLoader {
   constructor(private http: HttpClient) {}
@@ -37,6 +38,10 @@ export const appConfig: ApplicationConfig = {
       })
     ),
     provideAppInitializer(async () => {
+      if (environment.production && !environment.BASE_URL) {
+        throw new Error('CRITICAL: BASE_URL is not defined in production environment. Please check your CI/CD environment variables.');
+      }
+
       const translate = inject(TranslateService);
       const auth = inject(AuthService);
 
