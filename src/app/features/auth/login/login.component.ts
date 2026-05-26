@@ -46,7 +46,7 @@ export class LoginComponent {
 
   /** Reactive form for user credentials */
   loginForm: FormGroup = this.fb.group({
-    username: ['', [Validators.required]],
+    username: ['', [Validators.required, Validators.pattern(/^[^\s]+$/)]],
     password: ['', [Validators.required]]
   });
 
@@ -64,7 +64,10 @@ export class LoginComponent {
       await lastValueFrom(this.authService.getCsrfToken());
 
       // Step 2: Execute authentication request
-      const request: LoginRequest = this.loginForm.value;
+      const request: LoginRequest = {
+        username: this.loginForm.value.username.trim(),
+        password: this.loginForm.value.password.trim()
+      };
       await lastValueFrom(this.authService.login(request));
 
       this.snackBar.open(

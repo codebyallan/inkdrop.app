@@ -16,7 +16,8 @@
     "password_placeholder": "Enter your password",
     "submit": "Login",
     "alerts": {
-      "failed": "Login failed. Please check your credentials."
+      "failed": "Login failed. Please check your credentials.",
+      "no_spaces": "Username cannot contain spaces"
     }
   },
   "layout": {

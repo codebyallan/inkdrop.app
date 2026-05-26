@@ -16,7 +16,8 @@
     "password_placeholder": "Digite sua senha",
     "submit": "Entrar",
     "alerts": {
-      "failed": "Falha no login. Verifique suas credenciais."
+      "failed": "Falha no login. Verifique suas credenciais.",
+      "no_spaces": "O nome de usuário não pode conter espaços"
     }
   },
   "layout": {
