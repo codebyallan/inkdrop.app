@@ -84,6 +84,11 @@ export class AuthService {
   }
 
   private setUser(user: User): void {
+    if (!this.isValidUser(user)) {
+      console.error('AuthService: Attempted to set an invalid user object');
+      this.clearUser();
+      return;
+    }
     this.currentUserSignal.set(user);
     localStorage.setItem(this.USER_CACHE_KEY, JSON.stringify(user));
   }
@@ -101,9 +106,26 @@ export class AuthService {
     const cached = localStorage.getItem(this.USER_CACHE_KEY);
     if (!cached) return null;
     try {
-      return JSON.parse(cached) as User;
+      const user = JSON.parse(cached);
+      if (this.isValidUser(user)) {
+        return user;
+      }
+      console.warn('AuthService: Invalid user cache detected. Clearing cache.');
+      localStorage.removeItem(this.USER_CACHE_KEY);
     } catch {
-      return null;
+      console.warn('AuthService: Failed to parse user cache. Clearing cache.');
+      localStorage.removeItem(this.USER_CACHE_KEY);
     }
+    return null;
+  }
+
+  private isValidUser(obj: unknown): obj is User {
+    return (
+      typeof obj === 'object' &&
+      obj !== null &&
+      typeof (obj as any).id === 'string' &&
+      typeof (obj as any).username === 'string' &&
+      typeof (obj as any).role === 'string'
+    );
   }
 }
