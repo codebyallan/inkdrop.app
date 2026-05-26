@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { IUser, IUserCreateRequest, IUserUpdateRequest, UserRoleLabel, INVERSE_ROLE_MAP } from '../types';
-import { tap } from 'rxjs/operators';
+import { tap, catchError } from 'rxjs/operators';
 import { CacheEventService } from '../../../core/services/cache-event.service';
 
 @Injectable({
@@ -65,6 +65,12 @@ export class UserService {
       tap(created => {
         this._users.update(prev => [...prev, created]);
         this.cacheEvent.broadcast('user');
+      }),
+      catchError(err => {
+        if (err.status === 403) {
+          return throwError(() => new Error('PERMISSION_DENIED'));
+        }
+        return throwError(() => err);
       })
     );
   }
@@ -80,6 +86,12 @@ export class UserService {
           prev.map(u => u.id === updated.id ? updated : u)
         );
         this.cacheEvent.broadcast('user');
+      }),
+      catchError(err => {
+        if (err.status === 403) {
+          return throwError(() => new Error('PERMISSION_DENIED'));
+        }
+        return throwError(() => err);
       })
     );
   }
@@ -89,6 +101,12 @@ export class UserService {
       tap(() => {
         this._users.update(prev => prev.filter(u => u.id !== id));
         this.cacheEvent.broadcast('user');
+      }),
+      catchError(err => {
+        if (err.status === 403) {
+          return throwError(() => new Error('PERMISSION_DENIED'));
+        }
+        return throwError(() => err);
       })
     );
   }
@@ -100,6 +118,12 @@ export class UserService {
           prev.map(u => u.id === id ? { ...u, isActive: true } : u)
         );
         this.cacheEvent.broadcast('user');
+      }),
+      catchError(err => {
+        if (err.status === 403) {
+          return throwError(() => new Error('PERMISSION_DENIED'));
+        }
+        return throwError(() => err);
       })
     );
   }
@@ -111,6 +135,12 @@ export class UserService {
           prev.map(u => u.id === id ? { ...u, isActive: false } : u)
         );
         this.cacheEvent.broadcast('user');
+      }),
+      catchError(err => {
+        if (err.status === 403) {
+          return throwError(() => new Error('PERMISSION_DENIED'));
+        }
+        return throwError(() => err);
       })
     );
   }
