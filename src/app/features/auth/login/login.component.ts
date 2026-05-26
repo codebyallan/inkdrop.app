@@ -55,7 +55,7 @@ export class LoginComponent {
    * Orchestrates CSRF token acquisition and authentication request.
    */
   async onSubmit(): Promise<void> {
-    if (this.loginForm.invalid) return;
+    if (this.isLoading() || this.loginForm.invalid) return;
 
     this.isLoading.set(true);
 
