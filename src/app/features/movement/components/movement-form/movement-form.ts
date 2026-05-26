@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, inject } from '@angular/core';
+import { Component, Inject, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -19,6 +19,7 @@ type DialogData = { toners: Array<{ id: string; label: string }>, printers: Arra
   imports: [ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatDialogModule, MatSelectModule, ValidationMessageComponent, TranslateModule],
   templateUrl: './movement-form.html',
   styleUrl: './movement-form.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MovementForm implements OnInit {
   private dialogRef = inject(MatDialogRef<MovementForm>);

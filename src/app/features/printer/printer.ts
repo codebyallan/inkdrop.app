@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal, computed } from '@angular/core';
+import { Component, OnInit, inject, signal, computed, ChangeDetectionStrategy } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
@@ -23,6 +23,7 @@ import { forkJoin } from 'rxjs';
   imports: [MatButtonModule, MatIconModule, MatSnackBarModule, MatProgressBarModule, PageLayoutComponent, UiTableComponent, MatDialogModule, TranslateModule],
   templateUrl: './printer.html',
   styleUrl: './printer.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Printer implements OnInit {
   private printersService = inject(PrintersService);

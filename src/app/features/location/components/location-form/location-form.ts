@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, Optional, inject } from '@angular/core';
+import { Component, Inject, OnInit, Optional, inject, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -12,6 +12,7 @@ import { TranslateModule } from '@ngx-translate/core';
   imports: [ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatDialogModule, ValidationMessageComponent, TranslateModule],
   templateUrl: './location-form.html',
   styleUrl: './location-form.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LocationForm implements OnInit {
   private dialogRef = inject(MatDialogRef<LocationForm>);

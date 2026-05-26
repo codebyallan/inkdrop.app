@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, Optional, inject } from '@angular/core';
+import { Component, Inject, OnInit, Optional, inject, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -27,6 +27,7 @@ import { computed } from '@angular/core';
   ],
   templateUrl: './user-form.html',
   styleUrl: './user-form.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UserForm implements OnInit {
   private dialogRef = inject(MatDialogRef<UserForm>);

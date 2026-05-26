@@ -1,4 +1,4 @@
-import { Component, computed, inject, input } from '@angular/core';
+import { Component, computed, inject, input, ChangeDetectionStrategy } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { TranslationService } from '../../../core/services/translation.service';
@@ -8,6 +8,7 @@ import { TranslationService } from '../../../core/services/translation.service';
   imports: [MatFormFieldModule],
   templateUrl: './validation-message.html',
   styleUrl: './validation-message.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ValidationMessageComponent {
   private t = inject(TranslationService);

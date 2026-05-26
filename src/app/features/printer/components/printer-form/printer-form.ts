@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, Optional, inject } from '@angular/core';
+import { Component, Inject, OnInit, Optional, inject, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -17,6 +17,7 @@ type DialogData = { locations: Array<{ id: string; name: string }>, mode?: 'crea
   imports: [ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatDialogModule, MatSelectModule, ValidationMessageComponent, TranslateModule],
   templateUrl: './printer-form.html',
   styleUrl: './printer-form.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PrinterForm implements OnInit {
   private dialogRef = inject(MatDialogRef<PrinterForm>);

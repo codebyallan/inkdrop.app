@@ -1,4 +1,4 @@
-import { Component, inject, input, output, computed } from '@angular/core';
+import { Component, inject, input, output, computed, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
@@ -27,6 +27,7 @@ export interface ColumnDef<T = Record<string, unknown>> {
   imports: [CommonModule, MatTableModule, MatButtonModule, MatIconModule, MatTooltipModule, DatePipe, TranslateModule],
   templateUrl: './ui-table.html',
   styleUrl: './ui-table.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UiTableComponent {
   private authService = inject(AuthService);

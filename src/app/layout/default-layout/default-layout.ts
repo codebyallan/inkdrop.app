@@ -1,5 +1,5 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { Component, inject, OnInit, signal, computed } from '@angular/core';
+import { Component, inject, OnInit, signal, computed, ChangeDetectionStrategy } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { map, lastValueFrom } from 'rxjs';
 import { MatButtonModule } from '@angular/material/button';
@@ -38,6 +38,7 @@ import { CommonModule } from '@angular/common';
   ],
   templateUrl: './default-layout.html',
   styleUrl: './default-layout.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DefaultLayout implements OnInit {
   private breakpointObserver = inject(BreakpointObserver);

@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal, computed } from '@angular/core';
+import { Component, OnInit, inject, signal, computed, ChangeDetectionStrategy } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
@@ -19,6 +19,7 @@ import { TranslateModule } from '@ngx-translate/core';
   imports: [MatButtonModule, MatIconModule, MatSnackBarModule, MatProgressBarModule, PageLayoutComponent, UiTableComponent, MatDialogModule, TranslateModule],
   templateUrl: './toner.html',
   styleUrl: './toner.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Toner implements OnInit {
   private tonersService = inject(TonersService);

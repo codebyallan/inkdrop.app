@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal, computed } from '@angular/core';
+import { Component, inject, OnInit, signal, computed, ChangeDetectionStrategy } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
 import { LocationsService } from './services/location-service';
 import { ILocation } from './types';
@@ -22,6 +22,7 @@ import { TranslateModule } from '@ngx-translate/core';
   imports: [MatTableModule, MatButtonModule, MatIconModule, MatSnackBarModule, MatProgressBarModule, PageLayoutComponent, UiTableComponent, TranslateModule],
   templateUrl: './location.html',
   styleUrl: './location.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Location implements OnInit {
   private locationsService = inject(LocationsService);
