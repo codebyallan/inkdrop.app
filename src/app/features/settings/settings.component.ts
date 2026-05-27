@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, inject, signal } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, signal, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -11,7 +11,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { TranslateModule } from '@ngx-translate/core';
-import { lastValueFrom } from 'rxjs';
+import { lastValueFrom, timer } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { AuthService } from '../../core/services/auth.service';
 import { TranslationService } from '../../core/services/translation.service';
@@ -51,6 +52,7 @@ export class SettingsComponent {
   private snackBar = inject(MatSnackBar);
   private translationService = inject(TranslationService);
   private dialog = inject(MatDialog);
+  private destroyRef = inject(DestroyRef);
 
   protected isChangingPassword = signal(false);
   protected isLoggingOut = signal(false);
@@ -86,16 +88,17 @@ export class SettingsComponent {
           { duration: 5000 }
         );
         
-        // Pequeno delay para o usuário ler a mensagem antes do redirecionamento
-        setTimeout(async () => {
-          try {
-            await lastValueFrom(this.authService.logout());
-          } catch (e) {
-            console.error('Logout after password change failed', e);
-          } finally {
-            this.router.navigate(['/login']);
-          }
-        }, 2000);
+        timer(2000)
+          .pipe(takeUntilDestroyed(this.destroyRef))
+          .subscribe(async () => {
+            try {
+              await lastValueFrom(this.authService.logout());
+            } catch (e) {
+              console.error('Logout after password change failed', e);
+            } finally {
+              this.router.navigate(['/login']);
+            }
+          });
       },
       error: (err) => {
         this.passwordForm.enable();
