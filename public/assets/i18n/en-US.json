@@ -164,7 +164,12 @@
       "wrong_password": "Incorrect current password",
       "same_password": "New password cannot be the same as current password",
       "passwords_mismatch": "Passwords do not match",
-      "password_strength": "Password must be at least 6 characters, including uppercase, lowercase, numbers and special characters"
+      "password_strength": "Password must be at least 6 characters, including uppercase, lowercase, numbers and special characters",
+      "password_too_short": "Password is too short",
+      "password_missing_uppercase": "Password must contain at least one uppercase letter",
+      "password_missing_lowercase": "Password must contain at least one lowercase letter",
+      "password_missing_number": "Password must contain at least one number",
+      "password_missing_special": "Password must contain at least one special character"
     },
     "session": {
       "title": "Session",

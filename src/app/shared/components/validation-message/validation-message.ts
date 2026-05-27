@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, computed, inject, input, ChangeDetectionStrategy, ChangeDetectorRef, effect } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { TranslationService } from '../../../core/services/translation.service';
@@ -12,12 +12,24 @@ import { TranslationService } from '../../../core/services/translation.service';
 })
 export class ValidationMessageComponent {
   private t = inject(TranslationService);
+  private cdr = inject(ChangeDetectorRef);
 
   control = input<AbstractControl | null>(null);
   label = input<string>('Field');
   errorMessages = input<Record<string, string>>({});
 
-  message = computed(() => {
+  constructor() {
+    effect(() => {
+      const c = this.control();
+      if (c) {
+        c.statusChanges.subscribe(() => {
+          this.cdr.markForCheck();
+        });
+      }
+    });
+  }
+
+  get message(): string {
     this.t.currentLangSignal();
     const c = this.control();
     if (!c?.errors) return '';
@@ -43,6 +55,6 @@ export class ValidationMessageComponent {
       return this.t.instant('shared.validation.email', { label });
     
     return this.t.instant('shared.validation.invalid', { label });
-  });
+  }
 }
 

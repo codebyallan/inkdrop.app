@@ -164,7 +164,12 @@
       "wrong_password": "Senha atual incorreta",
       "same_password": "A nova senha não pode ser igual à senha atual",
       "passwords_mismatch": "As senhas não coincidem",
-      "password_strength": "A senha deve ter no mínimo 6 caracteres, incluindo letras maiúsculas, minúsculas, números e caracteres especiais"
+      "password_strength": "A senha deve ter no mínimo 6 caracteres, incluindo letras maiúsculas, minúsculas, números e caracteres especiais",
+      "password_too_short": "A senha é muito curta",
+      "password_missing_uppercase": "A senha deve conter ao menos uma letra maiúscula",
+      "password_missing_lowercase": "A senha deve conter ao menos uma letra minúscula",
+      "password_missing_number": "A senha deve conter ao menos um número",
+      "password_missing_special": "A senha deve conter ao menos um caractere especial"
     },
     "session": {
       "title": "Sessão",

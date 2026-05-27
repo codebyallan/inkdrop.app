@@ -22,6 +22,36 @@ import { PageLayoutComponent } from '../../shared/components/page-layout/page-la
 import { ValidationMessageComponent } from '../../shared/components/validation-message/validation-message';
 import { ConfirmDialog } from '../../shared/components/confirm-dialog/confirm-dialog';
 
+function passwordsMatchValidator(g: AbstractControl): ValidationErrors | null {
+  const newPassword = g.get('newPassword');
+  const confirmPassword = g.get('confirmPassword');
+
+  if (newPassword && confirmPassword && newPassword.value !== confirmPassword.value) {
+    confirmPassword.setErrors({ ...confirmPassword.errors, passwordsMismatch: true });
+    return { passwordsMismatch: true };
+  }
+  
+  if (confirmPassword && confirmPassword.hasError('passwordsMismatch')) {
+    const errors = { ...confirmPassword.errors };
+    delete errors['passwordsMismatch'];
+    confirmPassword.setErrors(Object.keys(errors).length ? errors : null);
+  }
+
+  return null;
+}
+
+function passwordStrengthValidator(control: AbstractControl): ValidationErrors | null {
+  const value = control.value || '';
+  const errors: any = {};
+
+  if (!/[A-Z]/.test(value)) errors.missingUppercase = true;
+  if (!/[a-z]/.test(value)) errors.missingLowercase = true;
+  if (!/\d/.test(value)) errors.missingNumber = true;
+  if (!/[@$!%*?&]/.test(value)) errors.missingSpecial = true;
+
+  return Object.keys(errors).length ? errors : null;
+}
+
 @Component({
   selector: 'app-settings',
   standalone: true,
@@ -62,9 +92,10 @@ export class SettingsComponent {
     newPassword: ['', [
       Validators.required, 
       Validators.minLength(6), 
-      Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/)
+      passwordStrengthValidator
     ]],
-  });
+    confirmPassword: ['', [Validators.required]],
+  }, { validators: passwordsMatchValidator });
 
   onChangePassword() {
     if (this.passwordForm.invalid || this.isChangingPassword()) {

@@ -23,7 +23,23 @@
             <app-validation-message 
               [control]="passwordForm.get('newPassword')" 
               [label]="'settings.security.new_password' | translate"
-              [errorMessages]="{ 'pattern': ('settings.security.password_strength' | translate) }">
+              [errorMessages]="{ 
+                'minlength': ('settings.security.password_too_short' | translate),
+                'missingUppercase': ('settings.security.password_missing_uppercase' | translate),
+                'missingLowercase': ('settings.security.password_missing_lowercase' | translate),
+                'missingNumber': ('settings.security.password_missing_number' | translate),
+                'missingSpecial': ('settings.security.password_missing_special' | translate)
+              }">
+            </app-validation-message>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'settings.security.confirm_password' | translate }}</mat-label>
+            <input matInput type="password" formControlName="confirmPassword">
+            <app-validation-message 
+              [control]="passwordForm.get('confirmPassword')" 
+              [label]="'settings.security.confirm_password' | translate"
+              [errorMessages]="{ 'passwordsMismatch': ('settings.security.passwords_mismatch' | translate) }">
             </app-validation-message>
           </mat-form-field>
 
