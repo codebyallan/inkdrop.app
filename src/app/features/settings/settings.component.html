@@ -22,7 +22,8 @@
             <input matInput type="password" formControlName="newPassword">
             <app-validation-message 
               [control]="passwordForm.get('newPassword')" 
-              [label]="passwordForm.get('newPassword')?.hasError('pattern') ? ('settings.security.password_strength' | translate) : ('settings.security.new_password' | translate)">
+              [label]="'settings.security.new_password' | translate"
+              [errorMessages]="{ 'pattern': ('settings.security.password_strength' | translate) }">
             </app-validation-message>
           </mat-form-field>
 

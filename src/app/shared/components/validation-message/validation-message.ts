@@ -15,6 +15,7 @@ export class ValidationMessageComponent {
 
   control = input<AbstractControl | null>(null);
   label = input<string>('Field');
+  errorMessages = input<Record<string, string>>({});
 
   message = computed(() => {
     this.t.currentLangSignal();
@@ -22,7 +23,16 @@ export class ValidationMessageComponent {
     if (!c?.errors) return '';
     const errors = c.errors;
     const label = this.label();
+    const customMessages = this.errorMessages();
 
+    // 1. Prioridade para mensagens customizadas
+    for (const key in errors) {
+      if (customMessages[key]) {
+        return customMessages[key];
+      }
+    }
+
+    // 2. Mensagens padrão baseadas no tipo de erro
     if (errors['required'])
       return this.t.instant('shared.validation.required', { label });
     if (errors['minlength'])
@@ -31,6 +41,7 @@ export class ValidationMessageComponent {
       return this.t.instant('shared.validation.max_length', { label, max: errors['maxlength'].requiredLength });
     if (errors['email'])
       return this.t.instant('shared.validation.email', { label });
+    
     return this.t.instant('shared.validation.invalid', { label });
   });
 }
