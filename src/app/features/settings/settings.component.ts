@@ -125,7 +125,7 @@ export class SettingsComponent {
   }
 
   async onLogout() {
-    const confirmed = await this.dialog.open(ConfirmDialog, {
+    const confirmed = await lastValueFrom(this.dialog.open(ConfirmDialog, {
       data: {
         title: this.translationService.instant('settings.security.logout_title'),
         message: this.translationService.instant('settings.security.logout_message'),
@@ -133,7 +133,7 @@ export class SettingsComponent {
         cancelLabel: this.translationService.instant('shared.actions.cancel'),
         destructive: true,
       },
-    }).afterClosed().toPromise();
+    }).afterClosed());
 
     if (!confirmed) return;
 
