@@ -171,6 +171,28 @@
       "password_missing_number": "A senha deve conter ao menos um número",
       "password_missing_special": "A senha deve conter ao menos um caractere especial"
     },
+    "api_keys": {
+      "title": "Chaves de API",
+      "subtitle": "Gerencie as chaves de API para agentes externos e bots",
+      "new_key_label": "Criar Nova Chave de API",
+      "name_placeholder": "Nome do Agente",
+      "create": "Criar Chave",
+      "created_success": "Chave de API criada com sucesso",
+      "key_generated_title": "Chave de API Gerada",
+      "key_generated_msg": "Copie esta chave agora. Ela não será exibida novamente",
+      "revoke_title": "Revogar Chave de API",
+      "revoke_message": "Tem certeza que deseja revogar esta chave de API? Isso desativará imediatamente o acesso do agente associado.",
+      "revoked_success": "Chave de API revogada com sucesso",
+      "empty_title": "Nenhuma chave de API encontrada",
+      "empty_subtitle": "Crie sua primeira chave de API para permitir integrações externas.",
+      "edit_title": "Editar Nome da Chave de API",
+      "updated_success": "Chave de API atualizada com sucesso",
+      "columns": {
+        "name": "Nome do Agente",
+        "created_at": "Criado em",
+        "last_used_at": "Último Uso"
+      }
+    },
     "session": {
       "title": "Sessão",
       "subtitle": "Encerrar sua sessão no sistema",

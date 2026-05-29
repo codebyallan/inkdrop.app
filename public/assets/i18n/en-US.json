@@ -171,6 +171,28 @@
       "password_missing_number": "Password must contain at least one number",
       "password_missing_special": "Password must contain at least one special character"
     },
+    "api_keys": {
+      "title": "API Keys",
+      "subtitle": "Manage API keys for external agents and bots",
+      "new_key_label": "Create New API Key",
+      "name_placeholder": "Agent Name",
+      "create": "Create Key",
+      "created_success": "API Key created successfully",
+      "key_generated_title": "API Key Generated",
+      "key_generated_msg": "Copy this key now. It will not be shown again",
+      "revoke_title": "Revoke API Key",
+      "revoke_message": "Are you sure you want to revoke this API key? This will immediately disable access for the associated agent.",
+      "revoked_success": "API Key revoked successfully",
+      "empty_title": "No API Keys found",
+      "empty_subtitle": "Create your first API key to allow external integrations.",
+      "edit_title": "Edit API Key Name",
+      "updated_success": "API Key updated successfully",
+      "columns": {
+        "name": "Agent Name",
+        "created_at": "Created At",
+        "last_used_at": "Last Used At"
+      }
+    },
     "session": {
       "title": "Session",
       "subtitle": "End your system session",

@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, inject, signal, DestroyRef } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, signal, DestroyRef, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -17,10 +17,12 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AuthService } from '../../core/services/auth.service';
 import { TranslationService } from '../../core/services/translation.service';
 import { SettingsService } from './settings.service';
-import { ChangePasswordPayload } from './types';
+import { ChangePasswordPayload, ApiKeyResponse, ApiKeyRequest } from './types';
 import { PageLayoutComponent } from '../../shared/components/page-layout/page-layout';
 import { ValidationMessageComponent } from '../../shared/components/validation-message/validation-message';
 import { ConfirmDialog } from '../../shared/components/confirm-dialog/confirm-dialog';
+import { UiTableComponent, ColumnDef } from '../../shared/components/ui-table/ui-table';
+import { ApiKeyEditDialogComponent } from './components/api-key-edit-dialog/api-key-edit-dialog.component';
 
 function passwordsMatchValidator(g: AbstractControl): ValidationErrors | null {
   const newPassword = g.get('newPassword');
@@ -68,16 +70,17 @@ function passwordStrengthValidator(control: AbstractControl): ValidationErrors |
     MatDialogModule,
     TranslateModule,
     PageLayoutComponent,
-    ValidationMessageComponent
+    ValidationMessageComponent,
+    UiTableComponent
   ],
   templateUrl: './settings.component.html',
   styleUrl: './settings.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SettingsComponent {
+export class SettingsComponent implements OnInit {
   private fb = inject(FormBuilder);
   private settingsService = inject(SettingsService);
-  private authService = inject(AuthService);
+  protected authService = inject(AuthService);
   private router = inject(Router);
   private snackBar = inject(MatSnackBar);
   private translationService = inject(TranslationService);
@@ -86,6 +89,11 @@ export class SettingsComponent {
 
   protected isChangingPassword = signal(false);
   protected isLoggingOut = signal(false);
+
+  // API Key signals
+  protected apiKeys = signal<ApiKeyResponse[]>([]);
+  protected isLoadingApiKeys = signal(false);
+  protected isCreatingApiKey = signal(false);
 
   protected passwordForm = this.fb.group({
     currentPassword: ['', [Validators.required]],
@@ -96,6 +104,110 @@ export class SettingsComponent {
     ]],
     confirmPassword: ['', [Validators.required]],
   }, { validators: passwordsMatchValidator });
+
+  protected apiKeyForm = this.fb.group({
+    name: ['', [Validators.required]],
+  });
+
+  protected apiKeyColumns: ColumnDef<ApiKeyResponse>[] = [
+    { id: 'name', header: 'settings.api_keys.columns.name', field: 'name', type: 'text' },
+    { id: 'createdAt', header: 'settings.api_keys.columns.created_at', field: 'createdAt', type: 'date' },
+    { id: 'lastUsedAt', header: 'settings.api_keys.columns.last_used_at', field: 'lastUsedAt', type: 'date' },
+    { id: 'actions', type: 'actions' },
+  ];
+
+  ngOnInit() {
+    if (this.authService.isAdmin()) {
+      this.loadApiKeys();
+    }
+  }
+
+  loadApiKeys() {
+    this.isLoadingApiKeys.set(true);
+    this.settingsService.getApiKeys().subscribe({
+      next: (keys) => this.apiKeys.set(keys),
+      error: () => this.snackBar.open(this.translationService.instant('shared.alerts.internal_error'), 'OK', { duration: 5000 }),
+      complete: () => this.isLoadingApiKeys.set(false),
+    });
+  }
+
+  onCreateApiKey() {
+    if (this.apiKeyForm.invalid || this.isCreatingApiKey()) return;
+
+    this.isCreatingApiKey.set(true);
+    const payload: ApiKeyRequest = {
+      name: (this.apiKeyForm.getRawValue().name || '').trim(),
+    };
+
+    this.settingsService.createApiKey(payload).subscribe({
+      next: (key) => {
+        this.snackBar.open(this.translationService.instant('settings.api_keys.created_success'), 'OK', { duration: 5000 });
+        this.apiKeyForm.reset();
+        this.loadApiKeys();
+        
+        // Show the key to the user - since it's only returned once
+        this.dialog.open(ConfirmDialog, {
+          data: {
+            title: this.translationService.instant('settings.api_keys.key_generated_title'),
+            message: `${this.translationService.instant('settings.api_keys.key_generated_msg')}: ${key}`,
+            confirmLabel: this.translationService.instant('shared.actions.confirm'),
+            destructive: false,
+          },
+        });
+      },
+      error: () => {
+        this.snackBar.open(this.translationService.instant('shared.alerts.internal_error'), 'OK', { duration: 5000 });
+        this.isCreatingApiKey.set(false);
+      },
+      complete: () => this.isCreatingApiKey.set(false),
+    });
+  }
+
+  async onRevokeApiKey(row: ApiKeyResponse) {
+    const confirmed = await lastValueFrom(this.dialog.open(ConfirmDialog, {
+      data: {
+        title: this.translationService.instant('settings.api_keys.revoke_title'),
+        message: this.translationService.instant('settings.api_keys.revoke_message'),
+        confirmLabel: this.translationService.instant('shared.actions.confirm'),
+        cancelLabel: this.translationService.instant('shared.actions.cancel'),
+        destructive: true,
+      },
+    }).afterClosed());
+
+    if (!confirmed) return;
+
+    this.settingsService.revokeApiKey(row.id).subscribe({
+      next: () => {
+        this.snackBar.open(this.translationService.instant('settings.api_keys.revoked_success'), 'OK', { duration: 5000 });
+        this.loadApiKeys();
+      },
+      error: () => this.snackBar.open(this.translationService.instant('shared.alerts.internal_error'), 'OK', { duration: 5000 }),
+    });
+  }
+
+  async onEditApiKey(row: ApiKeyResponse) {
+    const result = await lastValueFrom(this.dialog.open(ApiKeyEditDialogComponent, {
+      data: { id: row.id, currentName: row.name }
+    }).afterClosed());
+
+    if (!result) return;
+
+    this.settingsService.updateApiKey(row.id, { name: result.trim() }).subscribe({
+      next: () => {
+        this.snackBar.open(this.translationService.instant('settings.api_keys.updated_success'), 'OK', { duration: 5000 });
+        this.loadApiKeys();
+      },
+      error: () => this.snackBar.open(this.translationService.instant('shared.alerts.internal_error'), 'OK', { duration: 5000 }),
+    });
+  }
+
+  onApiKeyAction(event: { type: string; row: ApiKeyResponse }) {
+    if (event.type === 'revoke' || event.type === 'delete') {
+      this.onRevokeApiKey(event.row);
+    } else if (event.type === 'edit') {
+      this.onEditApiKey(event.row);
+    }
+  }
 
   onChangePassword() {
     if (this.passwordForm.invalid || this.isChangingPassword()) {

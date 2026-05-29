@@ -51,7 +51,7 @@
   <div class="overflow-x-auto">
     <table mat-table style="width:100%" [dataSource]="data()">
       <ng-container *ngFor="let col of columns()" [matColumnDef]="col.id">
-        <th mat-header-cell *matHeaderCellDef>{{ col.header || '' }}</th>
+        <th mat-header-cell *matHeaderCellDef>{{ (col.header || '') | translate }}</th>
         <td mat-cell *matCellDef="let row">
           <ng-container [ngSwitch]="col.type || 'text'">
 
