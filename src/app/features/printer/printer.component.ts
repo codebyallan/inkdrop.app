@@ -5,6 +5,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { DatePipe } from '@angular/common';
 import { PageLayoutComponent } from '../../shared/components/page-layout/page-layout';
+import { PrinterCard } from './components/printer-card/printer-card';
 import { UiTableComponent, ColumnDef } from '../../shared/components/ui-table/ui-table';
 import { PrintersService } from './services/printer-service';
 import { IPrinter } from './types';
@@ -20,7 +21,7 @@ import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-printer',
-  imports: [MatButtonModule, MatIconModule, MatSnackBarModule, MatProgressBarModule, PageLayoutComponent, UiTableComponent, MatDialogModule, TranslateModule],
+  imports: [MatButtonModule, MatIconModule, MatSnackBarModule, MatProgressBarModule, PageLayoutComponent, PrinterCard, MatDialogModule, TranslateModule],
   templateUrl: './printer.component.html',
   styleUrl: './printer.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -34,21 +35,16 @@ export class Printer implements OnInit {
   public authService = inject(AuthService);
 
   printers = this.printersService.printers;
+  sortedPrinters = computed(() => {
+    return [...this.printers()].sort((a, b) => {
+      const locA = a.locationName?.toLowerCase() || '';
+      const locB = b.locationName?.toLowerCase() || '';
+      return locA.localeCompare(locB);
+    });
+  });
   private locationsMap = new Map<string, string>();
   loading = signal<boolean>(true);
   error = signal<string | null>(null);
-  columnsConfig = computed<ColumnDef<IPrinter>[]>(() => {
-    this.translationService.currentLangSignal();
-    return [
-      { id: 'name', header: this.translationService.instant('printers.columns.name'), field: 'name', type: 'text' as const },
-      { id: 'manufacturer', header: this.translationService.instant('printers.columns.manufacturer'), field: 'manufacturer', type: 'text' as const },
-      { id: 'model', header: this.translationService.instant('printers.columns.model'), field: 'model', type: 'text' as const },
-      { id: 'ipAddress', header: this.translationService.instant('printers.columns.ip_address'), field: 'ipAddress', type: 'text' as const },
-      { id: 'locationName', header: this.translationService.instant('printers.columns.location'), field: 'locationName', type: 'text' as const },
-      { id: 'createdAt', header: this.translationService.instant('printers.columns.created_at'), field: 'createdAt', type: 'date' as const, dateFormat: 'dd/MM/yyyy' },
-      { id: 'actions', header: '', type: 'actions' as const }
-    ];
-  });
 
   ngOnInit() {
     this.loading.set(true);

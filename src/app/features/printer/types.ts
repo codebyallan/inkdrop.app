@@ -1,3 +1,15 @@
+export interface ITonerTelemetry {
+  color: string;
+  level: number;
+}
+
+export interface IPrinterTelemetry {
+  totalPages: number;
+  toners: ITonerTelemetry[];
+  status: 'Online' | 'Offline';
+  lastUpdate: string;
+}
+
 export interface IPrinter {
   id: string;
   name: string;
@@ -7,5 +19,6 @@ export interface IPrinter {
   locationId: string;
   createdAt: string;
   locationName?: string;
+  telemetry?: IPrinterTelemetry;
 }
 

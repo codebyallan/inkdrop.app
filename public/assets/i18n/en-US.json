@@ -98,7 +98,13 @@
       "update_error": "Error updating printer",
       "deleted": "Printer deleted successfully",
       "delete_error": "Error deleting printer"
-    }
+    },
+    "telemetry": {
+      "pages": "Total Pages",
+      "no_data": "No telemetry data",
+      "last_update": "Last collection"
+    },
+    "empty_state": "No printers registered"
   },
   "locations": {
     "page_title": "Locations",
@@ -259,6 +265,7 @@
       "cancel": "Cancel",
       "close": "Close",
       "delete": "Delete",
+      "edit": "Edit",
       "confirm": "Confirm",
       "retry": "Try Again"
     },

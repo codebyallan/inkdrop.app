@@ -98,7 +98,13 @@
       "update_error": "Erro ao atualizar impressora",
       "deleted": "Impressora excluída com sucesso",
       "delete_error": "Erro ao excluir impressora"
-    }
+    },
+    "telemetry": {
+      "pages": "Total de Páginas",
+      "no_data": "Sem dados de telemetria",
+      "last_update": "Última coleta"
+    },
+    "empty_state": "Nenhuma impressora cadastrada"
   },
   "locations": {
     "page_title": "Locais",
@@ -259,6 +265,7 @@
       "cancel": "Cancelar",
       "close": "Fechar",
       "delete": "Excluir",
+      "edit": "Editar",
       "confirm": "Confirmar",
       "retry": "Tentar Novamente"
     },
