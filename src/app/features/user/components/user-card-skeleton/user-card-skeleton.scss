@@ -1,0 +1,50 @@
+.user-card {
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 160px;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.card-header {
+  padding: 16px;
+  
+  .header-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+  }
+
+  .user-email {
+    margin-left: 52px;
+  }
+}
+
+.card-footer {
+  padding: 12px 16px;
+  margin-top: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid var(--mat-sys-outline-variant);
+
+  .user-meta {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .actions {
+    display: flex;
+    gap: 4px;
+  }
+}

@@ -4,9 +4,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { PageLayoutComponent } from '../../shared/components/page-layout/page-layout';
-import { UiTableComponent, ColumnDef } from '../../shared/components/ui-table/ui-table';
+import { UserCard } from './components/user-card/user-card';
+import { UserCardSkeleton } from './components/user-card-skeleton/user-card-skeleton';
 import { UserService } from './services/user-service';
 import { IUser, ROLE_MAP, UserRole } from './types';
+import { ColumnDef } from '../../shared/components/ui-table/ui-table';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ConfirmDialog } from '../../shared/components/confirm-dialog/confirm-dialog';
 import { UserForm } from './components/user-form/user-form.component';
@@ -17,7 +19,7 @@ import { TranslateModule } from '@ngx-translate/core';
 @Component({
   selector: 'app-user',
   standalone: true,
-  imports: [MatButtonModule, MatIconModule, MatSnackBarModule, MatProgressBarModule, PageLayoutComponent, UiTableComponent, MatDialogModule, TranslateModule],
+  imports: [MatButtonModule, MatIconModule, MatSnackBarModule, MatProgressBarModule, PageLayoutComponent, UserCard, UserCardSkeleton, MatDialogModule, TranslateModule],
   templateUrl: './user.component.html',
   styleUrl: './user.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -30,6 +32,9 @@ export class User implements OnInit {
   public authService = inject(AuthService);
 
   users = this.userService.users;
+  sortedUsers = computed(() => {
+    return [...this.users()].sort((a, b) => a.username.localeCompare(b.username));
+  });
   loading = signal<boolean>(true);
   error = signal<string | null>(null);
 

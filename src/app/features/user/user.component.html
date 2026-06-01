@@ -6,18 +6,32 @@
   @if (authService.isAdmin()) {
     <button page-actions mat-flat-button (click)="openDialog()">
       <mat-icon>add</mat-icon>
-      {{ 'users.btn_new' | translate }}
+      {{ 'shared.actions.new' | translate }}
     </button>
   }
   
   @if (loading()) {
     <mat-progress-bar mode="indeterminate"></mat-progress-bar>
   }
-  <app-ui-table 
-    [data]="users()" 
-    [columns]="columnsConfig()" 
-    [loading]="loading()" 
-    [showToggle]="true"
-    (action)="onTableAction($event)">
-  </app-ui-table>
+  
+  <div class="user-grid">
+    @if (loading()) {
+      @for (i of [1, 2, 3, 4, 5, 6]; track i) {
+        <app-user-card-skeleton />
+      }
+    } @else {
+      @for (user of sortedUsers(); track user.id) {
+        <app-user-card 
+          [user]="user" 
+          (edit)="editUser($event)" 
+          (delete)="deleteUser($event.id)">
+        </app-user-card>
+      } @empty {
+        <div class="empty-state">
+          <mat-icon>group_off</mat-icon>
+          <p>{{ 'users.empty_state' | translate }}</p>
+        </div>
+      }
+    }
+  </div>
 </app-page-layout>

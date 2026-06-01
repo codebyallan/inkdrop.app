@@ -247,7 +247,8 @@
       "deactivate_error": "Error deactivating user",
       "created": "User created successfully",
       "create_error": "Error creating user"
-    }
+    },
+    "empty_state": "No users registered"
   },
   "shared": {
     "no_location": "No Location",

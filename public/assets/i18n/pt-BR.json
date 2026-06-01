@@ -247,7 +247,8 @@
       "deactivate_error": "Erro ao desativar usuário",
       "created": "Usuário criado com sucesso",
       "create_error": "Erro ao criar usuário"
-    }
+    },
+    "empty_state": "Nenhum usuário cadastrado"
   },
   "shared": {
     "no_location": "Sem Local",
