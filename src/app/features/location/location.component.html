@@ -13,5 +13,25 @@
   @if (loading()) {
     <mat-progress-bar mode="indeterminate"></mat-progress-bar>
   }
-  <app-ui-table [data]="locations()" [columns]="columnsConfig()" [loading]="loading()" (action)="onTableAction($event)"></app-ui-table>
+  
+  <div class="location-grid">
+    @if (loading()) {
+      @for (i of [1, 2, 3, 4, 5, 6]; track i) {
+        <app-location-card-skeleton />
+      }
+    } @else {
+      @for (location of sortedLocations(); track location.id) {
+        <app-location-card 
+          [location]="location" 
+          (edit)="editLocation($event)" 
+          (delete)="deleteLocation($event.id)">
+        </app-location-card>
+      } @empty {
+        <div class="empty-state">
+          <mat-icon>location_off</mat-icon>
+          <p>{{ 'locations.empty_state' | translate }}</p>
+        </div>
+      }
+    }
+  </div>
 </app-page-layout>

@@ -1,0 +1,31 @@
+<mat-card class="location-card">
+  <div class="card-header">
+    <div class="header-main">
+      <div class="title-group">
+        <mat-icon>location_on</mat-icon>
+        <span class="location-name">{{ location.name }}</span>
+      </div>
+    </div>
+    <div class="location-description">
+      {{ location.description || ('locations.no_description' | translate) }}
+    </div>
+  </div>
+
+  <div class="card-footer">
+    <div class="date-info">
+      <mat-icon>calendar_today</mat-icon>
+      <span>{{ location.createdAt | date: 'dd/MM/yyyy' }}</span>
+    </div>
+    
+    @if (authService.isAdmin()) {
+      <div class="actions">
+        <button mat-icon-button (click)="edit.emit(location)" matTooltip="{{ 'shared.actions.edit' | translate }}">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-icon-button class="btn-delete" (click)="delete.emit(location)" matTooltip="{{ 'shared.actions.delete' | translate }}">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    }
+  </div>
+</mat-card>

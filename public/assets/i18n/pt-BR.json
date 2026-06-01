@@ -128,7 +128,8 @@
       "update_error": "Erro ao atualizar local",
       "deleted": "Local excluído com sucesso",
       "delete_error": "Erro ao excluir local"
-    }
+    },
+    "empty_state": "Nenhum local cadastrado"
   },
   "movements": {
     "page_title": "Movimentações",

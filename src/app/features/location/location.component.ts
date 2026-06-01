@@ -12,14 +12,15 @@ import { LocationForm } from './components/location-form/location-form.component
 import { ConfirmDialog } from '../../shared/components/confirm-dialog/confirm-dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { PageLayoutComponent } from '../../shared/components/page-layout/page-layout';
-import { UiTableComponent } from '../../shared/components/ui-table/ui-table';
+import { LocationCard } from './components/location-card/location-card';
+import { LocationCardSkeleton } from './components/location-card-skeleton/location-card-skeleton';
 import { AuthService } from '../../core/services/auth.service';
 import { TranslationService } from '../../core/services/translation.service';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-location',
-  imports: [MatTableModule, MatButtonModule, MatIconModule, MatSnackBarModule, MatProgressBarModule, PageLayoutComponent, UiTableComponent, TranslateModule],
+  imports: [MatTableModule, MatButtonModule, MatIconModule, MatSnackBarModule, MatProgressBarModule, PageLayoutComponent, LocationCard, LocationCardSkeleton, TranslateModule],
   templateUrl: './location.component.html',
   styleUrl: './location.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -32,6 +33,9 @@ export class Location implements OnInit {
   public authService = inject(AuthService);
 
   locations = this.locationsService.locations;
+  sortedLocations = computed(() => {
+    return [...this.locations()].sort((a, b) => a.name.localeCompare(b.name));
+  });
   loading = signal<boolean>(true);
   error = signal<string | null>(null);
   columnsConfig = computed<ColumnDef<ILocation>[]>(() => {

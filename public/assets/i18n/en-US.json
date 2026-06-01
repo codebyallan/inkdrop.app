@@ -128,7 +128,8 @@
       "update_error": "Error updating location",
       "deleted": "Location deleted successfully",
       "delete_error": "Error deleting location"
-    }
+    },
+    "empty_state": "No locations registered"
   },
   "movements": {
     "page_title": "Movements",
