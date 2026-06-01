@@ -69,7 +69,8 @@
       "update_error": "Error updating toner",
       "deleted": "Toner deleted successfully",
       "delete_error": "Error deleting toner"
-    }
+    },
+    "empty_state": "No toners registered"
   },
   "printers": {
     "page_title": "Printers",

@@ -13,6 +13,26 @@
   @if (loading()) {
     <mat-progress-bar mode="indeterminate"></mat-progress-bar>
   }
-  <app-ui-table [data]="toners()" [columns]="columnsConfig()" [loading]="loading()" (action)="onTableAction($event)"></app-ui-table>
+  
+  <div class="toner-grid">
+    @if (loading()) {
+      @for (i of [1, 2, 3, 4, 5, 6]; track i) {
+        <app-toner-card-skeleton />
+      }
+    } @else {
+      @for (toner of sortedToners(); track toner.id) {
+        <app-toner-card 
+          [toner]="toner" 
+          (edit)="editToner($event)" 
+          (delete)="deleteToner($event.id)">
+        </app-toner-card>
+      } @empty {
+        <div class="empty-state">
+          <mat-icon>inventory_2</mat-icon>
+          <p>{{ 'toners.empty_state' | translate }}</p>
+        </div>
+      }
+    }
+  </div>
 </app-page-layout>
 

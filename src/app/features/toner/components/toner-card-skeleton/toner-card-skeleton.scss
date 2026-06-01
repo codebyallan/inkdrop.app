@@ -1,0 +1,66 @@
+.toner-card {
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 200px;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.card-header {
+  padding: 12px;
+  
+  .header-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  .toner-details {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.card-body {
+  padding: 12px;
+  flex-grow: 1;
+}
+
+.inventory-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.quantity-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 6px;
+
+  .info-text {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.card-footer {
+  padding: 8px 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .date-info {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .actions {
+    display: flex;
+    gap: 4px;
+  }
+}

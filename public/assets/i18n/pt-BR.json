@@ -69,7 +69,8 @@
       "update_error": "Erro ao atualizar toner",
       "deleted": "Toner excluído com sucesso",
       "delete_error": "Erro ao excluir toner"
-    }
+    },
+    "empty_state": "Nenhum toner cadastrado"
   },
   "printers": {
     "page_title": "Impressoras",

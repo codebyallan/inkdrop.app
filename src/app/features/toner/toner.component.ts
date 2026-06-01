@@ -4,6 +4,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { PageLayoutComponent } from '../../shared/components/page-layout/page-layout';
+import { TonerCard } from './components/toner-card/toner-card';
+import { TonerCardSkeleton } from './components/toner-card-skeleton/toner-card-skeleton';
 import { UiTableComponent, ColumnDef } from '../../shared/components/ui-table/ui-table';
 import { TonersService } from './services/toner-service';
 import { IToner } from './types';
@@ -16,7 +18,7 @@ import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-toner',
-  imports: [MatButtonModule, MatIconModule, MatSnackBarModule, MatProgressBarModule, PageLayoutComponent, UiTableComponent, MatDialogModule, TranslateModule],
+  imports: [MatButtonModule, MatIconModule, MatSnackBarModule, MatProgressBarModule, PageLayoutComponent, TonerCard, TonerCardSkeleton, MatDialogModule, TranslateModule],
   templateUrl: './toner.component.html',
   styleUrl: './toner.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -29,6 +31,9 @@ export class Toner implements OnInit {
   public authService = inject(AuthService);
 
   toners = this.tonersService.toners;
+  sortedToners = computed(() => {
+    return [...this.toners()].sort((a, b) => a.model.localeCompare(b.model));
+  });
   loading = signal<boolean>(true);
   error = signal<string | null>(null);
   columnsConfig = computed<ColumnDef<IToner>[]>(() => {
