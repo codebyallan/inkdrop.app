@@ -6,6 +6,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { DatePipe } from '@angular/common';
 import { PageLayoutComponent } from '../../shared/components/page-layout/page-layout';
 import { PrinterCard } from './components/printer-card/printer-card';
+import { PrinterCardSkeleton } from './components/printer-card-skeleton/printer-card-skeleton';
 import { UiTableComponent, ColumnDef } from '../../shared/components/ui-table/ui-table';
 import { PrintersService } from './services/printer-service';
 import { IPrinter } from './types';
@@ -21,7 +22,7 @@ import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-printer',
-  imports: [MatButtonModule, MatIconModule, MatSnackBarModule, MatProgressBarModule, PageLayoutComponent, PrinterCard, MatDialogModule, TranslateModule],
+  imports: [MatButtonModule, MatIconModule, MatSnackBarModule, MatProgressBarModule, PageLayoutComponent, PrinterCard, PrinterCardSkeleton, MatDialogModule, TranslateModule],
   templateUrl: './printer.component.html',
   styleUrl: './printer.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

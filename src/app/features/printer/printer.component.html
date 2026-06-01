@@ -15,17 +15,23 @@
   }
   
   <div class="printer-grid">
-    @for (printer of sortedPrinters(); track printer.id) {
-      <app-printer-card 
-        [printer]="printer" 
-        (edit)="editPrinter($event)" 
-        (delete)="deletePrinter($event.id)">
-      </app-printer-card>
-    } @empty {
-      <div class="empty-state">
-        <mat-icon>print</mat-icon>
-        <p>{{ 'printers.empty_state' | translate }}</p>
-      </div>
+    @if (loading()) {
+      @for (i of [1, 2, 3, 4, 5, 6]; track i) {
+        <app-printer-card-skeleton />
+      }
+    } @else {
+      @for (printer of sortedPrinters(); track printer.id) {
+        <app-printer-card 
+          [printer]="printer" 
+          (edit)="editPrinter($event)" 
+          (delete)="deletePrinter($event.id)">
+        </app-printer-card>
+      } @empty {
+        <div class="empty-state">
+          <mat-icon>print</mat-icon>
+          <p>{{ 'printers.empty_state' | translate }}</p>
+        </div>
+      }
     }
   </div>
 </app-page-layout>
