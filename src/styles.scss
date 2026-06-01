@@ -36,6 +36,50 @@ body {
   height: 100%;
 }
 
+/* Custom Minimalist Scrollbar */
+:root {
+  --sb-track-color: transparent;
+  --sb-thumb-color: transparent; /* Hidden by default */
+  --sb-thumb-hover: #cbd5e1;
+}
+
+/* Chrome, Edge, Safari */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--sb-track-color);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--sb-thumb-color);
+  border-radius: 10px;
+  border: 2px solid transparent; 
+  background-clip: content-box;
+  transition: background 0.3s ease;
+}
+
+/* Show scrollbar when hovering over the scrollable element */
+*:hover ::-webkit-scrollbar-thumb {
+  background: var(--sb-thumb-hover);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8 !important;
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: transparent var(--sb-track-color);
+}
+
+*:hover {
+  scrollbar-color: var(--sb-thumb-hover) var(--sb-track-color);
+}
+
 .error-snackbar {
   --mdc-snackbar-container-color: var(--mat-sys-error);
   --mdc-snackbar-supporting-text-color: var(--mat-sys-on-error);
