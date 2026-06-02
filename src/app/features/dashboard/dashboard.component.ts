@@ -2,6 +2,7 @@ import { Component, OnInit, inject, signal, computed, ChangeDetectionStrategy } 
 import { forkJoin } from 'rxjs';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { Router } from '@angular/router';
@@ -12,8 +13,9 @@ import { LocationsService } from '../location/services/location-service';
 import { TranslationService } from '../../core/services/translation.service';
 import { AuthService } from '../../core/services/auth.service';
 import { MovementForm } from '../movement/components/movement-form/movement-form.component';
-import { UiTableComponent } from '../../shared/components/ui-table/ui-table';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslateModule } from '@ngx-translate/core';
+import { DatePipe, CommonModule } from '@angular/common';
 import { IToner } from '../toner/types';
 import { IPrinter } from '../printer/types';
 import { IMovement } from '../movement/types';
@@ -21,7 +23,18 @@ import { ILocation } from '../location/types';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [MatCardModule, MatButtonModule, MatSnackBarModule, MatDialogModule, UiTableComponent, TranslateModule],
+  standalone: true,
+  imports: [
+    MatCardModule, 
+    MatButtonModule, 
+    MatIconModule, 
+    MatSnackBarModule, 
+    MatDialogModule, 
+    MatTooltipModule,
+    TranslateModule, 
+    DatePipe, 
+    CommonModule
+  ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -45,10 +58,52 @@ export class Dashboard implements OnInit {
   loading = signal<boolean>(false);
   error = signal<string | null>(null);
 
+  // --- Operational Risk KPIs ---
+  
+  // Helper to filter maintenance items (waste toner, etc)
+  private isTonerInsumo(toner: any): boolean {
+    const maintenanceKeywords = ['recolha', 'collection', 'waste', 'manutenção', 'maintenance'];
+    const identifier = (toner.color || '').toLowerCase();
+    return !maintenanceKeywords.some(keyword => identifier.includes(keyword));
+  }
+
+  // Critical: Below 1% (Real supplies only)
+  operationalCriticalCount = computed(() => {
+    return this.printers().flatMap(p => 
+      (p.telemetry?.toners || []).filter(t => this.isTonerInsumo(t) && t.level <= 1)
+    ).length;
+  });
+
+  // Attention: Below 5% (Real supplies only)
+  operationalAttentionCount = computed(() => {
+    return this.printers().flatMap(p => 
+      (p.telemetry?.toners || []).filter(t => this.isTonerInsumo(t) && t.level <= 5)
+    ).length;
+  });
+
+  // Fleet Health: % of ALL supply toners in the fleet that are > 20%
+  fleetHealthPercent = computed(() => {
+    const allTonerInsumos = this.printers().flatMap(p => 
+      (p.telemetry?.toners || []).filter(t => this.isTonerInsumo(t))
+    );
+    
+    if (allTonerInsumos.length === 0) return 0;
+    
+    const healthyToners = allTonerInsumos.filter(t => t.level > 20).length;
+    return Math.round((healthyToners / allTonerInsumos.length) * 100);
+  });
+
   tonersInStock = computed(() =>
     this.toners().reduce((sum, t) => sum + (t.quantity ?? 0), 0)
   );
-  lowTonersCount = computed(() => this.lowToners().length);
+
+  // Logistical: Models in stock with <= 3 units
+  logisticalCriticalCount = computed(() => 
+    this.toners().filter(t => (t.quantity ?? 0) <= 3).length
+  );
+
+  tonersCriticalStockCount = computed(() => this.logisticalCriticalCount());
+
   activePrintersCount = computed(() => this.printers().length);
   movementsToday = computed(() => {
     const today = new Date().toDateString();
@@ -56,14 +111,42 @@ export class Dashboard implements OnInit {
       (m) => new Date(m.createdAt).toDateString() === today
     ).length;
   });
+  lowTonersCount = computed(() => this.lowToners().length);
 
-  recentMovements = computed(() => {
-    const withNames = this.movementsService.movementsDisplay();
-    return [...withNames]
-      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-      .slice(0, 3);
+  // --- Action Widgets ---
+  getMoveType(type: string | undefined): string {
+    if (!type) return 'unknown';
+    const normalized = type.toLowerCase().trim();
+    if (normalized === 'in') return 'in';
+    if (normalized === 'out') return 'out';
+    return 'unknown';
+  }
+
+  urgentReplacements = computed(() => {
+    const list: { printer: IPrinter, toner: any }[] = [];
+    
+    this.printers().forEach(p => {
+      (p.telemetry?.toners || []).forEach(t => {
+        if (this.isTonerInsumo(t) && t.level <= 5) {
+          list.push({ printer: p, toner: t });
+        }
+      });
+    });
+    return list.sort((a, b) => a.toner.level - b.toner.level).slice(0, 5);
   });
 
+  stockReplenishments = computed(() => 
+    [...this.toners()].sort((a, b) => (a.quantity ?? 0) - (b.quantity ?? 0)).slice(0, 5)
+  );
+
+  activityFeed = computed(() => {
+    return this.movementsService.movementsDisplay()
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+      .slice(0, 10);
+  });
+
+  // Backward compatibility with old tables
+  recentMovements = computed(() => this.activityFeed());
   recentMovementsColumns = computed(() => {
     this.translationService.currentLangSignal();
     return [
@@ -85,8 +168,6 @@ export class Dashboard implements OnInit {
     ];
   });
 
-  // ─── Low Stock Toners table ───────────────────────────────────────────────
-
   lowTonersTableData = computed(() =>
     [...this.lowToners()]
       .sort((a, b) => (a.quantity ?? 0) - (b.quantity ?? 0))
@@ -105,13 +186,7 @@ export class Dashboard implements OnInit {
     ];
   });
 
-  // ─────────────────────────────────────────────────────────────────────────
-
-  private readonly lowStockThreshold = 3;
-
   ngOnInit() {
-    // Use OR (||) instead of AND (&&) because any cached entity means we can show something 
-    // and avoid a full-page loading flicker
     const hasCache = this.toners().length > 0 || 
                      this.printers().length > 0 || 
                      this.locations().length > 0 || 
@@ -123,7 +198,7 @@ export class Dashboard implements OnInit {
 
     forkJoin({
       toners: this.tonersService.getToners(),
-      lowToners: this.tonersService.getLowStock(this.lowStockThreshold),
+      lowToners: this.tonersService.getLowStock(3),
       printers: this.printersService.getPrinters(),
       locations: this.locationsService.getLocations(),
       movements: this.movementsService.getMovements(),

@@ -26,10 +26,22 @@
   },
   "dashboard": {
     "kpi": {
-      "toners_in_stock": "Toners in Stock",
-      "low_toners": "Low Toners",
-      "active_printers": "Active Printers",
-      "movements_today": "Movements Today"
+      "toners_in_stock": "Total in Stock",
+      "logistical_critical": "Logistical Critical Stock",
+      "fleet_health": "Fleet Health",
+      "activity_today": "Activity Today",
+      "urgent_replacements": "Urgent Replacements"
+    },
+    "widgets": {
+      "activity_feed": "Activity Feed",
+      "replace_now": "Replace Now (Suggested)",
+      "replenish_stock": "Replenish Stock",
+      "empty_urgent": "No urgent replacements at the moment.",
+      "empty_stock": "Stock is healthy."
+    },
+    "timeline": {
+      "entry_desc": "Technician added {{qty}} unit(s) of {{toner}} to stock",
+      "exit_desc": "Technician moved {{qty}} unit(s) of {{toner}} to {{printer}}"
     },
     "recent_movements": "Recent Movements",
     "btn_new_movement": "New Movement",
@@ -270,7 +282,9 @@
       "delete": "Delete",
       "edit": "Edit",
       "confirm": "Confirm",
-      "retry": "Try Again"
+      "retry": "Try Again",
+      "see_all": "See all",
+      "view_details": "View details"
     },
     "confirm_dialog": {
       "default_title": "Confirm",

@@ -26,10 +26,22 @@
   },
   "dashboard": {
     "kpi": {
-      "toners_in_stock": "Toners em Estoque",
-      "low_toners": "Toners Baixos",
-      "active_printers": "Impressoras Ativas",
-      "movements_today": "Movimentações Hoje"
+      "toners_in_stock": "Total em Estoque",
+      "logistical_critical": "Estoque Crítico",
+      "fleet_health": "Saúde da Frota",
+      "activity_today": "Atividade Hoje",
+      "urgent_replacements": "Trocas Urgentes"
+    },
+    "widgets": {
+      "activity_feed": "Feed de Atividade",
+      "replace_now": "Trocar Agora (Sugeridos)",
+      "replenish_stock": "Repor Estoque",
+      "empty_urgent": "Nenhuma troca urgente no momento.",
+      "empty_stock": "Estoque está saudável."
+    },
+    "timeline": {
+      "entry_desc": "Técnico adicionou {{qty}} unidade(s) de {{toner}} ao estoque",
+      "exit_desc": "Técnico moveu {{qty}} unidade(s) de {{toner}} para {{printer}}"
     },
     "recent_movements": "Movimentações Recentes",
     "btn_new_movement": "Nova Movimentação",
@@ -270,7 +282,9 @@
       "delete": "Excluir",
       "edit": "Editar",
       "confirm": "Confirmar",
-      "retry": "Tentar Novamente"
+      "retry": "Tentar Novamente",
+      "see_all": "Ver tudo",
+      "view_details": "Ver detalhes"
     },
     "confirm_dialog": {
       "default_title": "Confirmar",
