@@ -1,26 +1,28 @@
 import { Component, OnInit, inject, signal, computed, ChangeDetectionStrategy } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { PageLayoutComponent } from '../../shared/components/page-layout/page-layout';
-import { UiTableComponent } from '../../shared/components/ui-table/ui-table';
-import { MovementsService } from './services/movement-service';
-import { IMovement } from './types';
+import { PageLayoutComponent } from '../../shared/components/page-layout/page-layout.component';
+import { UiTableComponent } from '../../shared/components/ui-table/ui-table.component';
+import { MovementsService } from './services/movement.service';
+import { IMovement } from '../../types/movement.type';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MovementForm } from './components/movement-form/movement-form.component';
-import { TonersService } from '../toner/services/toner-service';
-import { PrintersService } from '../printer/services/printer-service';
-import { IToner } from '../toner/types';
-import { IPrinter } from '../printer/types';
-import { LocationsService } from '../location/services/location-service';
-import { ILocation } from '../location/types';
+import { TonersService } from '../toner/services/toner.service';
+import { PrintersService } from '../printer/services/printer.service';
+import { IToner } from '../../types/toner.type';
+import { IPrinter } from '../../types/printer.type';
+import { LocationsService } from '../location/services/location.service';
+import { ILocation } from '../../types/location.type';
 import { TranslationService } from '../../core/services/translation.service';
 import { TranslateModule } from '@ngx-translate/core';
 import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-movement',
+  standalone: true,
   imports: [MatButtonModule, MatIconModule, MatSnackBarModule, MatProgressBarModule, PageLayoutComponent, UiTableComponent, MatDialogModule, TranslateModule],
   templateUrl: './movement.component.html',
   styleUrl: './movement.component.scss',
@@ -52,7 +54,7 @@ export class Movement implements OnInit {
         field: 'type',
         type: 'icon' as const,
         transform: (val: unknown) => val?.toString().toLowerCase() === 'in' ? 'arrow_upward' : 'arrow_downward',
-        colorTransform: (val: unknown) => val?.toString().toLowerCase() === 'in' ? '#2e7d32' : '#c62828',
+        colorTransform: (val: unknown) => val?.toString().toLowerCase() === 'in' ? 'var(--mat-sys-success)' : 'var(--mat-sys-error)',
         tooltipTransform: (val: unknown) =>
           val?.toString().toLowerCase() === 'in' ? this.translationService.instant('movements.type_in') : this.translationService.instant('movements.type_out'),
       },
@@ -93,7 +95,7 @@ export class Movement implements OnInit {
         this.loading.set(false);
         this.error.set(null);
       },
-      error: (err: any) => {
+      error: (err: HttpErrorResponse) => {
         this.loading.set(false);
         if (err.status === 400) {
           this.error.set(err.error?.message || this.translationService.instant('shared.alerts.invalid_request'));
@@ -114,7 +116,7 @@ export class Movement implements OnInit {
         this.loading.set(false);
         this.error.set(null);
       },
-      error: (err: any) => {
+      error: (err: HttpErrorResponse) => {
         this.loading.set(false);
         if (err.status === 400) {
           this.error.set(err.error?.message || this.translationService.instant('shared.alerts.invalid_request'));

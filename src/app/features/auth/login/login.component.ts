@@ -1,5 +1,4 @@
 import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
@@ -19,7 +18,6 @@ import { TranslateModule } from '@ngx-translate/core';
   selector: 'app-login',
   standalone: true,
   imports: [
-    CommonModule, 
     ReactiveFormsModule, 
     MatCardModule, 
     MatFormFieldModule, 

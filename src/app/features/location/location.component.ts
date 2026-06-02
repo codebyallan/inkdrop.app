@@ -1,25 +1,27 @@
 import { Component, inject, OnInit, signal, computed, ChangeDetectionStrategy } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { MatTableModule } from '@angular/material/table';
-import { LocationsService } from './services/location-service';
-import { ILocation } from './types';
-import { ColumnDef } from '../../shared/components/ui-table/ui-table';
+import { LocationsService } from './services/location.service';
+import { ILocation } from '../../types/location.type';
+import { ColumnDef } from '../../types/ui-table.type';
 import { DatePipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatDialog } from '@angular/material/dialog';
 import { LocationForm } from './components/location-form/location-form.component';
-import { ConfirmDialog } from '../../shared/components/confirm-dialog/confirm-dialog';
+import { ConfirmDialog } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { PageLayoutComponent } from '../../shared/components/page-layout/page-layout';
-import { LocationCard } from './components/location-card/location-card';
-import { LocationCardSkeleton } from './components/location-card-skeleton/location-card-skeleton';
+import { PageLayoutComponent } from '../../shared/components/page-layout/page-layout.component';
+import { LocationCard } from './components/location-card/location-card.component';
+import { LocationCardSkeleton } from './components/location-card-skeleton/location-card-skeleton.component';
 import { AuthService } from '../../core/services/auth.service';
 import { TranslationService } from '../../core/services/translation.service';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-location',
+  standalone: true,
   imports: [MatTableModule, MatButtonModule, MatIconModule, MatSnackBarModule, MatProgressBarModule, PageLayoutComponent, LocationCard, LocationCardSkeleton, TranslateModule],
   templateUrl: './location.component.html',
   styleUrl: './location.component.scss',
@@ -55,7 +57,7 @@ export class Location implements OnInit {
         this.loading.set(false);
         this.error.set(null);
       },
-      error: (err: any) => {
+      error: (err: HttpErrorResponse) => {
         this.loading.set(false);
         if (err.status === 400) {
           this.error.set(err.error?.message || this.translationService.instant('shared.alerts.invalid_request'));
@@ -71,7 +73,7 @@ export class Location implements OnInit {
         this.loading.set(false);
         this.error.set(null);
       },
-      error: (err: any) => {
+      error: (err: HttpErrorResponse) => {
         this.loading.set(false);
         if (err.status === 400) {
           this.error.set(err.error?.message || this.translationService.instant('shared.alerts.invalid_request'));

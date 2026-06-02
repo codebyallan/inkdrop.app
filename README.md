@@ -1,115 +1,129 @@
-# 🖨️ Inkdrop App
+# 🖋️ Inkdrop App - Printer Fleet & Toner Management
 
-**Frontend** for a Toner Control system — manage toners, printers, locations, and movements from a single dashboard. The backend is a separate repository and must be running for the app to work.
+![Angular](https://img.shields.io/badge/Angular-v21+-DD0031?style=for-the-badge&logo=angular)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-3178C6?style=for-the-badge&logo=typescript)
+![Material Design 3](https://img.shields.io/badge/Material-Design_3-blue?style=for-the-badge)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind-CSS-38B2AC?style=for-the-badge&logo=tailwind-css)
 
----
-
-## 📖 About the project
-
-This repository contains only the **frontend** (Angular SPA). It talks to a REST API for data; the **backend is in another repo** and must be deployed or run locally for full functionality.
-
-### ✨ Features
-
-- **Dashboard** — KPIs (toners in stock, low toners, active printers, movements today), recent movements list, and quick actions
-- **Toners** — Manage toners (list, create, edit, delete)
-- **Printers** — Manage printers (list, create, edit, delete)
-- **Locations** — Manage locations (list, create, edit, delete)
-- **Movements** — Record in/out movements and view history (list, create)
+Inkdrop is a high-performance corporate solution designed for monitoring and managing printer fleets and toner inventories. The system transforms raw telemetry data into operational intelligence, allowing managers to anticipate toner replacements and optimize distribution logistics.
 
 ---
 
-## 🛠 Stack
+## 🚀 Core Features
 
-| Area        | Technology |
-|------------|------------|
-| Framework  | Angular 21 |
-| UI         | Angular Material (Material 3) |
-| Layout / CDK | Angular CDK |
-| Styling    | Tailwind CSS 4, SCSS |
-| Language   | TypeScript 5.9 |
-| State / Data | RxJS, Angular signals |
-| Package manager | npm |
+### 📊 Operational Dashboard (Command Center)
+- **Risk KPIs**: Real-time indicators for critical replacements (toners < 1%) and attention (toners < 5%).
+- **Fleet Health Score**: Dynamic percentage of fleet health based on overall supply levels.
+- **"Replace Now" Widget**: Intelligent list of urgent replacements with CMYK visual color-coding.
+- **Activity Feed**: Chronological timeline of supply movements with Entry/Exit visual indicators.
+
+### 📦 Toner & Inventory Management
+- **Stock Control**: Centralized management of models, colors, and quantities.
+- **Low Stock Alerts**: Automatic identification of models with critically low units.
+- **Standardized Coloring**: CMYK-compliant visual identification across the entire app.
+
+### 🖨️ Printer Monitoring
+- **Real-time Telemetry**: Direct visualization of toner levels and printer metadata.
+- **Geographic Mapping**: Association of printers with specific company locations for logistics optimization.
+- **Connectivity Tracking**: Online/Offline status monitoring.
+
+### 🔄 Movement Tracking & Audit
+- **Transaction Logs**: Full history of every toner movement (In/Out).
+- **Audit Trail**: Detailed traceability to prevent supply loss and track consumption patterns.
+
+### 👥 User Administration (RBAC)
+- **Role-Based Access**: Strict differentiation between **Administrators** (full system control) and **Technicians** (operational tasks).
+- **Profile Management**: User activation, deactivation, and privilege escalation.
 
 ---
 
-## ⚙️ Environment Variables
+## 🛠️ Engineering & Architecture
 
-### Mandatory variables for Production
+### ⚡ Performance Strategy
+- **Angular Signals**: Fully reactive architecture using `signal`, `computed`, `input`, and `output`, eliminating `Zone.js` overhead.
+- **SWR Pattern (Stale-While-Revalidate)**: Intelligent caching layer in services. Data is served instantly from the cache while updated in the background.
+- **OnPush Strategy**: Mandatory `ChangeDetectionStrategy.OnPush` across all components to ensure minimum re-renders.
 
-When building for production (using `set-env.js`), the following variable **must** be defined in the environment:
+### 🎨 UI/UX Standards
+- **Material Design 3**: Implementation of a professional design system using M3 tokens.
+- **Dynamic Theming**: Native support for Light and Dark Mode via CSS System Variables (`var(--mat-sys-*)`).
+- **Utility-First Layout**: Tailwind CSS used exclusively for responsive grids and structural layout.
 
-| Variable | Description | Example |
-|----------|-------------|---------|
-| `BASE_URL` | The base URL of the REST API | `https://api.inkdrop.com/api` |
-
-If this variable is missing during the build process or in the final production bundle, the application will fail to start with a critical error.
+### 🔒 Security Architecture
+- **Authentication**: Secure cookie-based session management.
+- **CSRF Protection**: Mandatory XSRF handshake. The app performs a request to `/api/auth/csrf` to establish a secure session before any mutating operation (POST, PUT, DELETE).
+- **Intercepted Requests**: `xsrfInterceptor` automatically manages token inclusion in all HTTP calls.
 
 ---
 
-## 🚀 Clone and run locally
+## 📂 Project Organization
 
-### 📋 Prerequisites
-
-- **Node.js** (v18 or v20 recommended)
-- **npm** (v9+)
-
-### 1️⃣ Clone the repository
-
-```bash
-git clone https://github.com/codebyallan/inkdrop.app.git
-cd inkdrop.app
+```text
+src/app/
+├── core/                # Singletons, guards, interceptors (The app's foundation)
+├── shared/              # Generic reusable components (e.g., UiTable, ValidationMessage)
+├── features/            # Domain-driven feature modules
+│   ├── auth/            # Login, session, and CSRF handshake
+│   ├── dashboard/       # Main operational cockpit
+│   ├── printer/         # Printer fleet & telemetry
+│   ├── toner/           # Inventory & stock control
+│   ├── location/        # Geographic layout
+│   ├── movement/        # Supply flow tracking
+│   └── user/            # RBAC & user management
+└── types/               # Centralized TypeScript interfaces (Single source of truth)
 ```
 
-### 2️⃣ Install dependencies
+---
 
-```bash
-npm install
-```
+## ⚙️ Setup & Development
 
-### 3️⃣ Configure the API base URL
+### Prerequisites
+- Node.js LTS
+- npm / yarn
 
-Set the backend URL for your environment:
+### Installation
+1. Clone the repository:
+   \`\`\`bash
+   git clone <repository-url>
+   cd inkdrop.app
+   \`\`\`
 
-- **Development:** edit `src/environments/environment.development.ts` and set `BASE_URL` to your API base (e.g. `http://localhost:5109/api`).
-- **Production:** set `BASE_URL` in `src/environments/environment.ts` for production builds.
+2. Install dependencies:
+   \`\`\`bash
+   npm install
+   \`\`\`
 
-Example:
+3. Environment Configuration:
+   Set the required environment variables in your system and run:
+   \`\`\`bash
+   npm run set-env
+   \`\`\`
 
-```ts
-// src/environments/environment.development.ts
-export const environment = { BASE_URL: 'http://localhost:5109/api' };
-```
+4. Development Server:
+   \`\`\`bash
+   npm run start
+   \`\`\`
 
-### 4️⃣ Start the development server
-
-```bash
-npm start
-```
-
-Or:
-
-```bash
-ng serve
-```
-
-Open **http://localhost:4200/** in your browser. The app will hot-reload when you change the code.
-
-### 📦 Build for production
-
-```bash
+### Production Build
+To generate a highly optimized production bundle:
+\`\`\`bash
 npm run build
-```
-
-Output is generated under `dist/`.
+\`\`\`
 
 ---
 
-## 📄 License
+## 📖 Documentation & Standards
 
-This project is licensed under the **GNU General Public License v3.0 (GPL-3.0)**.
+- **API Contract**: For detailed endpoint specifications, refer to `api-contract.md`.
+- **Architectural Guidelines**: For coding standards and rules, refer to `system.md`.
 
-- ✅ You may **use** and **modify** the software.
-- ✅ You may distribute original or modified versions.
-- ❌ You **may not** make the project or derivatives **proprietary/closed source** — derivative works must be released under the same GPL-3.0 and remain open source.
+### Contribution Rules
+- **No `any`**: Use strict TypeScript interfaces.
+- **Signal-First**: Prefer `computed()` over manual state updates.
+- **Design Tokens**: Never use hardcoded hex colors; always use `var(--mat-sys-*)`.
+- **Modern Syntax**: Use `@if` and `@for` exclusively.
 
-See the [LICENSE](LICENSE) file for the full text.
+---
+
+## 📜 License
+Proprietary license of Inkdrop. All rights reserved.

@@ -1,6 +1,6 @@
-import { User } from './user.type';
+import { IUser } from './user.type';
 
 export type AuthResponse = {
   message: string;
-  user: User;
+  user: IUser;
 };

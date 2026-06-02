@@ -1,10 +1,5 @@
 import { Routes } from '@angular/router';
-import { DefaultLayout } from './layout/default-layout/default-layout';
-import { Dashboard } from './features/dashboard/dashboard.component';
-import { Location } from './features/location/location.component';
-import { Printer } from './features/printer/printer.component';
-import { Toner } from './features/toner/toner.component';
-import { Movement } from './features/movement/movement.component';
+import { DefaultLayout } from './layout/default-layout/default-layout.component';
 import { authGuard, guestGuard, verifiedAuthGuard } from './core/guards/auth.guard';
 import { adminGuard } from './core/guards/admin.guard';
 
@@ -20,11 +15,26 @@ export const routes: Routes = [
         canActivate: [verifiedAuthGuard],
         children: [
             { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
-            { path: 'dashboard', component: Dashboard },
-            { path: 'locations', component: Location },
-            { path: 'printers', component: Printer },
-            { path: 'toners', component: Toner },
-            { path: 'movements', component: Movement },
+            { 
+              path: 'dashboard', 
+              loadComponent: () => import('./features/dashboard/dashboard.component').then(m => m.Dashboard) 
+            },
+            { 
+              path: 'locations', 
+              loadComponent: () => import('./features/location/location.component').then(m => m.Location) 
+            },
+            { 
+              path: 'printers', 
+              loadComponent: () => import('./features/printer/printer.component').then(m => m.Printer) 
+            },
+            { 
+              path: 'toners', 
+              loadComponent: () => import('./features/toner/toner.component').then(m => m.Toner) 
+            },
+            { 
+              path: 'movements', 
+              loadComponent: () => import('./features/movement/movement.component').then(m => m.Movement) 
+            },
             { 
               path: 'settings', 
               loadComponent: () => import('./features/settings/settings.component').then(m => m.SettingsComponent) 

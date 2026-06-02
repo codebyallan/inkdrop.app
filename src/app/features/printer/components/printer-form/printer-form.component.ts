@@ -5,15 +5,17 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatSelectModule } from '@angular/material/select';
-import { ValidationMessageComponent } from '../../../../shared/components/validation-message/validation-message';
-import { LocationsService } from '../../../location/services/location-service';
-import { ILocation } from '../../../location/types';
+import { ValidationMessageComponent } from '../../../../shared/components/validation-message/validation-message.component';
+import { LocationsService } from '../../../location/services/location.service';
+import { ILocation } from '../../../../types/location.type';
+import { IPrinter } from '../../../../types/printer.type';
 import { TranslateModule } from '@ngx-translate/core';
 
-type DialogData = { locations: Array<{ id: string; name: string }>, mode?: 'create' | 'edit', initial?: any };
+type DialogData = { locations: Array<{ id: string; name: string }>, mode?: 'create' | 'edit', initial?: Partial<IPrinter> };
 
 @Component({
   selector: 'app-printer-form',
+  standalone: true,
   imports: [ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatDialogModule, MatSelectModule, ValidationMessageComponent, TranslateModule],
   templateUrl: './printer-form.component.html',
   styleUrl: './printer-form.component.scss',

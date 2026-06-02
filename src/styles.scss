@@ -41,6 +41,27 @@ body {
   --sb-track-color: transparent;
   --sb-thumb-color: transparent; /* Hidden by default */
   --sb-thumb-hover: #cbd5e1;
+
+  /* Semantic Colors for KPIs and Alerts */
+  --mat-sys-error: #ef4444;
+  --mat-sys-on-error: #ffffff;
+  --mat-sys-error-container: #fee2e2;
+  --mat-sys-on-error-container: #991b1b;
+
+  --mat-sys-warning: #f59e0b;
+  --mat-sys-on-warning: #ffffff;
+  --mat-sys-warning-container: #fef3c7;
+  --mat-sys-on-warning-container: #92400e;
+
+  --mat-sys-success: #10b981;
+  --mat-sys-on-success: #ffffff;
+  --mat-sys-success-container: #dcfce7;
+  --mat-sys-on-success-container: #166534;
+
+  --mat-sys-info: #3b82f6;
+  --mat-sys-on-info: #ffffff;
+  --mat-sys-info-container: #dbeafe;
+  --mat-sys-on-info-container: #1e40af;
 }
 
 /* Chrome, Edge, Safari */

@@ -4,11 +4,13 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
-import { ValidationMessageComponent } from '../../../../shared/components/validation-message/validation-message';
+import { ValidationMessageComponent } from '../../../../shared/components/validation-message/validation-message.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { IToner } from '../../../../types/toner.type';
 
 @Component({
   selector: 'app-toner-form',
+  standalone: true,
   imports: [ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatDialogModule, ValidationMessageComponent, TranslateModule],
   templateUrl: './toner-form.component.html',
   styleUrl: './toner-form.component.scss',
@@ -16,10 +18,9 @@ import { TranslateModule } from '@ngx-translate/core';
 })
 export class TonerForm implements OnInit {
   private dialogRef = inject(MatDialogRef<TonerForm>);
-  public data: { mode?: 'create' | 'edit'; initial?: any } = {};
-  constructor(@Optional() @Inject(MAT_DIALOG_DATA) data: { mode?: 'create' | 'edit'; initial?: any } | null) {
-    if (data) this.data = data;
-  }
+  public data = inject(MAT_DIALOG_DATA) || { mode: 'create', initial: null };
+  
+  private initialData = this.data.initial as Partial<IToner> | null;
 
   form = new FormGroup({
     model: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
@@ -28,8 +29,8 @@ export class TonerForm implements OnInit {
   });
 
   ngOnInit() {
-    if (this.data?.initial) {
-      this.form.patchValue(this.data.initial);
+    if (this.initialData) {
+      this.form.patchValue(this.initialData);
     }
   }
 

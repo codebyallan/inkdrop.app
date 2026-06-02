@@ -1,5 +1,4 @@
-import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatDialogRef, MatDialogModule, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -7,16 +6,12 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { TranslateModule } from '@ngx-translate/core';
 
-export interface ApiKeyEditDialogData {
-  id: string;
-  currentName: string;
-}
+import { ApiKeyEditDialogData } from '../../../../types/api-key-dialog.type';
 
 @Component({
   selector: 'app-api-key-edit-dialog',
   standalone: true,
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     MatDialogModule,
     MatFormFieldModule,
@@ -45,7 +40,8 @@ export interface ApiKeyEditDialogData {
   `,
   styles: [`
     form { min-width: 300px; }
-  `]
+  `],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ApiKeyEditDialogComponent {
   private fb = inject(FormBuilder);

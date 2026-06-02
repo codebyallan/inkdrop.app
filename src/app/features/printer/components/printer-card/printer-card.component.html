@@ -1,0 +1,67 @@
+<mat-card class="printer-card">
+  <div class="card-header">
+    <div class="header-main">
+      <span class="printer-name">{{ printer().name }}</span>
+      <span class="status-badge" [class]="getStatusClass(printer().telemetry?.status)">
+        {{ (printer().telemetry?.status || 'Unknown') | uppercase }}
+      </span>
+    </div>
+    <div class="printer-details">
+      <span>{{ printer().manufacturer }} {{ printer().model }}</span>
+      <span>{{ printer().ipAddress }}</span>
+    </div>
+  </div>
+
+  <div class="card-body">
+    <div class="telemetry-section">
+      <div class="pages-count">
+        <mat-icon>print</mat-icon>
+        <div class="count-info">
+          <span class="label">{{ 'printers.telemetry.pages' | translate }}</span>
+          <span class="value">{{ printer().telemetry?.totalPages || 0 }}</span>
+        </div>
+      </div>
+
+      <div class="toners-grid">
+        @for (toner of filteredToners(); track toner.color) {
+          <div class="toner-item">
+            <div class="toner-label">
+              <span class="color-dot" [style.backgroundColor]="getTonerColor(toner.color, 100)"></span>
+              {{ toner.color }}
+            </div>
+            <div class="custom-progress-bar" 
+                 [matTooltip]="('printers.telemetry.last_update' | translate) + ': ' + (printer().telemetry?.lastUpdate | date: 'dd/MM/yyyy HH:mm')">
+              <div class="custom-progress-fill" 
+                   [style.width.%]="toner.level" 
+                   [style.backgroundColor]="getTonerColor(toner.color, toner.level)">
+              </div>
+            </div>
+            <span class="toner-value">{{ toner.level }}%</span>
+          </div>
+        } @empty {
+          <div class="no-telemetry">
+            {{ 'printers.telemetry.no_data' | translate }}
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+
+  <div class="card-footer">
+    <div class="location-info">
+      <mat-icon>location_on</mat-icon>
+      <span>{{ printer().locationName }}</span>
+    </div>
+    
+    @if (authService.isAdmin()) {
+      <div class="actions">
+        <button mat-icon-button (click)="edit.emit(printer())" matTooltip="{{ 'shared.actions.edit' | translate }}">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-icon-button class="btn-delete" (click)="delete.emit(printer())" matTooltip="{{ 'shared.actions.delete' | translate }}">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    }
+  </div>
+</mat-card>

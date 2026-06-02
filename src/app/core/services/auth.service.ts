@@ -2,7 +2,7 @@ import { Injectable, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap, catchError, of } from 'rxjs';
 import { lastValueFrom } from 'rxjs';
-import { User } from '../../types/user.type';
+import { IUser } from '../../types/user.type';
 import { LoginRequest } from '../../types/login-request.type';
 import { AuthResponse } from '../../types/auth-response.type';
 import { environment } from '../../../environments/environment';
@@ -18,7 +18,7 @@ export class AuthService {
    * Internal state for the current authenticated user.
    * Initialized from localStorage to prevent flickering on page reload.
    */
-  private currentUserSignal = signal<User | null>(this.loadUserFromCache());
+  private currentUserSignal = signal<IUser | null>(this.loadUserFromCache());
   
   /**
    * Public read-only signal providing the current user state.
@@ -33,7 +33,10 @@ export class AuthService {
   /**
    * Derived signal to check if the current user has Admin privileges.
    */
-  public readonly isAdmin = computed(() => this.currentUserSignal()?.role === 'Admin');
+  public readonly isAdmin = computed(() => {
+    const role = this.currentUserSignal()?.role;
+    return role === 0 || role === 'Admin';
+  });
 
   constructor(private http: HttpClient) {}
 
@@ -59,9 +62,9 @@ export class AuthService {
    * Validates the current session cookie with the server.
    * Syncs the localStorage cache with the actual server state.
    */
-  async checkSession(): Promise<User | null> {
+  async checkSession(): Promise<IUser | null> {
     try {
-      const user = await lastValueFrom(this.http.get<User>(`${this.API_URL}/me`));
+      const user = await lastValueFrom(this.http.get<IUser>(`${this.API_URL}/me`));
       this.setUser(user);
       return user;
     } catch (error) {
@@ -83,7 +86,7 @@ export class AuthService {
     );
   }
 
-  private setUser(user: User): void {
+  private setUser(user: IUser): void {
     if (!this.isValidUser(user)) {
       console.error('AuthService: Attempted to set an invalid user object');
       this.clearUser();
@@ -102,7 +105,7 @@ export class AuthService {
     this.clearUser();
   }
 
-  private loadUserFromCache(): User | null {
+  private loadUserFromCache(): IUser | null {
     const cached = localStorage.getItem(this.USER_CACHE_KEY);
     if (!cached) return null;
     try {
@@ -119,13 +122,14 @@ export class AuthService {
     return null;
   }
 
-  private isValidUser(obj: unknown): obj is User {
+  private isValidUser(obj: unknown): obj is IUser {
+    const user = obj as Record<string, unknown>;
     return (
       typeof obj === 'object' &&
       obj !== null &&
-      typeof (obj as any).id === 'string' &&
-      typeof (obj as any).username === 'string' &&
-      typeof (obj as any).role === 'string'
+      typeof user['id'] === 'string' &&
+      typeof user['username'] === 'string' &&
+      (typeof user['role'] === 'number' || typeof user['role'] === 'string')
     );
   }
 }

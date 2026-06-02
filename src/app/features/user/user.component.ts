@@ -1,16 +1,17 @@
 import { Component, OnInit, inject, signal, computed, ChangeDetectionStrategy } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { PageLayoutComponent } from '../../shared/components/page-layout/page-layout';
-import { UserCard } from './components/user-card/user-card';
-import { UserCardSkeleton } from './components/user-card-skeleton/user-card-skeleton';
-import { UserService } from './services/user-service';
-import { IUser, ROLE_MAP, UserRole } from './types';
-import { ColumnDef } from '../../shared/components/ui-table/ui-table';
+import { PageLayoutComponent } from '../../shared/components/page-layout/page-layout.component';
+import { UserCard } from './components/user-card/user-card.component';
+import { UserCardSkeleton } from './components/user-card-skeleton/user-card-skeleton.component';
+import { UserService } from './services/user.service';
+import { IUser, ROLE_MAP, UserRole } from '../../types/user.type';
+import { ColumnDef } from '../../types/ui-table.type';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { ConfirmDialog } from '../../shared/components/confirm-dialog/confirm-dialog';
+import { ConfirmDialog } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 import { UserForm } from './components/user-form/user-form.component';
 import { AuthService } from '../../core/services/auth.service';
 import { TranslationService } from '../../core/services/translation.service';
@@ -54,9 +55,8 @@ export class User implements OnInit {
           if (value === 'Technician') return this.translationService.instant('users.role_technician');
           
           const numericRole = Number(value);
-          const roleLabel = ROLE_MAP[numericRole as UserRole];
-          
-          if (roleLabel) {
+          if (numericRole === 0 || numericRole === 1) {
+            const roleLabel = ROLE_MAP[numericRole];
             if (roleLabel === 'Admin') return this.translationService.instant('users.role_admin');
             if (roleLabel === 'Technician') return this.translationService.instant('users.role_technician');
             return roleLabel;
@@ -78,7 +78,7 @@ export class User implements OnInit {
         this.loading.set(false);
         this.error.set(null);
       },
-      error: (err: any) => {
+      error: (err: HttpErrorResponse) => {
         this.loading.set(false);
         if (err.status === 400) {
           this.error.set(err.error?.message || this.translationService.instant('shared.alerts.invalid_request'));
@@ -94,7 +94,7 @@ export class User implements OnInit {
         this.loading.set(false);
         this.error.set(null);
       },
-      error: (err: any) => {
+      error: (err: HttpErrorResponse) => {
         this.loading.set(false);
         if (err.status === 400) {
           this.error.set(err.error?.message || this.translationService.instant('shared.alerts.invalid_request'));

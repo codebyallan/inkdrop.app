@@ -4,11 +4,13 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
-import { ValidationMessageComponent } from '../../../../shared/components/validation-message/validation-message';
+import { ValidationMessageComponent } from '../../../../shared/components/validation-message/validation-message.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { ILocation } from '../../../../types/location.type';
 
 @Component({
   selector: 'app-location-form',
+  standalone: true,
   imports: [ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatDialogModule, ValidationMessageComponent, TranslateModule],
   templateUrl: './location-form.component.html',
   styleUrl: './location-form.component.scss',
@@ -16,10 +18,10 @@ import { TranslateModule } from '@ngx-translate/core';
 })
 export class LocationForm implements OnInit {
   private dialogRef = inject(MatDialogRef<LocationForm>);
-  public data: { mode?: 'create' | 'edit'; initial?: any } = {};
-  constructor(@Optional() @Inject(MAT_DIALOG_DATA) data: { mode?: 'create' | 'edit'; initial?: any } | null) {
-    if (data) this.data = data;
-  }
+  public data = inject(MAT_DIALOG_DATA) || { mode: 'create', initial: null };
+  
+  // Define a type for the initial data to avoid 'any'
+  private initialData = this.data.initial as Partial<ILocation> | null;
 
   form = new FormGroup({
     name: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
@@ -27,8 +29,8 @@ export class LocationForm implements OnInit {
   });
 
   ngOnInit() {
-    if (this.data?.initial) {
-      this.form.patchValue(this.data.initial);
+    if (this.initialData) {
+      this.form.patchValue(this.initialData);
     }
   }
 

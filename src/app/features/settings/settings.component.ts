@@ -1,5 +1,4 @@
 import { Component, ChangeDetectionStrategy, inject, signal, DestroyRef, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
@@ -17,11 +16,12 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AuthService } from '../../core/services/auth.service';
 import { TranslationService } from '../../core/services/translation.service';
 import { SettingsService } from './settings.service';
-import { ChangePasswordPayload, ApiKeyResponse, ApiKeyRequest } from './types';
-import { PageLayoutComponent } from '../../shared/components/page-layout/page-layout';
-import { ValidationMessageComponent } from '../../shared/components/validation-message/validation-message';
-import { ConfirmDialog } from '../../shared/components/confirm-dialog/confirm-dialog';
-import { UiTableComponent, ColumnDef } from '../../shared/components/ui-table/ui-table';
+import { ChangePasswordPayload, ApiKeyResponse, ApiKeyRequest } from '../../types/settings.type';
+import { PageLayoutComponent } from '../../shared/components/page-layout/page-layout.component';
+import { ValidationMessageComponent } from '../../shared/components/validation-message/validation-message.component';
+import { ConfirmDialog } from '../../shared/components/confirm-dialog/confirm-dialog.component';
+import { UiTableComponent } from '../../shared/components/ui-table/ui-table.component';
+import { ColumnDef } from '../../types/ui-table.type';
 import { ApiKeyEditDialogComponent } from './components/api-key-edit-dialog/api-key-edit-dialog.component';
 
 function passwordsMatchValidator(g: AbstractControl): ValidationErrors | null {
@@ -44,12 +44,12 @@ function passwordsMatchValidator(g: AbstractControl): ValidationErrors | null {
 
 function passwordStrengthValidator(control: AbstractControl): ValidationErrors | null {
   const value = control.value || '';
-  const errors: any = {};
+  const errors: Record<string, boolean> = {};
 
-  if (!/[A-Z]/.test(value)) errors.missingUppercase = true;
-  if (!/[a-z]/.test(value)) errors.missingLowercase = true;
-  if (!/\d/.test(value)) errors.missingNumber = true;
-  if (!/[@$!%*?&]/.test(value)) errors.missingSpecial = true;
+  if (!/[A-Z]/.test(value)) errors['missingUppercase'] = true;
+  if (!/[a-z]/.test(value)) errors['missingLowercase'] = true;
+  if (!/\d/.test(value)) errors['missingNumber'] = true;
+  if (!/[@$!%*?&]/.test(value)) errors['missingSpecial'] = true;
 
   return Object.keys(errors).length ? errors : null;
 }
@@ -58,7 +58,6 @@ function passwordStrengthValidator(control: AbstractControl): ValidationErrors |
   selector: 'app-settings',
   standalone: true,
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     MatCardModule,
     MatFormFieldModule,

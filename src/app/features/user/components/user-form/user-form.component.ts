@@ -1,16 +1,16 @@
-import { Component, Inject, OnInit, Optional, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Inject, OnInit, Optional, inject, ChangeDetectionStrategy, computed } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
-import { ValidationMessageComponent } from '../../../../shared/components/validation-message/validation-message';
-import { INVERSE_ROLE_MAP } from '../../types';
+import { ValidationMessageComponent } from '../../../../shared/components/validation-message/validation-message.component';
+import { INVERSE_ROLE_MAP } from '../../../../types/user.type';
 import { AuthService } from '../../../../core/services/auth.service';
 import { TranslationService } from '../../../../core/services/translation.service';
 import { TranslateModule } from '@ngx-translate/core';
-import { computed } from '@angular/core';
+import { IUser, UserRole } from '../../../../types/user.type';
 
 @Component({
   selector: 'app-user-form',
@@ -33,7 +33,9 @@ export class UserForm implements OnInit {
   private dialogRef = inject(MatDialogRef<UserForm>);
   private authService = inject(AuthService);
   private t = inject(TranslationService);
-  public data: { mode?: 'create' | 'edit'; initial?: any } = {};
+  public data = inject(MAT_DIALOG_DATA) || { mode: 'create', initial: null };
+  
+  private initialData = this.data.initial as Partial<IUser> | null;
   
   protected readonly ROLES = computed(() => {
     this.t.currentLangSignal();
@@ -43,25 +45,20 @@ export class UserForm implements OnInit {
     ];
   });
 
-  constructor(@Optional() @Inject(MAT_DIALOG_DATA) data: { mode?: 'create' | 'edit'; initial?: any } | null) {
-    if (data) this.data = data;
-  }
-
   get isEditingSelf() {
-    const initial = this.data.initial as any;
-    return this.data.mode === 'edit' && initial?.id === this.authService.currentUser()?.id;
+    return this.data.mode === 'edit' && this.initialData?.id === this.authService.currentUser()?.id;
   }
 
   form = new FormGroup({
     username: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
     email: new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.email] }),
     password: new FormControl('', { nonNullable: true }),
-    role: new FormControl<string | null>(null, { nonNullable: true, validators: [Validators.required] }),
+    role: new FormControl<UserRole | null>(null, { nonNullable: true, validators: [Validators.required] }),
   });
 
   ngOnInit() {
-    if (this.data?.initial) {
-      this.form.patchValue(this.data.initial);
+    if (this.initialData) {
+      this.form.patchValue(this.initialData);
     }
   }
 
@@ -70,7 +67,6 @@ export class UserForm implements OnInit {
     
     const rawValue = this.form.getRawValue();
     
-    // In edit mode, we don't send the password
     if (this.data.mode === 'edit') {
       const { password, ...dataToSave } = rawValue;
       this.dialogRef.close(dataToSave);

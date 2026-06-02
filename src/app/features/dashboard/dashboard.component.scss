@@ -57,20 +57,20 @@
   }
 
   &.critical {
-    border-left: 6px solid #ef4444;
-    .kpi-icon { background: #fee2e2; color: #ef4444; }
+    border-left: 6px solid var(--mat-sys-error);
+    .kpi-icon { background: var(--mat-sys-error-container); color: var(--mat-sys-error); }
   }
   &.warning {
-    border-left: 6px solid #f59e0b;
-    .kpi-icon { background: #fef3c7; color: #f59e0b; }
+    border-left: 6px solid var(--mat-sys-warning);
+    .kpi-icon { background: var(--mat-sys-warning-container); color: var(--mat-sys-warning); }
   }
   &.success {
-    border-left: 6px solid #10b981;
-    .kpi-icon { background: #dcfce7; color: #10b981; }
+    border-left: 6px solid var(--mat-sys-success);
+    .kpi-icon { background: var(--mat-sys-success-container); color: var(--mat-sys-success); }
   }
   &.info {
-    border-left: 6px solid #3b82f6;
-    .kpi-icon { background: #dbeafe; color: #3b82f6; }
+    border-left: 6px solid var(--mat-sys-info);
+    .kpi-icon { background: var(--mat-sys-info-container); color: var(--mat-sys-info); }
   }
 }
 
@@ -150,12 +150,12 @@
       transition: all 0.3s ease;
       
       &.in { 
-        background: #10b981; 
-        box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.2); 
+        background: var(--mat-sys-success); 
+        box-shadow: 0 0 0 4px color-mix(in srgb, var(--mat-sys-success), transparent 80%); 
       }
       &.out { 
-        background: #ef4444; 
-        box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.2); 
+        background: var(--mat-sys-error); 
+        box-shadow: 0 0 0 4px color-mix(in srgb, var(--mat-sys-error), transparent 80%); 
       }
     }
 
@@ -210,6 +210,16 @@
   border: 1px solid var(--mat-sys-outline-variant);
   overflow: hidden;
 
+  &.urgent-widget {
+    .widget-header {
+      background: var(--mat-sys-error-container) !important;
+      color: var(--mat-sys-on-error-container) !important;
+      mat-icon {
+        color: var(--mat-sys-on-error-container) !important;
+      }
+    }
+  }
+
   .widget-header {
     padding: 12px 16px;
     background: var(--mat-sys-surface-variant);
@@ -251,11 +261,13 @@
   background: var(--mat-sys-surface);
   border: 1px solid transparent;
   transition: all 0.2s;
-  cursor: pointer;
 
-  &:hover {
-    background: var(--mat-sys-surface-variant);
-    border-color: var(--mat-sys-outline);
+  &.clickable {
+    cursor: pointer;
+    &:hover {
+      background: var(--mat-sys-surface-variant);
+      border-color: var(--mat-sys-outline);
+    }
   }
 
   .item-info {
@@ -269,6 +281,17 @@
       font-size: 0.75rem;
       opacity: 0.7;
     }
+  }
+
+  .toner-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    &.dot-black { background: #000; box-shadow: 0 0 2px rgba(0,0,0,0.5); }
+    &.dot-cyan { background: #00FFFF; box-shadow: 0 0 2px rgba(0,255,255,0.5); }
+    &.dot-magenta { background: #FF00FF; box-shadow: 0 0 2px rgba(255,0,255,0.5); }
+    &.dot-yellow { background: #FFFF00; box-shadow: 0 0 2px rgba(255,255,0,0.5); }
   }
 }
 

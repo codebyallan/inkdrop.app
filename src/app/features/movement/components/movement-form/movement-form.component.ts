@@ -5,17 +5,18 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatSelectModule } from '@angular/material/select';
-import { ValidationMessageComponent } from '../../../../shared/components/validation-message/validation-message';
-import { TonersService } from '../../../toner/services/toner-service';
-import { PrintersService } from '../../../printer/services/printer-service';
-import { IToner } from '../../../toner/types';
-import { IPrinter } from '../../../printer/types';
+import { ValidationMessageComponent } from '../../../../shared/components/validation-message/validation-message.component';
+import { TonersService } from '../../../toner/services/toner.service';
+import { PrintersService } from '../../../printer/services/printer.service';
+import { IToner } from '../../../../types/toner.type';
+import { IPrinter } from '../../../../types/printer.type';
 import { TranslateModule } from '@ngx-translate/core';
 
 type DialogData = { toners: Array<{ id: string; label: string }>, printers: Array<{ id: string; name: string }> };
 
 @Component({
   selector: 'app-movement-form',
+  standalone: true,
   imports: [ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatDialogModule, MatSelectModule, ValidationMessageComponent, TranslateModule],
   templateUrl: './movement-form.component.html',
   styleUrl: './movement-form.component.scss',

@@ -1,7 +1,7 @@
 import { ApplicationConfig, provideAppInitializer, provideBrowserGlobalErrorListeners, inject, importProvidersFrom } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptors, HttpClient } from '@angular/common/http';
-import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslateLoader, TranslateModule, TranslateService, TranslationObject } from '@ngx-translate/core';
 import { lastValueFrom, Observable } from 'rxjs';
 
 import { routes } from './app.routes';
@@ -14,8 +14,8 @@ import { environment } from '../environments/environment';
 
 export class CustomTranslateLoader implements TranslateLoader {
   constructor(private http: HttpClient) {}
-  getTranslation(lang: string): Observable<any> {
-    return this.http.get(`./assets/i18n/${lang}.json`);
+  getTranslation(lang: string): Observable<TranslationObject> {
+    return this.http.get<TranslationObject>(`./assets/i18n/${lang}.json`);
   }
 }
 

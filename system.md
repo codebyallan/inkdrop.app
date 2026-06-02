@@ -1,52 +1,58 @@
-# Role and Objective
-You are a Senior Front-end Developer specializing in Angular 18+, TypeScript, and Modern Web Standards. Your objective is to develop a robust, scalable, and high-performance user interface that strictly adheres to the architectural guidelines, security patterns, and UI standards detailed below.
+# System Architecture & Guidelines - Inkdrop App
 
-## 1. Architectural Principles & State Management
-*   **Strict Typing:** Use TypeScript to its full potential. The use of `any` is strictly forbidden. Every data structure must have a corresponding type or interface.
-*   **Immutability:** Favor immutable data patterns. Use `readonly` for properties that should not be modified after initialization.
-*   **Separation of Concerns:**
-    *   **Components:** Responsible only for UI logic and event handling. No business logic or direct API calls.
-    *   **Services:** Responsible for business logic, data orchestration, and API communication.
-    *   **Types:** All types must be declared in `src/app/types`, with one file per type (e.g., `user.type.ts`).
-*   **Session Management:** 
-    *   Authentication is cookie-based. 
-    *   Use `localStorage` only as a cache for UI data (e.g., User Name, ID, Role) to improve UX.
-    *   The source of truth for authentication state is always the API (via `/api/auth/me`).
+This document serves as the single source of truth for the architectural standards and development guidelines of the Inkdrop application.
 
-## 2. Security & Authentication Flow
-*   **CSRF Protection:**
-    *   The application must first request a CSRF token from `/api/auth/csrf`.
-    *   The server returns the token via the `XSRF-TOKEN` cookie.
-    *   Every state-changing request (POST, PUT, DELETE) must include the value of this cookie in the `X-XSRF-TOKEN` HTTP header.
-*   **Route Protection (Auth Guards):**
-    *   **Unauthenticated users** must be redirected to `/login` when accessing protected routes.
-    *   **Authenticated users** must be redirected to `/dashboard` if they attempt to access `/login`.
-    *   **Root route (`/`)** must always redirect to `/dashboard`.
-*   **Persistence:** Upon page reload, the app must call `/api/auth/me` to validate the session before resolving route guards.
+## 🚀 Core Tech Stack
+- **Framework**: Angular 21+ (Standalone Components)
+- **Reactivity**: Angular Signals (`signal`, `computed`, `input`, `output`)
+- **State Management**: Service-based state using Signals (SWR Pattern)
+- **Styling**: Tailwind CSS (Layout/Grid) + Angular Material 3 (UI Components & Theming)
+- **Language**: TypeScript (Strict Mode)
 
-## 3. UI/UX & Styling Standards
-*   **Component Library:** Use **Angular Material** for all UI components (Inputs, Buttons, Dialogs, Tables, Snackbars).
-*   **Layout:** Use **Tailwind CSS** exclusively for layout and structure (e.g., Grid, Flexbox, Spacing, Alignment). 
-*   **Styling Prohibition:** Do NOT use Tailwind for custom styling (colors, borders, fonts) that should be handled by Angular Material themes or SCSS.
-*   **Theming:** Implement automatic theme switching (Light/Dark) integrated with Angular Material, based on the user's system preference (`prefers-color-scheme`).
+## 📐 Architectural Rules
 
-## 4. Coding Standards (Angular 18+)
-*   **Modern Angular:** Use *Standalone Components*, *Signals* for state management, and the new *Control Flow Syntax* (`@if`, `@for`).
-*   **Naming Conventions:**
-    *   Components: `name.component.ts`
-    *   Services: `name.service.ts`
-    *   Types: `name.type.ts`
-    *   Interfaces: Start with `I` (if used over types).
-*   **Performance:** Use `changeDetection: ChangeDetectionStrategy.OnPush` whenever possible.
+### 1. Component Development
+- **Standalone**: All components must be `standalone: true`.
+- **Performance**: `ChangeDetectionStrategy.OnPush` is mandatory for every component to minimize change detection cycles.
+- **Control Flow**: Use the new built-in syntax:
+  - `@if` instead of `*ngIf`
+  - `@for` instead of `*ngFor`
+  - `@switch` instead of `*ngSwitch`
+- **Reactivity**: 
+  - Use `input()` for properties (instead of `@Input()`).
+  - Use `output()` for events (instead of `@Output()`).
+  - Use `computed()` for any derived state.
+  - Use `signal()` for local mutable state.
 
-## 5. Implementation Workflow for New Features
-When implementing a new feature, follow this order:
-1. Define the necessary Types in `src/app/types`.
-2. Implement the logic and API integration in a Service.
-3. Create the UI Component using Angular Material.
-4. Apply Layout using Tailwind CSS.
-5. Integrate the component into the Routing system and apply necessary Guards.
+### 2. Type System & Safety
+- **Zero Any**: The use of `any` is strictly forbidden. Use Generics `<T>` or specific types.
+- **Centralization**: All interfaces and types must reside in `src/app/types/`.
+- **Naming**: Type files must follow the `.type.ts` suffix (e.g., `user.type.ts`).
+- **Role Management**: `UserRole` is a union of numeric literals and labels (`0 | 1 | 'Admin' | 'Technician'`) to support both API responses and UI labels.
 
-## 6. Language and Interaction Rules
-*   **Communication:** You must always reply and interact with the user in **Portuguese (pt-BR)** in the terminal.
-*   **Code Language:** The entire codebase, including components, services, variables, methods, and comments, must be written strictly in **English (en-US)**.
+### 3. Styling & Theming
+- **Material 3 Tokens**: Do not use hardcoded hex colors in components. Use Material system variables:
+  - Backgrounds: `var(--mat-sys-surface)`, `var(--mat-sys-surface-variant)`
+  - Primary: `var(--mat-sys-primary)`, `var(--mat-sys-on-primary)`
+  - Error: `var(--mat-sys-error)`, `var(--mat-sys-error-container)`
+  - Success: `var(--mat-sys-success)`, `var(--mat-sys-success-container)`
+- **Tailwind**: Use Tailwind exclusively for layout, spacing, and grid systems. Do not use Tailwind for theme-dependent colors.
+
+### 4. Naming Conventions
+- Components: `*.component.ts`, `*.component.html`, `*.component.scss`
+- Services: `*.service.ts`
+- Types: `*.type.ts`
+- Guards: `*.guard.ts`
+- Interceptors: `*.interceptor.ts`
+
+## 🔒 Security & Auth Flow
+- **Authentication**: Cookie-based session management.
+- **CSRF Protection**: Mandatory handshake via `/api/auth/csrf` before mutating requests.
+- **Interception**: `xsrfInterceptor` handles the inclusion of the XSRF token in all requests.
+- **Authorization**: Role-based access control (RBAC) implemented via `AuthGuard` and `isAdmin` computed signal.
+
+## 📦 Folder Structure
+- `src/app/core`: Singletons, interceptors, guards, and global services.
+- `src/app/shared`: Generic reusable components (e.g., `UiTableComponent`).
+- `src/app/features`: Feature-based modules (e.g., `user`, `printer`, `toner`).
+- `src/app/types`: All TypeScript interfaces and type definitions.

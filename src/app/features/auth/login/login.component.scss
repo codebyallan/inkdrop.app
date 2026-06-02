@@ -1,12 +1,21 @@
-:host {
-  display: block;
+.login-icon {
+  background-color: var(--mat-sys-primary);
+  color: var(--mat-sys-on-primary);
 }
 
-.login-spinner {
-  --mdc-circular-progress-active-indicator-color: white !important;
-  color: white !important;
-}
+.login-button {
+  background-color: var(--mat-sys-primary) !important;
+  color: var(--mat-sys-on-primary) !important;
 
-::ng-deep .login-spinner circle {
-  stroke: white !important;
+  &:hover {
+    background-color: var(--mat-sys-primary-container) !important;
+  }
+
+  ::ng-deep .login-spinner {
+    --mdc-circular-progress-active-indicator-color: var(--mat-sys-on-primary) !important;
+    
+    circle {
+      stroke: var(--mat-sys-on-primary) !important;
+    }
+  }
 }

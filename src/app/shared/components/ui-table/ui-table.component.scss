@@ -1,0 +1,19 @@
+.ui-table {
+  // Custom styles for the table if needed
+}
+
+.badge-success {
+  background-color: var(--mat-sys-success-container);
+  color: var(--mat-sys-on-success-container);
+}
+
+.badge-error {
+  background-color: var(--mat-sys-error-container);
+  color: var(--mat-sys-on-error-container);
+}
+
+.delete-btn {
+  mat-icon {
+    color: var(--mat-sys-error) !important;
+  }
+}

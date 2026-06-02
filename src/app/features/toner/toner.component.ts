@@ -1,16 +1,16 @@
 import { Component, OnInit, inject, signal, computed, ChangeDetectionStrategy } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { PageLayoutComponent } from '../../shared/components/page-layout/page-layout';
-import { TonerCard } from './components/toner-card/toner-card';
-import { TonerCardSkeleton } from './components/toner-card-skeleton/toner-card-skeleton';
-import { UiTableComponent, ColumnDef } from '../../shared/components/ui-table/ui-table';
-import { TonersService } from './services/toner-service';
-import { IToner } from './types';
+import { PageLayoutComponent } from '../../shared/components/page-layout/page-layout.component';
+import { TonerCard } from './components/toner-card/toner-card.component';
+import { TonerCardSkeleton } from './components/toner-card-skeleton/toner-card-skeleton.component';
+import { TonersService } from './services/toner.service';
+import { IToner } from '../../types/toner.type';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { ConfirmDialog } from '../../shared/components/confirm-dialog/confirm-dialog';
+import { ConfirmDialog } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 import { TonerForm } from './components/toner-form/toner-form.component';
 import { AuthService } from '../../core/services/auth.service';
 import { TranslationService } from '../../core/services/translation.service';
@@ -18,6 +18,7 @@ import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-toner',
+  standalone: true,
   imports: [MatButtonModule, MatIconModule, MatSnackBarModule, MatProgressBarModule, PageLayoutComponent, TonerCard, TonerCardSkeleton, MatDialogModule, TranslateModule],
   templateUrl: './toner.component.html',
   styleUrl: './toner.component.scss',
@@ -36,17 +37,6 @@ export class Toner implements OnInit {
   });
   loading = signal<boolean>(true);
   error = signal<string | null>(null);
-  columnsConfig = computed<ColumnDef<IToner>[]>(() => {
-    this.translationService.currentLangSignal();
-    return [
-      { id: 'manufacturer', header: this.translationService.instant('toners.columns.manufacturer'), field: 'manufacturer', type: 'text' as const },
-      { id: 'model', header: this.translationService.instant('toners.columns.model'), field: 'model', type: 'text' as const },
-      { id: 'color', header: this.translationService.instant('toners.columns.color'), field: 'color', type: 'text' as const },
-      { id: 'quantity', header: this.translationService.instant('toners.columns.quantity'), field: 'quantity', type: 'text' as const },
-      { id: 'createdAt', header: this.translationService.instant('toners.columns.created_at'), field: 'createdAt', type: 'date' as const, dateFormat: 'dd/MM/yyyy' },
-      { id: 'actions', header: '', type: 'actions' as const }
-    ];
-  });
 
   ngOnInit() {
     this.loading.set(true);
@@ -55,7 +45,7 @@ export class Toner implements OnInit {
         this.loading.set(false);
         this.error.set(null);
       },
-      error: (err: any) => {
+      error: (err: HttpErrorResponse) => {
         this.loading.set(false);
         if (err.status === 400) {
           this.error.set(err.error?.message || this.translationService.instant('shared.alerts.invalid_request'));
@@ -71,7 +61,7 @@ export class Toner implements OnInit {
         this.loading.set(false);
         this.error.set(null);
       },
-      error: (err: any) => {
+      error: (err: HttpErrorResponse) => {
         this.loading.set(false);
         if (err.status === 400) {
           this.error.set(err.error?.message || this.translationService.instant('shared.alerts.invalid_request'));

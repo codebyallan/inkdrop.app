@@ -1,20 +1,18 @@
 import { Component, OnInit, inject, signal, computed, ChangeDetectionStrategy } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { DatePipe } from '@angular/common';
-import { PageLayoutComponent } from '../../shared/components/page-layout/page-layout';
-import { PrinterCard } from './components/printer-card/printer-card';
-import { PrinterCardSkeleton } from './components/printer-card-skeleton/printer-card-skeleton';
-import { UiTableComponent, ColumnDef } from '../../shared/components/ui-table/ui-table';
-import { PrintersService } from './services/printer-service';
-import { IPrinter } from './types';
-import { LocationsService } from '../location/services/location-service';
-import { ILocation } from '../location/types';
+import { PageLayoutComponent } from '../../shared/components/page-layout/page-layout.component';
+import { PrinterCard } from './components/printer-card/printer-card.component';
+import { PrinterCardSkeleton } from './components/printer-card-skeleton/printer-card-skeleton.component';
+import { PrintersService } from './services/printer.service';
+import { IPrinter } from '../../types/printer.type';
+import { LocationsService } from '../location/services/location.service';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { PrinterForm } from './components/printer-form/printer-form.component';
-import { ConfirmDialog } from '../../shared/components/confirm-dialog/confirm-dialog';
+import { ConfirmDialog } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 import { AuthService } from '../../core/services/auth.service';
 import { TranslationService } from '../../core/services/translation.service';
 import { TranslateModule } from '@ngx-translate/core';
@@ -22,6 +20,7 @@ import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-printer',
+  standalone: true,
   imports: [MatButtonModule, MatIconModule, MatSnackBarModule, MatProgressBarModule, PageLayoutComponent, PrinterCard, PrinterCardSkeleton, MatDialogModule, TranslateModule],
   templateUrl: './printer.component.html',
   styleUrl: './printer.component.scss',
@@ -60,7 +59,7 @@ export class Printer implements OnInit {
         this.loading.set(false);
         this.error.set(null);
       },
-      error: (err: any) => {
+      error: (err: HttpErrorResponse) => {
         this.loading.set(false);
         if (err.status === 400) {
           this.error.set(err.error?.message || this.translationService.instant('shared.alerts.invalid_request'));
@@ -81,7 +80,7 @@ export class Printer implements OnInit {
         this.loading.set(false);
         this.error.set(null);
       },
-      error: (err: any) => {
+      error: (err: HttpErrorResponse) => {
         this.loading.set(false);
         if (err.status === 400) {
           this.error.set(err.error?.message || this.translationService.instant('shared.alerts.invalid_request'));
@@ -161,12 +160,6 @@ export class Printer implements OnInit {
         });
       }
     });
-  }
-
-  private applyLocationNames() {
-    // This method is now deprecated and handled by the service.
-    // Kept only for compatibility if called elsewhere, but should call service.
-    this.printersService.applyLocationNames(this.locationsMap);
   }
 
   showAlert(msg: string, action: string) {

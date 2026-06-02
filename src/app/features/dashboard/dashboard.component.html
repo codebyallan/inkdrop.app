@@ -144,17 +144,24 @@
       <div class="action-panel">
         
         <!-- Replace Now -->
-        <div class="action-widget">
+        <div class="action-widget urgent-widget">
           <div class="widget-header">
             <mat-icon>bolt</mat-icon>
             <h3>{{ 'dashboard.widgets.replace_now' | translate }}</h3>
           </div>
           <div class="widget-list">
             @for (item of urgentReplacements(); track item.printer.id + item.toner.color) {
-              <div class="action-item">
+              <div class="action-item clickable">
                 <div class="item-info">
                   <span class="item-main">{{ item.printer.name }}</span>
-                  <span class="item-sub">{{ item.toner.color }} - {{ item.toner.level }}%</span>
+                  <div class="item-sub flex items-center gap-2">
+                    <div class="toner-dot" [class.dot-black]="item.toner.color.toLowerCase().includes('black') || item.toner.color.toLowerCase() === 'k'"
+                         [class.dot-cyan]="item.toner.color.toLowerCase().includes('cyan') || item.toner.color.toLowerCase() === 'c'"
+                         [class.dot-magenta]="item.toner.color.toLowerCase().includes('magenta') || item.toner.color.toLowerCase() === 'm'"
+                         [class.dot-yellow]="item.toner.color.toLowerCase().includes('yellow') || item.toner.color.toLowerCase() === 'y'">
+                    </div>
+                    <span>{{ item.toner.color }} - {{ item.toner.level }}%</span>
+                  </div>
                 </div>
                 <button mat-icon-button (click)="openNewMovement()" matTooltip="{{ 'shared.actions.edit' | translate }}">
                   <mat-icon>swap_horiz</mat-icon>
@@ -179,7 +186,7 @@
           </div>
           <div class="widget-list">
             @for (toner of stockReplenishments(); track toner.id) {
-              <div class="action-item" (click)="goToToners()">
+              <div class="action-item">
                 <div class="item-info">
                   <span class="item-main">{{ toner.model }}</span>
                   <span class="item-sub">{{ toner.color }} | Qtd: {{ toner.quantity }}</span>

@@ -1,0 +1,6 @@
+@if (control()?.invalid && (control()?.dirty || control()?.touched)) {
+  <div class="validation-error">
+    {{ message() }}
+  </div>
+}
+

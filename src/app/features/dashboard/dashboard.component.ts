@@ -1,4 +1,5 @@
 import { Component, OnInit, inject, signal, computed, ChangeDetectionStrategy } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { forkJoin } from 'rxjs';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -6,20 +7,20 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { TonersService } from '../toner/services/toner-service';
-import { PrintersService } from '../printer/services/printer-service';
-import { MovementsService } from '../movement/services/movement-service';
-import { LocationsService } from '../location/services/location-service';
+import { TonersService } from '../toner/services/toner.service';
+import { PrintersService } from '../printer/services/printer.service';
+import { MovementsService } from '../movement/services/movement.service';
+import { LocationsService } from '../location/services/location.service';
 import { TranslationService } from '../../core/services/translation.service';
 import { AuthService } from '../../core/services/auth.service';
 import { MovementForm } from '../movement/components/movement-form/movement-form.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslateModule } from '@ngx-translate/core';
-import { DatePipe, CommonModule } from '@angular/common';
-import { IToner } from '../toner/types';
-import { IPrinter } from '../printer/types';
-import { IMovement } from '../movement/types';
-import { ILocation } from '../location/types';
+import { DatePipe } from '@angular/common';
+import { IToner } from '../../types/toner.type';
+import { IPrinter, ITonerTelemetry } from '../../types/printer.type';
+import { IMovement } from '../../types/movement.type';
+import { ILocation } from '../../types/location.type';
 
 @Component({
   selector: 'app-dashboard',
@@ -32,8 +33,7 @@ import { ILocation } from '../location/types';
     MatDialogModule, 
     MatTooltipModule,
     TranslateModule, 
-    DatePipe, 
-    CommonModule
+    DatePipe
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
@@ -60,31 +60,27 @@ export class Dashboard implements OnInit {
 
   // --- Operational Risk KPIs ---
   
-  // Helper to filter maintenance items (waste toner, etc)
-  private isTonerInsumo(toner: any): boolean {
+  private isTonerInsumo(toner: ITonerTelemetry): boolean {
     const maintenanceKeywords = ['recolha', 'collection', 'waste', 'manutenção', 'maintenance'];
     const identifier = (toner.color || '').toLowerCase();
     return !maintenanceKeywords.some(keyword => identifier.includes(keyword));
   }
 
-  // Critical: Below 1% (Real supplies only)
   operationalCriticalCount = computed(() => {
     return this.printers().flatMap(p => 
-      (p.telemetry?.toners || []).filter(t => this.isTonerInsumo(t) && t.level <= 1)
+      (p.telemetry?.toners || []).filter((t: ITonerTelemetry) => this.isTonerInsumo(t) && t.level <= 1)
     ).length;
   });
 
-  // Attention: Below 5% (Real supplies only)
   operationalAttentionCount = computed(() => {
     return this.printers().flatMap(p => 
-      (p.telemetry?.toners || []).filter(t => this.isTonerInsumo(t) && t.level <= 5)
+      (p.telemetry?.toners || []).filter((t: ITonerTelemetry) => this.isTonerInsumo(t) && t.level <= 5)
     ).length;
   });
 
-  // Fleet Health: % of ALL supply toners in the fleet that are > 20%
   fleetHealthPercent = computed(() => {
     const allTonerInsumos = this.printers().flatMap(p => 
-      (p.telemetry?.toners || []).filter(t => this.isTonerInsumo(t))
+      (p.telemetry?.toners || []).filter((t: ITonerTelemetry) => this.isTonerInsumo(t))
     );
     
     if (allTonerInsumos.length === 0) return 0;
@@ -97,7 +93,6 @@ export class Dashboard implements OnInit {
     this.toners().reduce((sum, t) => sum + (t.quantity ?? 0), 0)
   );
 
-  // Logistical: Models in stock with <= 3 units
   logisticalCriticalCount = computed(() => 
     this.toners().filter(t => (t.quantity ?? 0) <= 3).length
   );
@@ -123,10 +118,10 @@ export class Dashboard implements OnInit {
   }
 
   urgentReplacements = computed(() => {
-    const list: { printer: IPrinter, toner: any }[] = [];
+    const list: { printer: IPrinter, toner: ITonerTelemetry }[] = [];
     
     this.printers().forEach(p => {
-      (p.telemetry?.toners || []).forEach(t => {
+      (p.telemetry?.toners || []).forEach((t: ITonerTelemetry) => {
         if (this.isTonerInsumo(t) && t.level <= 5) {
           list.push({ printer: p, toner: t });
         }
@@ -158,7 +153,7 @@ export class Dashboard implements OnInit {
         field: 'type',
         type: 'icon' as const,
         transform: (val: unknown) => val?.toString().toLowerCase() === 'in' ? 'arrow_upward' : 'arrow_downward',
-        colorTransform: (val: unknown) => val?.toString().toLowerCase() === 'in' ? '#2e7d32' : '#c62828',
+        colorTransform: (val: unknown) => val?.toString().toLowerCase() === 'in' ? 'var(--mat-sys-success)' : 'var(--mat-sys-error)',
         tooltipTransform: (val: unknown) => val?.toString().toLowerCase() === 'in'
           ? this.translationService.instant('movements.type_in')
           : this.translationService.instant('movements.type_out'),
@@ -207,7 +202,7 @@ export class Dashboard implements OnInit {
         this.loading.set(false);
         this.error.set(null);
       },
-      error: (err: any) => {
+      error: (err: HttpErrorResponse) => {
         this.loading.set(false);
         if (err.status === 400) {
           this.error.set(err.error?.message || this.translationService.instant('shared.alerts.invalid_request'));

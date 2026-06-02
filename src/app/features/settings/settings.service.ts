@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { ChangePasswordPayload, ApiKeyRequest, ApiKeyResponse, ApiKeyUpdateRequest } from './types';
+import { ChangePasswordPayload, ApiKeyRequest, ApiKeyResponse, ApiKeyUpdateRequest } from '../../types/settings.type';
 
 @Injectable({
   providedIn: 'root',
