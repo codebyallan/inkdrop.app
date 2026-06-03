@@ -14,11 +14,23 @@
 
   <div class="card-body">
     <div class="telemetry-section">
-      <div class="pages-count">
-        <mat-icon>print</mat-icon>
-        <div class="count-info">
-          <span class="label">{{ 'printers.telemetry.pages' | translate }}</span>
-          <span class="value">{{ printer().telemetry?.totalPages || 0 }}</span>
+      <div class="pages-container">
+        <div class="pages-count main">
+          <mat-icon>print</mat-icon>
+          <div class="count-info">
+            <span class="label">{{ 'printers.telemetry.pages' | translate }}</span>
+            <span class="value">{{ printer().telemetry?.totalPages || 0 }}</span>
+          </div>
+        </div>
+        <div class="pages-breakdown">
+          <div class="breakdown-item">
+            <span class="label">{{ 'printers.telemetry.mono_pages' | translate }}</span>
+            <span class="value">{{ printer().telemetry?.monoPages || 0 }}</span>
+          </div>
+          <div class="breakdown-item">
+            <span class="label">{{ 'printers.telemetry.color_pages' | translate }}</span>
+            <span class="value">{{ printer().telemetry?.colorPages || 0 }}</span>
+          </div>
         </div>
       </div>
 

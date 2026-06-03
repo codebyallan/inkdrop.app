@@ -5,6 +5,8 @@ export interface ITonerTelemetry {
 
 export interface IPrinterTelemetry {
   totalPages: number;
+  monoPages: number;
+  colorPages: number;
   toners: ITonerTelemetry[];
   status: 'Online' | 'Offline';
   lastUpdate: string;

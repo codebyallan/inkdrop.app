@@ -114,6 +114,8 @@
     },
     "telemetry": {
       "pages": "Total de Páginas",
+      "mono_pages": "Páginas Mono",
+      "color_pages": "Páginas Color",
       "no_data": "Sem dados de telemetria",
       "last_update": "Última coleta"
     },

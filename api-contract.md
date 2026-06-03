@@ -56,7 +56,7 @@ This document defines the full contract between the `inkdrop.app` (Frontend) and
 | `/{id}` | `DELETE` | Admin | - | Remove printer from fleet. |
 
 **Printer Response includes:**
-- `telemetry`: { `toners`: [ { `color`: string, `level`: number } ], `pages`: number }
+- `telemetry`: { `toners`: [ { `color`: string, `level`: number } ], `pages`: number, `monoPages`: number, `colorPages`: number }
 
 ---
 

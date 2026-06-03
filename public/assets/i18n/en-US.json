@@ -114,6 +114,8 @@
     },
     "telemetry": {
       "pages": "Total Pages",
+      "mono_pages": "Mono Pages",
+      "color_pages": "Color Pages",
       "no_data": "No telemetry data",
       "last_update": "Last collection"
     },
