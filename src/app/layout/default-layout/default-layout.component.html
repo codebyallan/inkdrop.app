@@ -1,40 +1,48 @@
 <mat-drawer-container>
-    <mat-drawer #drawer [mode]="isMobile() ? 'over' : 'side'" [opened]="!isMobile()" autoFocus="false"
-        (mousedown)="$event.preventDefault()">
-        <div class="flex items-center justify-between px-2">
-            <app-logo />
-            @if(isMobile()){
-            <button mat-icon-button (click)="drawer.close()" (mousedown)="$event.preventDefault()">
-                <mat-icon>close</mat-icon>
-            </button>
-            }
+  <mat-drawer #drawer [mode]="isMobile() ? 'over' : 'side'" [opened]="!isMobile()" autoFocus="false"
+    (mousedown)="$event.preventDefault()">
+    <div class="flex items-center justify-between px-2">
+      <app-logo />
+      @if (isMobile()) {
+        <button mat-icon-button (click)="drawer.close()" (mousedown)="$event.preventDefault()">
+          <mat-icon>close</mat-icon>
+        </button>
+      }
+    </div>
+    <mat-divider />
+    <app-navbar [items]="NavItems()" (itemClicked)="isMobile() && drawer.close()" />
+  </mat-drawer>
+
+  <mat-drawer-content>
+    <mat-toolbar class="flex items-center justify-between w-full shrink-0">
+      <div class="flex items-center gap-4">
+        @if (isMobile()) {
+          <button mat-icon-button (click)="drawer.toggle()">
+            <mat-icon>menu</mat-icon>
+          </button>
+        }
+      </div>
+
+      @if (user()) {
+        <div class="flex items-center gap-3">
+          <span class="font-medium">{{ 'layout.greeting' | translate:{ name: user()?.username } }}</span>
+          <button mat-icon-button
+            routerLink="/settings"
+            [matTooltip]="'nav.settings' | translate">
+            <mat-icon>settings</mat-icon>
+          </button>
         </div>
-        <mat-divider />
-        <app-navbar [items]="NavItems()" (itemClicked)="isMobile() && drawer.close()" />
-    </mat-drawer>
-    <mat-drawer-content>
-        <mat-toolbar class="flex items-center justify-between w-full">
-            <div class="flex items-center gap-4">
-                @if(isMobile()){
-                <button mat-icon-button (click)="drawer.toggle()">
-                    <mat-icon>menu</mat-icon>
-                </button>
-                }
-            </div>
-            
-            @if(user()){
-            <div class="flex items-center gap-3">
-                <span class="font-medium">{{ 'layout.greeting' | translate:{ name: user()?.username } }}</span>
-                <button mat-icon-button
-                  routerLink="/settings"
-                  [matTooltip]="'nav.settings' | translate">
-                  <mat-icon>settings</mat-icon>
-                </button>
-            </div>
-            }
-        </mat-toolbar>
-        <main class="p-4 min-h-[calc(100dvh-64px)]">
-            <router-outlet />
-        </main>
-    </mat-drawer-content>
+      }
+    </mat-toolbar>
+
+    <!--
+      <main> is the single scroll root for all feature pages.
+      - flex: 1 1 0  → fills remaining height after the toolbar
+      - overflow-y: auto → owns the vertical scroll; body never scrolls
+      - overflow-x: hidden → prevents horizontal bleed from wide charts
+    -->
+    <main class="flex-1 min-h-0 overflow-y-auto overflow-x-hidden">
+      <router-outlet />
+    </main>
+  </mat-drawer-content>
 </mat-drawer-container>

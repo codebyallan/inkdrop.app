@@ -88,7 +88,7 @@
         <div class="kpi-icon"><mat-icon>check_circle</mat-icon></div>
         <div class="kpi-data">
           <span class="kpi-label">{{ 'dashboard.kpi.fleet_health' | translate }}</span>
-          <span class="kpi-value">{{ fleetHealthPercent() }}%</span>
+          <span class="kpi-value">{{ fleetHealthPercent() | number:'1.1-1' }}%</span>
         </div>
       </div>
       <div class="kpi-card info">

@@ -1,5 +1,6 @@
 import { Component, OnInit, inject, signal, computed, ChangeDetectionStrategy } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
+import { CommonModule, DatePipe } from '@angular/common';
 import { forkJoin } from 'rxjs';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -11,12 +12,12 @@ import { TonersService } from '../toner/services/toner.service';
 import { PrintersService } from '../printer/services/printer.service';
 import { MovementsService } from '../movement/services/movement.service';
 import { LocationsService } from '../location/services/location.service';
+import { ReportsService } from '../reports/services/reports.service';
 import { TranslationService } from '../../core/services/translation.service';
 import { AuthService } from '../../core/services/auth.service';
 import { MovementForm } from '../movement/components/movement-form/movement-form.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslateModule } from '@ngx-translate/core';
-import { DatePipe } from '@angular/common';
 import { IToner } from '../../types/toner.type';
 import { IPrinter, ITonerTelemetry } from '../../types/printer.type';
 import { IMovement } from '../../types/movement.type';
@@ -26,6 +27,7 @@ import { ILocation } from '../../types/location.type';
   selector: 'app-dashboard',
   standalone: true,
   imports: [
+    CommonModule,
     MatCardModule, 
     MatButtonModule, 
     MatIconModule, 
@@ -44,6 +46,7 @@ export class Dashboard implements OnInit {
   private printersService = inject(PrintersService);
   private movementsService = inject(MovementsService);
   private locationsService = inject(LocationsService);
+  private reportsService = inject(ReportsService);
   private translationService = inject(TranslationService);
   public authService = inject(AuthService);
   private _snackBar = inject(MatSnackBar);
@@ -78,16 +81,7 @@ export class Dashboard implements OnInit {
     ).length;
   });
 
-  fleetHealthPercent = computed(() => {
-    const allTonerInsumos = this.printers().flatMap(p => 
-      (p.telemetry?.toners || []).filter((t: ITonerTelemetry) => this.isTonerInsumo(t))
-    );
-    
-    if (allTonerInsumos.length === 0) return 0;
-    
-    const healthyToners = allTonerInsumos.filter(t => t.level > 20).length;
-    return Math.round((healthyToners / allTonerInsumos.length) * 100);
-  });
+  fleetHealthPercent = computed(() => this.reportsService.summary()?.avgFleetHealth ?? 0);
 
   tonersInStock = computed(() =>
     this.toners().reduce((sum, t) => sum + (t.quantity ?? 0), 0)
@@ -191,14 +185,17 @@ export class Dashboard implements OnInit {
       this.loading.set(true);
     }
 
+    // Use forkJoin to fetch all dashboard data and the executive summary in parallel.
+    // This ensures that fleetHealthPercent is synced with the Reports module API.
     forkJoin({
       toners: this.tonersService.getToners(),
       lowToners: this.tonersService.getLowStock(3),
       printers: this.printersService.getPrinters(),
       locations: this.locationsService.getLocations(),
       movements: this.movementsService.getMovements(),
+      summary: this.reportsService.getExecutiveSummary(),
     }).subscribe({
-      next: () => {
+      next: (res) => {
         this.loading.set(false);
         this.error.set(null);
       },

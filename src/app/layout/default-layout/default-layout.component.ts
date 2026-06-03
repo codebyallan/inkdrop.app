@@ -63,6 +63,7 @@ export class DefaultLayout implements OnInit {
       { route: '/dashboard', icon: 'dashboard', name: this.translationService.instant('nav.dashboard') },
       { route: '/toners', icon: 'inventory_2', name: this.translationService.instant('nav.toners') },
       { route: '/printers', icon: 'print', name: this.translationService.instant('nav.printers') },
+      { route: '/reports', icon: 'assessment', name: this.translationService.instant('nav.reports') },
       { route: '/locations', icon: 'location_on', name: this.translationService.instant('nav.locations') },
       { route: '/movements', icon: 'swap_horiz', name: this.translationService.instant('nav.movements') }
     ];

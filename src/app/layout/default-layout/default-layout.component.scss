@@ -1,8 +1,20 @@
 mat-drawer-container {
-    width: 100dvw;
-    height: 100dvh;
+  width: 100dvw;
+  height: 100dvh;
 }
+
 mat-drawer {
-    width: 280px;
-    background-color: var(--mat-sys-surface-container);
+  width: 280px;
+  background-color: var(--mat-sys-surface-container);
+}
+
+// mat-drawer-content is a flex column that fills the remaining width.
+// We need its inner <main> to be the scroll root — not the body or the
+// mat-drawer-content itself — so every feature page can control its own
+// internal layout without the whole shell scrolling.
+mat-drawer-content {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  overflow: hidden; // scroll lives in <main>
 }

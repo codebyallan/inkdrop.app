@@ -117,9 +117,33 @@ This document defines the full contract between the `inkdrop.app` (Frontend) and
 | `/api/ApiKey/{id}` | `DELETE` | Admin | - | Revoke API key. |
 | `/api/user/me/password` | `PATCH` | User | `ChangePasswordPayload` | Change own password. |
 
----
+## 8. Business Intelligence & Reports
+**Base URL:** `/api/reports`
 
-## 🛠️ Implementation Notes
+| Endpoint | Method | Auth | Query Params | Description |
+| :--- | :--- | :--- | :--- | :--- |
+| `/summary` | `GET` | User | `start, end, printerId(opt)` | Executive summary of fleet health and KPIs. |
+| `/pages/volume` | `GET` | User | `start, end, printerId(opt)` | Number of pages printed during the period. |
+| `/toner/consumption` | `GET` | User | `start, end, printerId(opt)` | Percentage of toner consumption by color. |
+| `/predictions` | `GET` | User | - | Depletion forecast based on moving average. |
+
+**Report Data Response:**
+```json
+{
+  "labels": ["2026-06-01", "2026-06-02", "..."],
+  "datasets": [
+    {
+      "label": "Printer A / Cyan",
+      "data": [100, 95, 90, ...]
+    }
+  ],
+  "summary": {
+    "totalValue": number,
+    "averageConsumption": number,
+    "trend": "up" | "down" | "stable"
+  }
+}
+```
 1. **Error Handling**: The API returns `400 Bad Request` for validation errors, including a detailed error list in the response body.
 2. **Role Validation**: The backend strictly enforces Admin roles for all mutating endpoints (except movements and password change).
 3. **Data Types**: All IDs are UUIDs (string). Dates are returned in ISO8601 format.

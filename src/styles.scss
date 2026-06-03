@@ -42,6 +42,13 @@ body {
   --sb-thumb-color: transparent; /* Hidden by default */
   --sb-thumb-hover: #cbd5e1;
 
+  /* App Custom Theme Colors (Safe - No conflict with Material System) */
+  --app-primary: #6750A4;
+  --app-secondary: #03DAC6;
+  --app-success: #10b981;
+  --app-warning: #f59e0b;
+  --app-error: #ef4444;
+
   /* Semantic Colors for KPIs and Alerts */
   --mat-sys-error: #ef4444;
   --mat-sys-on-error: #ffffff;

@@ -2,6 +2,7 @@ import { ApplicationConfig, provideAppInitializer, provideBrowserGlobalErrorList
 import { provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptors, HttpClient } from '@angular/common/http';
 import { TranslateLoader, TranslateModule, TranslateService, TranslationObject } from '@ngx-translate/core';
+import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { lastValueFrom, Observable } from 'rxjs';
 
 import { routes } from './app.routes';
@@ -25,6 +26,7 @@ export function createTranslateLoader(http: HttpClient) {
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    { provide: MAT_DATE_LOCALE, useValue: 'pt-BR' },
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
     provideHttpClient(withInterceptors([credentialsInterceptor, xsrfInterceptor, httpErrorInterceptor, authErrorInterceptor])),

@@ -3,6 +3,7 @@
     "dashboard": "Dashboard",
     "toners": "Toners",
     "printers": "Impressoras",
+    "reports": "Relatórios",
     "locations": "Locais",
     "movements": "Movimentações",
     "settings": "Configurações",
@@ -120,6 +121,66 @@
       "last_update": "Última coleta"
     },
     "empty_state": "Nenhuma impressora cadastrada"
+  },
+  "reports": {
+    "page_title": "Relatórios de BI",
+    "export": "Exportar",
+    "export_json": "JSON",
+    "export_csv": "CSV",
+    "export_excel": "Excel",
+    "filters": {
+      "start_date": "Data Início",
+      "end_date": "Data Fim",
+      "printer": "Impressora",
+      "all_printers": "Todas as Impressoras"
+    },
+    "summary": {
+      "total_pages": "Total de Páginas",
+      "fleet_health": "Saúde da Frota",
+      "top_consumer": "Impressora Mais Utilizada",
+      "critical_toners": "Toners Críticos",
+      "trend": "Tendência de Consumo"
+    },
+    "trends": {
+      "increasing": "Crescente",
+      "decreasing": "Decrescente",
+      "stable": "Estável"
+    },
+    "tooltips": {
+      "total_pages": "Soma total de todas as páginas impressas na frota selecionada no período.",
+      "fleet_health": "Média de saúde da frota baseada no nível de toner e alertas críticos.",
+      "top_consumer": "Impressora que registrou o maior volume de impressões no período.",
+      "critical_toners": "Quantidade de suprimentos que atingiram o nível crítico (abaixo de 5%).",
+      "mono_pages": "Volume total de impressões em preto e branco.",
+      "color_pages": "Volume total de impressões coloridas.",
+      "avg_toner_drop": "Variação média percentual do nível de toner no período selecionado.",
+      "trend": "Indica se a tendência de consumo está subindo, descendo ou estável."
+    },
+    "kpi": {
+      "total_pages": "Volume Total",
+      "avg_toner_drop": "Variação Média de Toner",
+      "mono_pages": "Páginas Mono",
+      "color_pages": "Páginas Color"
+    },
+    "charts": {
+      "pages_volume": "Volume de Páginas por Período",
+      "toner_consumption": "Consumo de Toner por Período",
+      "pages_printed": "Páginas Impressas por Impressora"
+    },
+    "bi": {
+      "predictions_title": "Previsões de Esgotamento",
+      "days_remaining": "Dias Restantes",
+      "no_predictions": "Sem dados suficientes para previsões"
+    },
+    "printed": {
+      "fleet_total": "Total da Frota",
+      "mono": "Mono",
+      "color": "Color",
+      "printer": "Impressora",
+      "total": "Total",
+      "share": "Participação",
+      "no_data": "Nenhum dado para o período selecionado"
+    }
   },
   "locations": {
     "page_title": "Locais",

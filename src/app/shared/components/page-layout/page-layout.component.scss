@@ -1,4 +1,6 @@
 :host {
+  // Fills the router-outlet slot inside <main>.
+  // <main> owns the scroll; :host just stacks its content vertically.
   display: block;
+  width: 100%;
 }
-

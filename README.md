@@ -31,6 +31,11 @@ Inkdrop is a high-performance corporate solution designed for monitoring and man
 - **Transaction Logs**: Full history of every toner movement (In/Out).
 - **Audit Trail**: Detailed traceability to prevent supply loss and track consumption patterns.
 
+### 📊 BI & Analytics Reports
+- **Trend Analysis**: Time-series charts for page volume and toner depletion.
+- **Operational Intelligence**: AI-powered predictions for supply exhaustion (Days remaining).
+- **Fleet KPIs**: Aggregated metrics for consumption patterns across different locations.
+
 ### 👥 User Administration (RBAC)
 - **Role-Based Access**: Strict differentiation between **Administrators** (full system control) and **Technicians** (operational tasks).
 - **Profile Management**: User activation, deactivation, and privilege escalation.
@@ -69,6 +74,7 @@ src/app/
 │   ├── toner/           # Inventory & stock control
 │   ├── location/        # Geographic layout
 │   ├── movement/        # Supply flow tracking
+│   ├── reports/         # BI reports & analytics
 │   └── user/            # RBAC & user management
 └── types/               # Centralized TypeScript interfaces (Single source of truth)
 ```

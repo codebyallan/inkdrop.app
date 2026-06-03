@@ -1,0 +1,346 @@
+<app-page-layout [title]="'reports.page_title' | translate">
+
+  <!-- ── Filter bar ──────────────────────────────────────────────────────── -->
+  <div class="filter-bar flex flex-wrap gap-3 items-start mb-6">
+    <mat-form-field appearance="outline" subscriptSizing="dynamic" class="grow shrink basis-[calc(50%-12px)] sm:basis-auto sm:flex-1">
+      <mat-label>{{ 'reports.filters.start_date' | translate }}</mat-label>
+      <input matInput
+             [matDatepicker]="dpStart"
+             [value]="filters().startDate"
+             [max]="filters().endDate"
+             (dateChange)="onFilterChange('startDate', $event.value)">
+      <mat-datepicker-toggle matIconSuffix [for]="dpStart"></mat-datepicker-toggle>
+      <mat-datepicker #dpStart></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" subscriptSizing="dynamic" class="grow shrink basis-[calc(50%-12px)] sm:basis-auto sm:flex-1">
+      <mat-label>{{ 'reports.filters.end_date' | translate }}</mat-label>
+      <input matInput
+             [matDatepicker]="dpEnd"
+             [value]="filters().endDate"
+             [min]="filters().startDate"
+             (dateChange)="onFilterChange('endDate', $event.value)">
+      <mat-datepicker-toggle matIconSuffix [for]="dpEnd"></mat-datepicker-toggle>
+      <mat-datepicker #dpEnd></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" subscriptSizing="dynamic" class="grow shrink basis-full sm:basis-auto sm:flex-1">
+      <mat-label>{{ 'reports.filters.printer' | translate }}</mat-label>
+      <mat-select (selectionChange)="onPrinterFilterChange($event.value)">
+        <mat-option value="all">{{ 'reports.filters.all_printers' | translate }}</mat-option>
+        @for (p of printers(); track p.id) {
+          <mat-option [value]="p.id">
+            {{ p.name }}{{ p.locationName ? ' - ' + p.locationName : '' }}
+          </mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <div class="actions-group flex gap-2 items-center flex-wrap self-center w-full sm:w-auto sm:justify-end">
+      <button mat-button [matMenuTriggerFor]="exportMenu" class="whitespace-nowrap shrink-0">
+        <mat-icon>download</mat-icon>
+        {{ 'reports.export' | translate }}
+      </button>
+      <mat-menu #exportMenu="matMenu">
+        <button mat-menu-item (click)="exportReport('json')">
+          <mat-icon>description</mat-icon>
+          {{ 'reports.export_json' | translate }}
+        </button>
+        <button mat-menu-item (click)="exportReport('csv')">
+          <mat-icon>table_view</mat-icon>
+          {{ 'reports.export_csv' | translate }}
+        </button>
+        <button mat-menu-item (click)="exportReport('excel')">
+          <mat-icon>grid_on</mat-icon>
+          {{ 'reports.export_excel' | translate }}
+        </button>
+      </mat-menu>
+
+      <button mat-flat-button color="primary" (click)="loadAllReports(true)" [disabled]="loading()" class="whitespace-nowrap shrink-0">
+        <mat-icon>refresh</mat-icon>
+        {{ 'shared.actions.retry' | translate }}
+      </button>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  }
+
+  <div class="reports-grid flex flex-col gap-6 w-full sm:gap-4">
+
+    <!-- ── Executive & Operational Summary ────────────────────────────────── -->
+    <div class="executive-summary">
+      <div class="summary-grid grid grid-cols-2 gap-4 mb-6 lg:grid-cols-4">
+        @if (loading() && !executiveSummary() && !printedPages() && !tonerConsumption()) {
+          @for (i of [1,2,3,4,5,6,7,8]; track i) {
+            <mat-card class="summary-card">
+              <mat-card-content>
+                <div class="skeleton skeleton-text"></div>
+                <div class="skeleton skeleton-value"></div>
+              </mat-card-content>
+            </mat-card>
+          }
+        } @else {
+          <!-- 1. Total Pages -->
+          <mat-card class="summary-card primary"
+                    [matTooltip]="'reports.tooltips.total_pages' | translate"
+                    matTooltipPosition="above">
+            <mat-card-content>
+              <span class="label">{{ 'reports.summary.total_pages' | translate }}</span>
+              <span class="value">{{ (executiveSummary()?.totalPages ?? printedPages()?.totalPages ?? 0) | number }}</span>
+            </mat-card-content>
+          </mat-card>
+
+          <!-- 2. Fleet Health -->
+          <mat-card class="summary-card" [ngClass]="{
+            'health-good':     (executiveSummary()?.avgFleetHealth ?? 0) >= 80,
+            'health-warning':  (executiveSummary()?.avgFleetHealth ?? 0) < 80 && (executiveSummary()?.avgFleetHealth ?? 0) >= 50,
+            'health-critical': (executiveSummary()?.avgFleetHealth ?? 0) < 50
+          }" [matTooltip]="'reports.tooltips.fleet_health' | translate" matTooltipPosition="above">
+            <mat-card-content>
+              <span class="label">{{ 'reports.summary.fleet_health' | translate }}</span>
+              <span class="value">{{ executiveSummary()?.avgFleetHealth | number:'1.1-1' }}%</span>
+            </mat-card-content>
+          </mat-card>
+
+          <!-- 3. Top Consumer -->
+          <mat-card class="summary-card secondary"
+                    [matTooltip]="'reports.tooltips.top_consumer' | translate"
+                    matTooltipPosition="above">
+            <mat-card-content>
+              <span class="label">{{ 'reports.summary.top_consumer' | translate }}</span>
+              <span class="value top-consumer-value">{{ getTopConsumerLabel() }}</span>
+            </mat-card-content>
+          </mat-card>
+
+          <!-- 4. Critical Toners -->
+          <mat-card class="summary-card critical"
+                    [matTooltip]="'reports.tooltips.critical_toners' | translate"
+                    matTooltipPosition="above">
+            <mat-card-content>
+              <span class="label">{{ 'reports.summary.critical_toners' | translate }}</span>
+              <span class="value">{{ executiveSummary()?.criticalTonerCount }}</span>
+            </mat-card-content>
+          </mat-card>
+
+          <!-- 5. Mono Pages -->
+          <mat-card class="summary-card secondary"
+                    [matTooltip]="'reports.tooltips.mono_pages' | translate"
+                    matTooltipPosition="above">
+            <mat-card-content>
+              <span class="label">{{ 'reports.kpi.mono_pages' | translate }}</span>
+              <span class="value">{{ (printedPages()?.monoPages ?? 0) | number }}</span>
+            </mat-card-content>
+          </mat-card>
+
+          <!-- 6. Color Pages -->
+          <mat-card class="summary-card secondary"
+                    [matTooltip]="'reports.tooltips.color_pages' | translate"
+                    matTooltipPosition="above">
+            <mat-card-content>
+              <span class="label">{{ 'reports.kpi.color_pages' | translate }}</span>
+              <span class="value">{{ (printedPages()?.colorPages ?? 0) | number }}</span>
+            </mat-card-content>
+          </mat-card>
+
+          <!-- 7. Avg Toner Drop -->
+          <mat-card class="summary-card secondary"
+                    [matTooltip]="'reports.tooltips.avg_toner_drop' | translate"
+                    matTooltipPosition="above">
+            <mat-card-content>
+              <span class="label">{{ 'reports.kpi.avg_toner_drop' | translate }}</span>
+              <div class="value-with-trend flex items-center justify-center gap-1.5">
+                <span class="value">{{ tonerConsumption()?.summary?.averageConsumption | number:'1.1-2' }}%</span>
+                @if (tonerConsumption()?.summary?.trend !== 'stable') {
+                  <mat-icon class="trend-icon text-[20px] w-5 h-5 shrink-0" [style.color]="getTrendColor()">
+                    {{ tonerConsumption()?.summary?.trend === 'up' ? 'trending_up' : 'trending_down' }}
+                  </mat-icon>
+                }
+              </div>
+            </mat-card-content>
+          </mat-card>
+
+          <!-- 8. Consumption Trend -->
+          <mat-card class="summary-card secondary"
+                    [matTooltip]="'reports.tooltips.trend' | translate"
+                    matTooltipPosition="above">
+            <mat-card-content>
+              <span class="label">{{ 'reports.summary.trend' | translate }}</span>
+              <span class="value">
+                @if (tonerConsumption()?.summary?.trend) {
+                  {{ (tonerConsumption()?.summary?.trend === 'up'
+                      ? 'reports.trends.increasing'
+                      : tonerConsumption()?.summary?.trend === 'down'
+                        ? 'reports.trends.decreasing'
+                        : 'reports.trends.stable') | translate }}
+                } @else {
+                  —
+                }
+              </span>
+            </mat-card-content>
+          </mat-card>
+        }
+      </div>
+    </div>
+
+    <!-- ── Charts row ─────────────────────────────────────────────────────── -->
+    <div class="charts-row grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6">
+
+      <!-- Printed pages by printer -->
+      <mat-card class="chart-card min-w-0 overflow-hidden pages-breakdown-card">
+        <mat-card-header>
+          <mat-card-title class="text-lg font-bold text-[var(--mat-sys-on-surface)]">
+            {{ 'reports.charts.pages_printed' | translate }}
+          </mat-card-title>
+          @if (printedPages()) {
+            <mat-card-subtitle class="period-subtitle text-sm font-medium text-[var(--mat-sys-on-surface-variant)]">
+              {{ printedPages()?.periodStart | date:'dd/MM/yyyy' }}
+              –
+              {{ printedPages()?.periodEnd | date:'dd/MM/yyyy' }}
+            </mat-card-subtitle>
+          }
+        </mat-card-header>
+
+        <mat-card-content>
+          @if (!printedPages() && !loading()) {
+            <div class="empty-state">
+              {{ 'reports.bi.no_predictions' | translate }}
+            </div>
+          }
+
+          @if (printedPages()) {
+            <div class="fleet-totals flex gap-4 flex-wrap py-4 pb-3 border-b border-[var(--mat-sys-outline-variant)] mb-3 sm:gap-3 sm:py-3 sm:pb-2">
+              <div class="fleet-total-item flex flex-col gap-0.5">
+                <span class="fleet-total-label text-[0.7rem] font-semibold uppercase text-[var(--mat-sys-on-surface-variant)]">{{ 'reports.printed.fleet_total' | translate }}</span>
+                <span class="fleet-total-value text-[1.1rem] sm:text-[1.25rem] font-bold text-[var(--mat-sys-on-surface)]">{{ printedPages()?.totalPages | number }}</span>
+              </div>
+              @if (printedPages()?.monoPages !== null) {
+                <div class="fleet-total-item flex flex-col gap-0.5">
+                  <span class="fleet-total-label text-[0.7rem] font-semibold uppercase text-[var(--mat-sys-on-surface-variant)]">{{ 'reports.printed.mono' | translate }}</span>
+                  <span class="fleet-total-value mono text-[1.1rem] sm:text-[1.25rem] font-bold text-[var(--mat-sys-primary)]">{{ printedPages()?.monoPages | number }}</span>
+                </div>
+              }
+              @if (printedPages()?.colorPages !== null) {
+                <div class="fleet-total-item flex flex-col gap-0.5">
+                  <span class="fleet-total-label text-[0.7rem] font-semibold uppercase text-[var(--mat-sys-on-surface-variant)]">{{ 'reports.printed.color' | translate }}</span>
+                  <span class="fleet-total-value color text-[1.1rem] sm:text-[1.25rem] font-bold text-[var(--mat-sys-secondary)]">{{ printedPages()?.colorPages | number }}</span>
+                </div>
+              }
+            </div>
+
+            <div class="breakdown-table-wrapper overflow-x-auto touch-pan-x sm:max-h-[260px] sm:overflow-y-auto">
+              <table class="breakdown-table">
+                <thead>
+                  <tr>
+                    <th>{{ 'reports.printed.printer' | translate }}</th>
+                    <th class="num-col">{{ 'reports.printed.total' | translate }}</th>
+                    @if (hasPageTypeData()) {
+                      <th class="num-col hide-xs">{{ 'reports.printed.mono' | translate }}</th>
+                      <th class="num-col hide-xs">{{ 'reports.printed.color' | translate }}</th>
+                    }
+                    <th class="num-col">{{ 'reports.printed.share' | translate }}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (row of printerBreakdown(); track row.printerId) {
+                    <tr>
+                      <td class="printer-name-cell">
+                        <span class="printer-label"
+                              [matTooltip]="row.printerName"
+                              matTooltipShowDelay="600">
+                          {{ row.printerName }}
+                        </span>
+                        <div class="share-bar-wrap">
+                          <div class="share-bar" [style.width.%]="getShareBarWidth(row.totalPages)"></div>
+                        </div>
+                      </td>
+                      <td class="num-col">{{ row.totalPages | number }}</td>
+                      @if (hasPageTypeData()) {
+                        <td class="num-col hide-xs mono">{{ (row.monoPages ?? 0) | number }}</td>
+                        <td class="num-col hide-xs color">{{ (row.colorPages ?? 0) | number }}</td>
+                      }
+                      <td class="num-col share-pct">{{ getSharePercent(row.totalPages) }}</td>
+                    </tr>
+                  } @empty {
+                    <tr>
+                      <td [attr.colspan]="hasPageTypeData() ? 5 : 3" class="empty-row">
+                        {{ 'reports.printed.no_data' | translate }}
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          }
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="chart-card min-w-0 overflow-hidden">
+        <mat-card-header>
+          <mat-card-title class="text-lg font-bold text-[var(--mat-sys-on-surface)]">
+            {{ 'reports.charts.toner_consumption' | translate }}
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="chart-container relative mt-4 h-[200px] sm:h-[240px] lg:h-[280px]">
+            <canvas #tonerChartCanvas></canvas>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- ── Predictions / BI ───────────────────────────────────────────────── -->
+    <div class="predictions-section">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>{{ 'reports.bi.predictions_title' | translate }}</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="predictions-grid grid grid-cols-1 gap-3 mt-4 sm:grid-cols-2 lg:grid-cols-4">
+            @if (loading() && !predictions()) {
+              @for (i of [1,2,3,4]; track i) {
+                <div class="prediction-item flex justify-between items-center p-4 border border-[var(--mat-sys-outline-variant)] rounded-xl bg-[var(--mat-sys-surface-container-low)] gap-4 transition-all duration-200 hover:bg-[var(--mat-sys-surface-container)] hover:border-[var(--mat-sys-primary)] sm:p-3 sm:gap-3">
+                  <div class="pred-info">
+                    <div class="skeleton skeleton-text skeleton--w70"></div>
+                    <div class="skeleton skeleton-text skeleton--w40"></div>
+                  </div>
+                  <div class="pred-status">
+                    <div class="pred-value">
+                      <div class="skeleton skeleton-value skeleton--pred-value"></div>
+                      <div class="skeleton skeleton-text skeleton--w60"></div>
+                    </div>
+                    <div class="skeleton skeleton-text skeleton--pred-date"></div>
+                  </div>
+                </div>
+              }
+            } @else {
+              @for (pred of predictions(); track pred.printerId + pred.color) {
+                <div class="prediction-item flex justify-between items-center p-4 border border-[var(--mat-sys-outline-variant)] rounded-xl bg-[var(--mat-sys-surface-container-low)] gap-4 transition-all duration-200 hover:bg-[var(--mat-sys-surface-container)] hover:border-[var(--mat-sys-primary)] sm:p-3 sm:gap-3">
+                  <div class="pred-info">
+                    <span class="printer-name">{{ pred.printerName }}</span>
+                    <span class="color-tag" [style.backgroundColor]="getTonerColor(pred.color)">{{ pred.color }}</span>
+                  </div>
+                  <div class="pred-status">
+                    <div class="pred-value flex flex-col items-end">
+                      <span class="days">{{ pred.estimatedDaysRemaining | number:'1.0-0' }}</span>
+                      <span class="label">{{ 'reports.bi.days_remaining' | translate }}</span>
+                    </div>
+                    <div class="pred-date">
+                      {{ pred.estimatedDate | date:'dd/MM/yyyy' }}
+                    </div>
+                  </div>
+                </div>
+              } @empty {
+                <div class="empty-state">
+                  {{ 'reports.bi.no_predictions' | translate }}
+                </div>
+              }
+            }
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+  </div>
+</app-page-layout>

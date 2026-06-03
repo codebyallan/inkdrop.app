@@ -3,6 +3,7 @@
     "dashboard": "Dashboard",
     "toners": "Toners",
     "printers": "Printers",
+    "reports": "Reports",
     "locations": "Locations",
     "movements": "Movements",
     "settings": "Settings",
@@ -120,6 +121,66 @@
       "last_update": "Last collection"
     },
     "empty_state": "No printers registered"
+  },
+  "reports": {
+    "page_title": "BI Reports",
+    "export": "Export",
+    "export_json": "JSON",
+    "export_csv": "CSV",
+    "export_excel": "Excel",
+    "filters": {
+      "start_date": "Start Date",
+      "end_date": "End Date",
+      "printer": "Printer",
+      "all_printers": "All Printers"
+    },
+    "summary": {
+      "total_pages": "Total Pages",
+      "fleet_health": "Fleet Health",
+      "top_consumer": "Most Used Printer",
+      "critical_toners": "Critical Toners",
+      "trend": "Consumption Trend"
+    },
+    "trends": {
+      "increasing": "Increasing",
+      "decreasing": "Decreasing",
+      "stable": "Stable"
+    },
+    "tooltips": {
+      "total_pages": "Total sum of all pages printed across the selected fleet in the period.",
+      "fleet_health": "Average fleet health based on toner levels and critical alerts.",
+      "top_consumer": "Printer that recorded the highest print volume in the period.",
+      "critical_toners": "Number of supplies that reached a critical level (below 5%).",
+      "mono_pages": "Total volume of monochrome prints.",
+      "color_pages": "Total volume of color prints.",
+      "avg_toner_drop": "Average percentage variation in toner levels in the selected period.",
+      "trend": "Indicates if the consumption trend is increasing, decreasing, or stable."
+    },
+    "kpi": {
+      "total_pages": "Total Volume",
+      "avg_toner_drop": "Avg Toner Variation",
+      "mono_pages": "Mono Pages",
+      "color_pages": "Color Pages"
+    },
+    "charts": {
+      "pages_volume": "Page Volume over Period",
+      "toner_consumption": "Toner Consumption over Period",
+      "pages_printed": "Printed Pages by Printer"
+    },
+    "bi": {
+      "predictions_title": "Depletion Predictions",
+      "days_remaining": "Days Remaining",
+      "no_predictions": "Not enough data for predictions"
+    },
+    "printed": {
+      "fleet_total": "Fleet Total",
+      "mono": "Mono",
+      "color": "Color",
+      "printer": "Printer",
+      "total": "Total",
+      "share": "Share",
+      "no_data": "No data for the selected period"
+    }
   },
   "locations": {
     "page_title": "Locations",
