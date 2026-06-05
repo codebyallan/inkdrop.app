@@ -41,8 +41,21 @@
       - overflow-y: auto → owns the vertical scroll; body never scrolls
       - overflow-x: hidden → prevents horizontal bleed from wide charts
     -->
-    <main class="flex-1 min-h-0 overflow-y-auto overflow-x-hidden">
-      <router-outlet />
+    <main class="flex-1 min-h-0 overflow-y-auto overflow-x-hidden flex flex-col">
+      <div class="flex-grow">
+        <router-outlet />
+      </div>
+      
+      <footer class="flex justify-center items-center py-6 border-t border-[var(--mat-sys-outline-variant)] shrink-0">
+        <p class="text-sm text-[var(--mat-sys-on-surface-variant)] text-center px-4 flex items-center gap-1.5">
+          <span>{{ 'layout.footer.developed_by' | translate }}</span>
+          <span class="font-bold text-[var(--mat-sys-on-surface)]">Allan Pereira</span>
+          <span class="opacity-40">•</span>
+          <a href="mailto:allan.pereira.dev@proton.me" class="transition-all hover:text-[var(--mat-sys-primary)] underline underline-offset-4 decoration-dotted">
+            allan.pereira.dev@proton.me
+          </a>
+        </p>
+      </footer>
     </main>
   </mat-drawer-content>
 </mat-drawer-container>

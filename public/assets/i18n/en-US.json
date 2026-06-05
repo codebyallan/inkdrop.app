@@ -23,7 +23,10 @@
     }
   },
   "layout": {
-    "greeting": "Hello, {{ name }}"
+    "greeting": "Hello, {{ name }}",
+    "footer": {
+      "developed_by": "Developed by"
+    }
   },
   "dashboard": {
     "kpi": {

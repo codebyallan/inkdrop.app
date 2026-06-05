@@ -23,7 +23,10 @@
     }
   },
   "layout": {
-    "greeting": "Olá, {{ name }}"
+    "greeting": "Olá, {{ name }}",
+    "footer": {
+      "developed_by": "Desenvolvido por"
+    }
   },
   "dashboard": {
     "kpi": {
