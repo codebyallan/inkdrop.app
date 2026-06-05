@@ -316,12 +316,12 @@
               }
             } @else {
               @for (pred of predictions(); track pred.printerId + pred.color) {
-                <div class="prediction-item flex justify-between items-center p-4 border border-[var(--mat-sys-outline-variant)] rounded-xl bg-[var(--mat-sys-surface-container-low)] gap-4 transition-all duration-200 hover:bg-[var(--mat-sys-surface-container)] hover:border-[var(--mat-sys-primary)] sm:p-3 sm:gap-3">
-                  <div class="pred-info">
+                <div class="prediction-item flex justify-between items-center p-4 border border-[var(--mat-sys-outline-variant)] rounded-xl bg-[var(--mat-sys-surface-container-low)] gap-4 transition-all duration-200 hover:bg-[var(--mat-sys-surface-container)] hover:border-[var(--mat-sys-primary)] sm:p-3 sm:gap-3 overflow-hidden">
+                  <div class="pred-info min-w-0">
                     <span class="printer-name">{{ pred.printerName }}</span>
-                    <span class="color-tag" [style.backgroundColor]="getTonerColor(pred.color)">{{ pred.color }}</span>
+                    <span class="color-tag shrink-0" [style.backgroundColor]="getTonerColor(pred.color)">{{ pred.color }}</span>
                   </div>
-                  <div class="pred-status">
+                  <div class="pred-status shrink-0">
                     <div class="pred-value flex flex-col items-end">
                       <span class="days">{{ pred.estimatedDaysRemaining | number:'1.0-0' }}</span>
                       <span class="label">{{ 'reports.bi.days_remaining' | translate }}</span>
