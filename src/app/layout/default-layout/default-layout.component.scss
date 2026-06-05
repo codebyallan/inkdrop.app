@@ -5,7 +5,9 @@ mat-drawer-container {
 
 mat-drawer {
   width: 280px;
-  background-color: var(--mat-sys-surface-container);
+  background-color: var(--mat-sys-surface-container-low) !important;
+  border-right: 1px solid var(--mat-sys-outline-variant);
+  box-shadow: none !important;
 }
 
 // mat-drawer-content is a flex column that fills the remaining width.
